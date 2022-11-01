@@ -1,6 +1,5 @@
 package cvut.model;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.List;

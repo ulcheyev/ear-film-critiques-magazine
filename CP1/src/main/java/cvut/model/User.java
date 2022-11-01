@@ -3,7 +3,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "application_user")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User extends AbstractEntity{
 
     @Column(name = "firstname")
@@ -66,7 +67,6 @@ public class User extends AbstractEntity{
 
     @Override
     public String toString() {
-        super.toString();
         return "User{" +
                 "firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +

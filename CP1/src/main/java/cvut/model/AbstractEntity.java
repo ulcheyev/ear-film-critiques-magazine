@@ -4,7 +4,7 @@ import javax.persistence.*;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @MappedSuperclass
-public class AbstractEntity {
+public abstract class AbstractEntity {
 
     @Id
     @SequenceGenerator(
@@ -28,6 +28,6 @@ public class AbstractEntity {
 
     @Override
     public String toString() {
-        return "id= " + id + " ";
+        return "id = " + id + " ";
     }
 }

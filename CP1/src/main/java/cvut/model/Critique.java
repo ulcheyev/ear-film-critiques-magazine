@@ -16,7 +16,7 @@ public class Critique extends AbstractEntity{
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "critique_text", nullable = false)
+    @Column(name = "critique_text", nullable = false, columnDefinition = "TEXT")
     private String text;
 
     @Basic

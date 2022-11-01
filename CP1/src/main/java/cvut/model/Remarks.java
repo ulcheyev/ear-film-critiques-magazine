@@ -10,7 +10,7 @@ public class Remarks extends AbstractEntity{
     @JoinColumn(name = "admin", referencedColumnName = "id", nullable = false)
     private User admin;
 
-    @Column(name = "remarks_text", nullable = false)
+    @Column(name = "remarks_text", nullable = false, columnDefinition = "TEXT")
     private String text;
 
     @Basic

@@ -1,12 +1,11 @@
 package cvut.model;
-
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class Comment extends AbstractEntity{
 
-    @Column(name = "comment_text", nullable = false)
+    @Column(name = "comment_text", nullable = false, columnDefinition = "TEXT")
     private String text;
 
     @Basic
@@ -53,6 +52,10 @@ public class Comment extends AbstractEntity{
     public void setCommentOwner(User user) {
         this.commentOwner = user;
     }
+
+    public Post getPost() {return post;}
+
+    public void setPost(Post post) {this.post = post;}
 
     @Override
     public String toString() {

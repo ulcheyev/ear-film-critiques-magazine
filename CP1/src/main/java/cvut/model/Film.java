@@ -26,7 +26,7 @@ public class Film extends AbstractEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfRelease;
 
-    @Column(name="film_description")
+    @Column(name="film_description", columnDefinition = "TEXT")
     private String description;
 
     public Film() {}
