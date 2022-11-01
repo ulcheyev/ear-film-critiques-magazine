@@ -1,9 +1,0 @@
-﻿Časopis o filmové kritice
-
-Systém určen pro časopis o filmové kritice a bude umožňovat posuzovatelům napsat svou kritiku o filmu a poslat ji k posouzení správci. 
-Je možné si vybrat, co kritizovat (herec, film atd).  Správce zase může přijmout nebo odmítnout kritiku. 
-Při posuzování může správce vrátit kritiku k opravě s konkrétními označeními. Bude seznam hodnocení mezi posuzovatele, v závislosti na tom bude upřednostňováno čtení kritik správcem. 
-Posuzovatelé mohou číst další recenze a hodnotit je, čímž zvyšují hodnocení posuzovatele, který napsal tuto kritiku. 
-Bude-li kritika schválena, bude mít posuzovatel poslední možnost kritiku schválit nebo odmítnout.
-Kritiku lze psat bud’ v redaktoru na webu nebo nahrát svůj vlastní soubor s už napsanou kritikou. 
-Po vydání časopisu na webu uživatelé můžou napsat komentáře a hodnocení ke konkrétní kritice.
