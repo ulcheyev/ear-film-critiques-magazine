@@ -3,8 +3,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "User_Role")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends AbstractEntity{
 
     @Column(name = "firstname")

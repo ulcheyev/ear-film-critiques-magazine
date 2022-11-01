@@ -1,13 +1,14 @@
 package cvut.model;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.List;
 
-@DiscriminatorValue("Critic")
+@Entity
 public class Critic extends User{
 
-    @Column(name = "critic_rating", nullable = true)
+    @Column(name = "critic_rating", nullable = false)
     private double criticRating;
 
     @OneToMany(mappedBy = "critiqueOwner")

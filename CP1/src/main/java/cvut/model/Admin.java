@@ -1,13 +1,14 @@
 package cvut.model;
 
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.List;
 
-@DiscriminatorValue("Admin")
+@Entity
 public class Admin extends User{
 
-    @OneToMany
+    @OneToMany(mappedBy = "admin")
     private List<Critique> critiqueList;
 
     public Admin() {}

@@ -10,7 +10,7 @@ public class Critique extends AbstractEntity{
     @Enumerated(EnumType.STRING)
     private CritiqueState critiqueState;
 
-    @Column(name = "critique_rating", nullable = true)
+    @Column(name = "critique_rating", nullable = false)
     private double critiqueRating;
 
     @Column(name = "title", nullable = false)
@@ -20,12 +20,12 @@ public class Critique extends AbstractEntity{
     private String text;
 
     @Basic
-    @Column(name = "date_of_acceptance", nullable = true)
+    @Column(name = "date_of_acceptance")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfAcceptance;
 
     @ManyToOne
-    @JoinColumn(name = "acceptance_admin", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "acceptance_admin", referencedColumnName = "id")
     private User admin;
 
     @ManyToOne
