@@ -2,8 +2,17 @@ package cvut.model;
 import javax.persistence.*;
 import java.util.Date;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
-public class Comment extends AbstractEntity{
+public class Comment{
+
+    @GeneratedValue(strategy = IDENTITY)
+    @Id
+    private Long id;
+
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
     @Column(name = "comment_text", nullable = false, columnDefinition = "TEXT")
     private String text;

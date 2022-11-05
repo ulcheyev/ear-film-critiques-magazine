@@ -3,8 +3,17 @@ package cvut.model;
 import javax.persistence.*;
 import java.util.Date;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
-public class Remarks extends AbstractEntity{
+public class Remarks {
+
+    @GeneratedValue(strategy = IDENTITY)
+    @Id
+    private Long id;
+
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
     @ManyToOne
     @JoinColumn(name = "admin", referencedColumnName = "id", nullable = false)

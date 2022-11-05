@@ -4,14 +4,24 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
-public class Critique extends AbstractEntity{
+public class Critique {
+
+    @GeneratedValue(strategy = IDENTITY)
+    @Id
+    private Long id;
+
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
     @Enumerated(EnumType.STRING)
     private CritiqueState critiqueState;
 
-    @Column(name = "critique_rating", nullable = false)
-    private double critiqueRating;
+    @OneToOne
+    @JoinColumn(name = "critique_rating")
+    private Rating critiqueRating;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -45,11 +55,11 @@ public class Critique extends AbstractEntity{
         this.critiqueState = critiqueState;
     }
 
-    public double getCritiqueRating() {
+    public Rating getCritiqueRating() {
         return critiqueRating;
     }
 
-    public void setCritiqueRating(double critiqueRating) {
+    public void setCritiqueRating(Rating critiqueRating) {
         this.critiqueRating = critiqueRating;
     }
 

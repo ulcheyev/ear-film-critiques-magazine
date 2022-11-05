@@ -4,8 +4,17 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
-public class Film extends AbstractEntity {
+public class Film {
+
+    @GeneratedValue(strategy = IDENTITY)
+    @Id
+    private Long id;
+
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
     @ManyToMany
     @JoinTable(

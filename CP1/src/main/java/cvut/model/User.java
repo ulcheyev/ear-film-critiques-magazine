@@ -2,10 +2,20 @@ package cvut.model;
 import javax.persistence.*;
 import java.util.List;
 
+import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.GenerationType.SEQUENCE;
+
 @Entity
 @Table(name = "application_user")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class User extends AbstractEntity{
+public class User{
+
+    @GeneratedValue(strategy = SEQUENCE)
+    @Id
+    private Long id;
+
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
     @Column(name = "firstname")
     private String firstname;
@@ -13,7 +23,7 @@ public class User extends AbstractEntity{
     @Column(name = "lastname", nullable = false)
     private String lastname;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @Column(name = "password", nullable = false)
