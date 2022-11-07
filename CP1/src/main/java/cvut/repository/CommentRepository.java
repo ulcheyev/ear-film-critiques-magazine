@@ -10,7 +10,6 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-
     List<Comment> findAllByCommentOwner_Id(Long id);
     List<Comment> findAllByDateOfPublic(Date date);
     List<Comment> findAllByDateOfPublicAfter(Date date);

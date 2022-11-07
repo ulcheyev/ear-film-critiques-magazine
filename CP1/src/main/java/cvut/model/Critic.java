@@ -13,6 +13,10 @@ public class Critic extends User{
 
     public Critic() {}
 
+    public Critic(String firstname, String lastname, String username, String password) {
+        super(firstname, lastname, username, password);
+    }
+
     public double getCriticRating() {
         return criticRating;
     }

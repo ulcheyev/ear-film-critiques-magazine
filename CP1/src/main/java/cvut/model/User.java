@@ -29,10 +29,18 @@ public class User{
     @Column(name = "password", nullable = false)
     private String password;
 
+
     @OneToMany(mappedBy = "commentOwner")
     private List<Comment> commentList;
 
     public User() {}
+
+    public User(String firstname, String lastname, String username, String password) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.username = username;
+        this.password = password;
+    }
 
     public String getFirstname() {
         return firstname;

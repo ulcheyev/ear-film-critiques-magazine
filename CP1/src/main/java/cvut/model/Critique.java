@@ -17,11 +17,10 @@ public class Critique {
     public void setId(Long id) {this.id = id;}
 
     @Enumerated(EnumType.STRING)
-    private CritiqueState critiqueState;
+    private CritiqueState critiqueState = CritiqueState.IN_PROCESSED;
 
-    @OneToOne
-    @JoinColumn(name = "critique_rating")
-    private Rating critiqueRating;
+    @OneToMany(mappedBy = "critique")
+    private List<Rating> critiqueRating;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -29,18 +28,21 @@ public class Critique {
     @Column(name = "critique_text", nullable = false, columnDefinition = "TEXT")
     private String text;
 
+    @Column(name = "rating")
+    private double rating = 0.0;
+
     @Basic
     @Column(name = "date_of_acceptance")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfAcceptance;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "acceptance_admin", referencedColumnName = "id")
     private User admin;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "critique_owner", referencedColumnName = "id", nullable = false)
-    private User critiqueOwner;
+    private Critic critiqueOwner;
 
     @OneToMany(mappedBy = "admin")
     private List<Remarks> remarksList;
@@ -55,12 +57,12 @@ public class Critique {
         this.critiqueState = critiqueState;
     }
 
-    public Rating getCritiqueRating() {
-        return critiqueRating;
+    public double getCritiqueRating() {
+        return rating;
     }
 
-    public void setCritiqueRating(Rating critiqueRating) {
-        this.critiqueRating = critiqueRating;
+    public void setCritiqueRating(double rating) {
+        this.rating = rating;
     }
 
     public String getTitle() {
@@ -95,11 +97,11 @@ public class Critique {
         this.admin = admin;
     }
 
-    public User getCritiqueOwner() {
+    public Critic getCritiqueOwner() {
         return critiqueOwner;
     }
 
-    public void setCritiqueOwner(User critiqueOwner) {
+    public void setCritiqueOwner(Critic critiqueOwner) {
         this.critiqueOwner = critiqueOwner;
     }
 

@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>{
     List<Post> findAllByDateOfPublic(Date date);
     List<Post> findAllByDateOfPublicAfter(Date date);
     List<Post> findAllByDateOfPublicBefore(Date date);
