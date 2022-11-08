@@ -6,7 +6,7 @@ import java.util.List;
 
 
 @Entity
-public class Admin extends User{
+public class Admin extends AppUser {
 
     @OneToMany(mappedBy = "admin")
     private List<Critique> critiqueList;

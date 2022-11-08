@@ -26,6 +26,8 @@ public class Film {
     )
     private List<MainRole> mainRoleList;
 
+    @OneToMany(mappedBy = "film")
+    private List<Post> posts;
 
     @Column(name = "film_name", nullable = false)
     private String name;

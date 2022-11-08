@@ -2,13 +2,12 @@ package cvut.model;
 import javax.persistence.*;
 import java.util.List;
 
-import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
-@Table(name = "application_user")
+@Table(name = "app_use")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class User{
+public class AppUser {
 
     @GeneratedValue(strategy = SEQUENCE)
     @Id
@@ -29,13 +28,12 @@ public class User{
     @Column(name = "password", nullable = false)
     private String password;
 
-
     @OneToMany(mappedBy = "commentOwner")
     private List<Comment> commentList;
 
-    public User() {}
+    public AppUser() {}
 
-    public User(String firstname, String lastname, String username, String password) {
+    public AppUser(String firstname, String lastname, String username, String password) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;

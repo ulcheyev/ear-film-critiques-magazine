@@ -3,7 +3,6 @@ package cvut.repository;
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.Critic;
-import cvut.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

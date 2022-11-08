@@ -17,7 +17,6 @@ public class Post {
     public void setId(Long id) {this.id = id;}
 
     @OneToOne
-    @JoinColumn(name = "critique_id", nullable = false)
     private Critique critique;
 
     @OneToMany(mappedBy = "post")
@@ -25,6 +24,9 @@ public class Post {
 
     @Column(name = "post_title", nullable = false)
     private String title;
+
+    @ManyToOne
+    private Film film;
 
     @Basic
     @Column(name = "date_of_public", nullable = false)

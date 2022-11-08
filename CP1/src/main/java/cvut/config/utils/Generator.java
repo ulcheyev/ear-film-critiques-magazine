@@ -20,12 +20,12 @@ public class Generator {
         return random.nextLong(10L);
     }
 
-    public static User generateUser(){
+    public static AppUser generateUser(){
         String firstname = faker.name().firstName();
         String lastname = faker.name().lastName();
         String password = faker.phoneNumber().phoneNumber();
         String username = faker.name().username();
-        return new User(firstname,lastname,username,password);
+        return new AppUser(firstname,lastname,username,password);
     }
 
     public static Critic generateCritic(){
@@ -41,7 +41,7 @@ public class Generator {
         Date dateOfAccept = faker.date().birthday();
         String title = faker.book().title();
         String text = faker.book().title()+faker.book().title();
-        User admin = generateUser();
+        AppUser admin = generateUser();
         Critic owner = generateCritic();
         critique.setAdmin(admin);
         critique.setCritiqueOwner(owner);

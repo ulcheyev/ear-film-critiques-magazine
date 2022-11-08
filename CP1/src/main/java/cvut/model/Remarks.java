@@ -16,11 +16,13 @@ public class Remarks {
     public void setId(Long id) {this.id = id;}
 
     @ManyToOne
-    @JoinColumn(name = "admin", referencedColumnName = "id", nullable = false)
-    private User admin;
+    private AppUser admin;
 
     @Column(name = "remarks_text", nullable = false, columnDefinition = "TEXT")
     private String text;
+
+    @ManyToOne
+    private Critique critique;
 
     @Basic
     @Column(name = "remarks_make_day", nullable = false)
@@ -29,8 +31,8 @@ public class Remarks {
 
     public Remarks() {}
 
-    public User getAdmin() {return admin;}
-    public void setAdmin(User admin) {this.admin = admin;}
+    public AppUser getAdmin() {return admin;}
+    public void setAdmin(AppUser admin) {this.admin = admin;}
 
     public String getText() {
         return text;

@@ -22,20 +22,18 @@ public class Comment{
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfPublic;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "comment_owner", referencedColumnName = "id", nullable = false)
-    private User commentOwner;
+    @ManyToOne
+    private AppUser commentOwner;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "post", referencedColumnName = "id", nullable = false)
     private Post post;
 
     public Comment() {}
 
-    public Comment(String text, Date dateOfPublic, User user) {
+    public Comment(String text, Date dateOfPublic, AppUser appUser) {
         this.text = text;
         this.dateOfPublic = dateOfPublic;
-        this.commentOwner = user;
+        this.commentOwner = appUser;
     }
 
     public String getText() {
@@ -54,12 +52,12 @@ public class Comment{
         this.dateOfPublic = dateOfPublic;
     }
 
-    public User getCommentOwner() {
+    public AppUser getCommentOwner() {
         return commentOwner;
     }
 
-    public void setCommentOwner(User user) {
-        this.commentOwner = user;
+    public void setCommentOwner(AppUser appUser) {
+        this.commentOwner = appUser;
     }
 
     public Post getPost() {return post;}

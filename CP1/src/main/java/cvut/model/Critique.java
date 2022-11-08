@@ -36,12 +36,13 @@ public class Critique {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfAcceptance;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "acceptance_admin", referencedColumnName = "id")
-    private User admin;
+    @OneToMany(mappedBy = "critique")
+    private List<Remarks> critiqueRemarks;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "critique_owner", referencedColumnName = "id", nullable = false)
+    private AppUser admin;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Critic critiqueOwner;
 
     @OneToMany(mappedBy = "admin")
@@ -89,11 +90,11 @@ public class Critique {
         this.dateOfAcceptance = dateOfAcceptance;
     }
 
-    public User getAdmin() {
+    public AppUser getAdmin() {
         return admin;
     }
 
-    public void setAdmin(User admin) {
+    public void setAdmin(AppUser admin) {
         this.admin = admin;
     }
 
