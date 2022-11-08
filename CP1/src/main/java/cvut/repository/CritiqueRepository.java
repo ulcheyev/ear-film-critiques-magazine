@@ -1,7 +1,6 @@
 package cvut.repository;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
-import cvut.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,7 +14,7 @@ public interface CritiqueRepository extends JpaRepository<Critique, Long> {
     int findQuantityOfCritiquesByCriticId(Long id);
 
     @Query("select sum(c.rating) from Critique c where c.critiqueOwner.id = ?1")
-    double findSumOfCritiquesByCriticId(Long id);
+    double findSumOfCritiquesRatingByCriticId(Long id);
 
     List<Critique> findAllByCritiqueState(CritiqueState critiqueState);
     List<Critique> findAllByDateOfAcceptance(Date dateOfAcceptance);

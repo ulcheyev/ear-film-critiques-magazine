@@ -23,7 +23,6 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     @Query("select sum(r.stars) from Rating r where r.critique.id = ?1")
     double findSumOfVotesByCritiqueId(Long Id);
 
-
     List<Rating> findByCritique_Id(Long id);
     List<Rating> findAllByDate(Date date);
     List<Rating> findAllByDateAfter(Date date);

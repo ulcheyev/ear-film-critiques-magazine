@@ -1,6 +1,7 @@
 package cvut.services;
 
 import cvut.Application;
+import cvut.config.utils.EarUtils;
 import cvut.config.utils.Generator;
 import cvut.model.Critic;
 import cvut.model.Critique;
@@ -27,13 +28,13 @@ public class RatingServiceTest {
         Critic critic = critique.getCritiqueOwner();
         ratingService.createAndUpdate(critique, stars);
 
-        double expectedForCritique = (ratingService.findSumOfVotesByCritiqueId(critique.getId())+stars)
-                / (ratingService.findQuantityOfVotesByCritiqueId(critique.getId())+1);
+        double expectedForCritique = ratingService.findSumOfVotesByCritiqueId(critique.getId())
+                / ratingService.findQuantityOfVotesByCritiqueId(critique.getId());
         double expectedForCritic = critiqueService.findSumOfCritiquesByCriticId(critic.getId())
                 / critiqueService.findQuantityOfCritiquesByCriticId(critic.getId());
 
 
-        Assertions.assertEquals(expectedForCritique, critique.getCritiqueRating());
-        Assertions.assertEquals(expectedForCritic, critic.getCriticRating());
+        Assertions.assertEquals(EarUtils.floorNumber(1, expectedForCritique), critique.getCritiqueRating());
+        Assertions.assertEquals(EarUtils.floorNumber(1,expectedForCritic), critic.getCriticRating());
     }
 }
