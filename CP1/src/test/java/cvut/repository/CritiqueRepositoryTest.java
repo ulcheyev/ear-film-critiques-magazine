@@ -1,6 +1,4 @@
 package cvut.repository;
-
-
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.Critique;

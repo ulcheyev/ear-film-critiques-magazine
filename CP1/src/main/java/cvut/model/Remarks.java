@@ -6,6 +6,7 @@ import java.util.Date;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "remarks")
 public class Remarks {
 
     @GeneratedValue(strategy = IDENTITY)
@@ -16,12 +17,14 @@ public class Remarks {
     public void setId(Long id) {this.id = id;}
 
     @ManyToOne
-    private AppUser admin;
+    @JoinColumn(name = "admin", referencedColumnName = "id", nullable = false)
+    private Admin admin;
 
     @Column(name = "remarks_text", nullable = false, columnDefinition = "TEXT")
     private String text;
 
     @ManyToOne
+    @JoinColumn(name = "critique",referencedColumnName = "id", nullable = false)
     private Critique critique;
 
     @Basic
@@ -31,8 +34,8 @@ public class Remarks {
 
     public Remarks() {}
 
-    public AppUser getAdmin() {return admin;}
-    public void setAdmin(AppUser admin) {this.admin = admin;}
+    public Admin getAdmin() {return admin;}
+    public void setAdmin(Admin admin) {this.admin = admin;}
 
     public String getText() {
         return text;

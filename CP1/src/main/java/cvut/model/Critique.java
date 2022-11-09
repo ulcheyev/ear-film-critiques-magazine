@@ -7,6 +7,7 @@ import java.util.List;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "critique")
 public class Critique {
 
     @GeneratedValue(strategy = IDENTITY)
@@ -20,7 +21,7 @@ public class Critique {
     private CritiqueState critiqueState = CritiqueState.IN_PROCESSED;
 
     @OneToMany(mappedBy = "critique")
-    private List<Rating> critiqueRating;
+    private List<RatingVote> critiqueRatingVote;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -39,14 +40,23 @@ public class Critique {
     @OneToMany(mappedBy = "critique")
     private List<Remarks> critiqueRemarks;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private AppUser admin;
+    @ManyToOne
+    @JoinColumn(name = "admin", referencedColumnName = "id")
+    private Admin  admin;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "critique_owner", referencedColumnName = "id", nullable = false)
     private Critic critiqueOwner;
 
     @OneToMany(mappedBy = "admin")
     private List<Remarks> remarksList;
+
+    @OneToMany(mappedBy = "critique")
+    private List<Comment> comments;
+
+    @ManyToOne
+    @JoinColumn(name = "film", referencedColumnName = "id", nullable = false)
+    private Film film;
 
     public Critique() {}
 
@@ -90,11 +100,11 @@ public class Critique {
         this.dateOfAcceptance = dateOfAcceptance;
     }
 
-    public AppUser getAdmin() {
+    public Admin getAdmin() {
         return admin;
     }
 
-    public void setAdmin(AppUser admin) {
+    public void setAdmin(Admin admin) {
         this.admin = admin;
     }
 
@@ -118,7 +128,7 @@ public class Critique {
     public String toString() {
         return "Critique{" +
                 "critiqueState=" + critiqueState +
-                ", critiqueRating=" + critiqueRating +
+                ", critiqueRating=" + critiqueRatingVote +
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", dateOfAcceptance=" + dateOfAcceptance +

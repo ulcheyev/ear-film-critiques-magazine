@@ -3,10 +3,10 @@ package cvut.services;
 import cvut.config.utils.EarUtils;
 import cvut.model.Critic;
 import cvut.model.Critique;
-import cvut.model.Rating;
+import cvut.model.RatingVote;
 import cvut.repository.CriticRepository;
 import cvut.repository.CritiqueRepository;
-import cvut.repository.RatingRepository;
+import cvut.repository.RatingVoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -18,14 +18,14 @@ import java.util.List;
 public class RatingService {
 
     private final CritiqueRepository critiqueRepository;
-    private final RatingRepository ratingRepository;
+    private final RatingVoteRepository ratingVoteRepository;
     private final CriticRepository criticRepository;
 
 
     @Autowired
-    public RatingService(CritiqueRepository critiqueRepository, RatingRepository ratingRepository, CriticRepository criticRepository) {
+    public RatingService(CritiqueRepository critiqueRepository, RatingVoteRepository ratingVoteRepository, CriticRepository criticRepository) {
         this.critiqueRepository = critiqueRepository;
-        this.ratingRepository = ratingRepository;
+        this.ratingVoteRepository = ratingVoteRepository;
         this.criticRepository = criticRepository;
     }
 
@@ -40,13 +40,13 @@ public class RatingService {
     @Transactional
     public void createAndUpdate(@NonNull Critique critique, @NonNull double stars){
 
-        Rating rating = new Rating(critique, stars, new Date());
+        RatingVote ratingVote = new RatingVote(critique, stars, new Date());
         Critic critic = critique.getCritiqueOwner();
-        ratingRepository.save(rating);
+        ratingVoteRepository.save(ratingVote);
 
         //Update critique
-        int critiqueCount = ratingRepository.findQuantityOfVotesByCritiqueId(critique.getId());
-        double critiqueRatingSum = ratingRepository.findSumOfVotesByCritiqueId(critique.getId());
+        int critiqueCount = ratingVoteRepository.findQuantityOfVotesByCritiqueId(critique.getId());
+        double critiqueRatingSum = ratingVoteRepository.findSumOfVotesByCritiqueId(critique.getId());
         double critique_c = critiqueRatingSum/critiqueCount;
         double resultToCritique = EarUtils.floorNumber(1,critique_c);
         critique.setCritiqueRating(resultToCritique);
@@ -63,23 +63,23 @@ public class RatingService {
     }
 
     @Transactional
-    public Rating findById(@NonNull Long id){
-        return ratingRepository.findById(id).get();
+    public RatingVote findById(@NonNull Long id){
+        return ratingVoteRepository.findById(id).get();
     }
 
     @Transactional
-    public List<Rating> findByCritiqueId(@NonNull Long id){
-        return ratingRepository.findByCritique_Id(id).stream().toList();
+    public List<RatingVote> findByCritiqueId(@NonNull Long id){
+        return ratingVoteRepository.findByCritique_Id(id).stream().toList();
     }
 
     @Transactional
     public int findQuantityOfVotesByCritiqueId(@NonNull Long id){
-        return ratingRepository.findQuantityOfVotesByCritiqueId(id);
+        return ratingVoteRepository.findQuantityOfVotesByCritiqueId(id);
     }
 
     @Transactional
     public double findSumOfVotesByCritiqueId(@NonNull Long id){
-        return ratingRepository.findSumOfVotesByCritiqueId(id);
+        return ratingVoteRepository.findSumOfVotesByCritiqueId(id);
     }
 
 

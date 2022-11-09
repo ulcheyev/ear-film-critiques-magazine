@@ -7,14 +7,12 @@ import java.util.List;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "film")
 public class Film {
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
-
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
 
     @ManyToMany
     @JoinTable(
@@ -27,7 +25,7 @@ public class Film {
     private List<MainRole> mainRoleList;
 
     @OneToMany(mappedBy = "film")
-    private List<Post> posts;
+    private List<Critique> critiques;
 
     @Column(name = "film_name", nullable = false)
     private String name;
@@ -37,7 +35,7 @@ public class Film {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfRelease;
 
-    @Column(name="film_description", columnDefinition = "TEXT")
+    @Column(name="film_description", columnDefinition = "TEXT", nullable = false)
     private String description;
 
     public Film() {}
@@ -73,6 +71,9 @@ public class Film {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
     @Override
     public String toString() {

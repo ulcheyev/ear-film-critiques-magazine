@@ -3,31 +3,36 @@ package cvut.model;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class Rating {
+@Table(name = "rating")
+public class RatingVote {
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "critique", referencedColumnName = "id", nullable = false)
     private Critique critique;
 
-    @Column
+    @Column(name = "stars", nullable = false)
     private double stars;
+
+    @ManyToOne
+    @JoinColumn(name = "vote_owner", referencedColumnName = "id", nullable = false)
+    private AppUser voteOwner;
 
     @Basic
     @Column(name = "date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    public Rating() {}
+    public RatingVote() {}
 
-    public Rating(Critique critique, double stars, Date date) {
+    public RatingVote(Critique critique, double stars, Date date) {
         this.critique = critique;
         this.stars = stars;
         this.date = date;
@@ -59,6 +64,10 @@ public class Rating {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    public AppUser getVoteOwner() {return voteOwner;}
+
+    public void setVoteOwner(AppUser voteOwner) {this.voteOwner = voteOwner;}
 
     @Override
     public String toString() {

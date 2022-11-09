@@ -6,14 +6,12 @@ import java.util.List;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "main_role")
 public class MainRole{
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
-
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
 
     @Enumerated(EnumType.STRING)
     private FilmRole filmRole;
@@ -44,6 +42,10 @@ public class MainRole{
     public List<Film> getFilmList() {
         return filmList;
     }
+
+    public Long getId() {return id;}
+
+    public void setId(Long id) {this.id = id;}
 
     @Override
     public String toString() {

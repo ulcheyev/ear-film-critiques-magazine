@@ -3,6 +3,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "critic")
 public class Critic extends AppUser {
 
     @Column(name = "critic_rating", nullable = false)

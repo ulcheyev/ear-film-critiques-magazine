@@ -2,19 +2,16 @@ package cvut.model;
 import javax.persistence.*;
 import java.util.List;
 
-import static javax.persistence.GenerationType.SEQUENCE;
+import static javax.persistence.GenerationType.*;
 
 @Entity
-@Table(name = "app_use")
+@Table(name = "app_user")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AppUser {
 
-    @GeneratedValue(strategy = SEQUENCE)
+    @GeneratedValue(strategy = AUTO)
     @Id
     private Long id;
-
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
 
     @Column(name = "firstname")
     private String firstname;
@@ -28,8 +25,11 @@ public class AppUser {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "commentOwner")
+    @OneToMany(mappedBy="appUser")
     private List<Comment> commentList;
+
+    @OneToMany(mappedBy = "voteOwner")
+    private List<RatingVote> ratingVotes;
 
     public AppUser() {}
 
@@ -80,6 +80,13 @@ public class AppUser {
         this.commentList = commentList;
     }
 
+    public Long getId() {return id;}
+
+    public void setId(Long id) {this.id = id;}
+
+    public List<RatingVote> getRatingVotes() {return ratingVotes;}
+
+    public void setRatingVotes(List<RatingVote> ratingVotes) {this.ratingVotes = ratingVotes;}
 
     @Override
     public String toString() {

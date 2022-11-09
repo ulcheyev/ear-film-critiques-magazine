@@ -4,7 +4,7 @@ package cvut.repository;
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.Critique;
-import cvut.model.Rating;
+import cvut.model.RatingVote;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +14,21 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
 
-public class RatingRepositoryTest {
+public class RatingVoteRepositoryTest {
 
     @Autowired
-    private RatingRepository ratingRepository;
+    private RatingVoteRepository ratingVoteRepository;
     @Autowired
     private CritiqueRepository critiqueRepository;
 
     @Test
     public void addRatingToCritique(){
         Critique critique = critiqueRepository.findById(Generator.generateId()).get();
-        Rating rating = Generator.generateRating(critique);
-        ratingRepository.save(rating);
+        RatingVote ratingVote = Generator.generateRating(critique);
+        ratingVoteRepository.save(ratingVote);
 
-        Rating founded = ratingRepository.findById(rating.getId()).get();
-        Assertions.assertEquals(founded.getId(), rating.getId());
-        Assertions.assertEquals(founded.getStars(), rating.getStars());
+        RatingVote founded = ratingVoteRepository.findById(ratingVote.getId()).get();
+        Assertions.assertEquals(founded.getId(), ratingVote.getId());
+        Assertions.assertEquals(founded.getStars(), ratingVote.getStars());
     }
 }

@@ -1,11 +1,11 @@
 package cvut.model;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 
 @Entity
+@Table(name = "admin")
 public class Admin extends AppUser {
 
     @OneToMany(mappedBy = "admin")

@@ -5,14 +5,12 @@ import java.util.Date;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "comment")
 public class Comment{
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
-
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
 
     @Column(name = "comment_text", nullable = false, columnDefinition = "TEXT")
     private String text;
@@ -23,18 +21,23 @@ public class Comment{
     private Date dateOfPublic;
 
     @ManyToOne
-    private AppUser commentOwner;
+    private AppUser appUser;
 
-    @ManyToOne(optional = false)
-    private Post post;
+    @ManyToOne
+    @JoinColumn(name = "critique", referencedColumnName = "id", nullable = false)
+    private Critique critique;
+
 
     public Comment() {}
 
-    public Comment(String text, Date dateOfPublic, AppUser appUser) {
+    public Comment(String text, Date dateOfPublic, Critic appUser) {
         this.text = text;
         this.dateOfPublic = dateOfPublic;
-        this.commentOwner = appUser;
+        this.appUser = appUser;
     }
+
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
     public String getText() {
         return text;
@@ -53,23 +56,33 @@ public class Comment{
     }
 
     public AppUser getCommentOwner() {
-        return commentOwner;
+        return appUser;
     }
 
     public void setCommentOwner(AppUser appUser) {
-        this.commentOwner = appUser;
+        this.appUser = appUser;
     }
 
-    public Post getPost() {return post;}
+    public AppUser getAppUser() {return appUser;}
 
-    public void setPost(Post post) {this.post = post;}
+    public void setAppUser(AppUser appUser) {this.appUser = appUser;}
+
+
+
+    public Critique getCritique() {
+        return critique;
+    }
+
+    public void setCritique(Critique critique) {
+        this.critique = critique;
+    }
 
     @Override
     public String toString() {
         return "Comment{" +
                 "text='" + text + '\'' +
                 ", dateOfPublic=" + dateOfPublic +
-                ", user=" + commentOwner +
+                ", user=" + appUser +
                 '}';
     }
 }

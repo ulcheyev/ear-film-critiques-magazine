@@ -43,7 +43,7 @@ public class Generator {
         String text = faker.book().title()+faker.book().title();
         AppUser admin = generateUser();
         Critic owner = generateCritic();
-        critique.setAdmin(admin);
+        critique.setAdmin((Admin) admin);
         critique.setCritiqueOwner(owner);
         critique.setDateOfAcceptance(dateOfAccept);
         critique.setText(text);
@@ -52,20 +52,20 @@ public class Generator {
     }
 
 
-    public static Rating generateRating(){
-        Rating rating = new Rating();
-        rating.setStars(random.nextInt(5));
-        rating.setCritique(generateCritique());
-        rating.setDate(generateDate());
-        return rating;
+    public static RatingVote generateRating(){
+        RatingVote ratingVote = new RatingVote();
+        ratingVote.setStars(random.nextInt(5));
+        ratingVote.setCritique(generateCritique());
+        ratingVote.setDate(generateDate());
+        return ratingVote;
     }
 
-    public static Rating generateRating(Critique critique){
-        Rating rating = new Rating();
-        rating.setStars(random.nextInt(5));
-        rating.setCritique(critique);
-        rating.setDate(generateDate());
-        return rating;
+    public static RatingVote generateRating(Critique critique){
+        RatingVote ratingVote = new RatingVote();
+        ratingVote.setStars(random.nextInt(5));
+        ratingVote.setCritique(critique);
+        ratingVote.setDate(generateDate());
+        return ratingVote;
     }
 
 
