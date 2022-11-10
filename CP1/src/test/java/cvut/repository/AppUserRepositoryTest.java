@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
-public class AppAppUserRepositoryTest {
+public class AppUserRepositoryTest {
 
     @Autowired
     private AppUserRepository appUserRepository;

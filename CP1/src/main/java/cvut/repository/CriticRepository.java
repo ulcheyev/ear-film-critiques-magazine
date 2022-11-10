@@ -1,6 +1,7 @@
 package cvut.repository;
 import cvut.model.Critic;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface CriticRepository extends JpaRepository<Critic, Long> {
     List<Critic> findAllByCriticRatingAfter(double rating);
     List<Critic> findAllByCriticRatingBefore(double rating);
     List<Critic> findAllByCriticRatingBetween(double rating1, double rating2);
+    List<Critic> findByOrderByCriticRatingDesc();
+    List<Critic> findByOrderByCriticRatingAsc();
 }

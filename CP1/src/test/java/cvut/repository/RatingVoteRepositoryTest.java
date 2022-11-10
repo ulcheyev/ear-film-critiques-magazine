@@ -30,6 +30,5 @@ public class RatingVoteRepositoryTest {
         RatingVote founded = ratingVoteRepository.findById(ratingVote.getId()).get();
         Assertions.assertEquals(founded.getId(), ratingVote.getId());
         Assertions.assertEquals(founded.getStars(), ratingVote.getStars());
-
     }
 }

@@ -40,6 +40,11 @@ public class RatingService {
 
     @Transactional
     public void createAndUpdate(@NonNull AppUser appUser, @NonNull Critique critique, @NonNull double stars) {
+
+        if(stars < 0){
+            throw new IllegalArgumentException("Stars quantity must be greater than 0");
+        }
+
         RatingVote ratingVote = findVoteByVoteOwnerAndCritique(appUser, critique);
         if (ratingVote != null) {
             ratingVote = ratingVoteRepository.findByVoteOwner_IdAndCritique_Id(appUser.getId(), critique.getId());
@@ -50,6 +55,15 @@ public class RatingService {
         ratingVoteRepository.save(ratingVote);
         updateCritiqueAndCriticEntities(critique);
     }
+
+    @Transactional
+    public void deleteAndUpdate(@NonNull AppUser appUser, @NonNull Critique critique) {
+        RatingVote ratingVote = findVoteByVoteOwnerAndCritique(appUser, critique);
+        ratingVoteRepository.delete(ratingVote);
+        updateCritiqueAndCriticEntities(critique);
+    }
+
+
 
     private void updateCritiqueAndCriticEntities(@NonNull Critique critique){
         Critic critic = critique.getCritiqueOwner();
@@ -76,7 +90,6 @@ public class RatingService {
         RatingVote ratingVote = ratingVoteRepository.findByVoteOwner_IdAndCritique_Id(appUser.getId(), critique.getId());
         return ratingVote;
     }
-
 
 
     @Transactional

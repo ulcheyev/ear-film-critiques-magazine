@@ -24,8 +24,4 @@ public interface CritiqueRepository extends JpaRepository<Critique, Long> {
     List<Critique> findAllByAdmin_Id(Long id);
     List<Critique> findAllByCritiqueOwner_Id(Long id);
 
-
-//    /*TODO*/
-//    List<Critique>  findAllCritiqueRating(double rating);
-//    /*TODO*/
 }
