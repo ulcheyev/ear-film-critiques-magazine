@@ -21,6 +21,5 @@ public class CriticRepositoryTest {
         Critic critic = Generator.generateCritic();
         criticRepository.save(critic);
         Assertions.assertNotNull(criticRepository.findById(critic.getId()));
-
     }
 }

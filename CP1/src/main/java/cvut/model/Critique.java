@@ -23,7 +23,7 @@ public class Critique {
     @OneToMany(mappedBy = "critique")
     private List<RatingVote> critiqueRatingVote;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title",columnDefinition = "TEXT", nullable = false)
     private String title;
 
     @Column(name = "critique_text", nullable = false, columnDefinition = "TEXT")
@@ -40,11 +40,13 @@ public class Critique {
     @OneToMany(mappedBy = "critique")
     private List<Remarks> critiqueRemarks;
 
-    @ManyToOne
+    //TODO ubrat cascade type
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "admin", referencedColumnName = "id")
     private Admin  admin;
 
-    @ManyToOne
+    //TODO ubrat cascade type
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "critique_owner", referencedColumnName = "id", nullable = false)
     private Critic critiqueOwner;
 
@@ -54,7 +56,8 @@ public class Critique {
     @OneToMany(mappedBy = "critique")
     private List<Comment> comments;
 
-    @ManyToOne
+    //TODO ubrat cascade type
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "film", referencedColumnName = "id", nullable = false)
     private Film film;
 
@@ -123,6 +126,10 @@ public class Critique {
     public void setRemarksList(List<Remarks> remarksList) {
         this.remarksList = remarksList;
     }
+
+    public Film getFilm() {return film;}
+
+    public void setFilm(Film film) {this.film = film;}
 
     @Override
     public String toString() {

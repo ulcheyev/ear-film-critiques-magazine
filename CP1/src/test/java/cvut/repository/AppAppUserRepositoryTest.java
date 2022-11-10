@@ -11,46 +11,46 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
-public class AppUserRepositoryTest {
+public class AppAppUserRepositoryTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private AppUserRepository appUserRepository;
 
 
     @Test
     void addUser(){
         AppUser appUser = Generator.generateUser();
-        userRepository.save(appUser);
-        Assertions.assertNotNull(userRepository.findById(appUser.getId()));
+        appUserRepository.save(appUser);
+        Assertions.assertNotNull(appUserRepository.findById(appUser.getId()));
     }
 
     @Test
     void findByUsername(){
         AppUser appUser = Generator.generateUser();
-        userRepository.save(appUser);
-        AppUser foundedAppUser = userRepository.findUserByUsername(appUser.getUsername());
+        appUserRepository.save(appUser);
+        AppUser foundedAppUser = appUserRepository.findUserByUsername(appUser.getUsername());
         Assertions.assertEquals(appUser.getId(), foundedAppUser.getId());
     }
 
     @Test
     void findByLastname(){
         AppUser appUser = Generator.generateUser();
-        userRepository.save(appUser);
-        Assertions.assertNotNull(userRepository.findUsersByLastname(appUser.getLastname()));
+        appUserRepository.save(appUser);
+        Assertions.assertNotNull(appUserRepository.findUsersByLastname(appUser.getLastname()));
     }
 
     @Test
     void findByFirstname(){
         AppUser appUser = Generator.generateUser();
-        userRepository.save(appUser);
-        Assertions.assertNotNull(userRepository.findUsersByFirstname(appUser.getFirstname()));
+        appUserRepository.save(appUser);
+        Assertions.assertNotNull(appUserRepository.findUsersByFirstname(appUser.getFirstname()));
     }
 
     @Test
     void findByFirstnameAndLastname(){
         AppUser appUser = Generator.generateUser();
-        userRepository.save(appUser);
-        Assertions.assertNotNull(userRepository.findUsersByFirstnameAndLastname(appUser.getFirstname(), appUser.getLastname()));
+        appUserRepository.save(appUser);
+        Assertions.assertNotNull(appUserRepository.findUsersByFirstnameAndLastname(appUser.getFirstname(), appUser.getLastname()));
     }
 
 

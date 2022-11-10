@@ -13,6 +13,10 @@ public class Admin extends AppUser {
 
     public Admin() {}
 
+    public Admin(String firstname, String lastname, String username, String password) {
+        super(firstname, lastname, username, password);
+    }
+
     public List<Critique> getCritiqueList() {
         return critiqueList;
     }

@@ -2,9 +2,10 @@ package cvut.services;
 
 import cvut.Application;
 import cvut.config.utils.EarUtils;
-import cvut.config.utils.Generator;
+import cvut.model.AppUser;
 import cvut.model.Critic;
 import cvut.model.Critique;
+import cvut.repository.AppUserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,18 @@ public class RatingServiceTest {
     private RatingService ratingService;
 
     @Autowired
+    private AppUserRepository appUserRepository;
+
+    @Autowired
     private CritiqueService critiqueService;
 
     @Test
     public void addRatingToCritiqueAndCritic(){
-        double stars = 3;
-        Critique critique = critiqueService.findById(100L);
+        double stars = 4;
+        Critique critique = critiqueService.findById(15L);
         Critic critic = critique.getCritiqueOwner();
-        ratingService.createAndUpdate(critique, stars);
+        AppUser appUser = appUserRepository.findById(51L).get();
+        ratingService.createAndUpdate(appUser,critique, stars);
 
         double expectedForCritique = ratingService.findSumOfVotesByCritiqueId(critique.getId())
                 / ratingService.findQuantityOfVotesByCritiqueId(critique.getId());

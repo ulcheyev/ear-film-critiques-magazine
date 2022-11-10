@@ -26,7 +26,6 @@ public class CritiqueRepositoryTest {
 
         Critique founded = critiqueRepository.findById(critique.getId()).get();
         Assertions.assertEquals(critique.getAdmin().getId(), founded.getAdmin().getId());
-
     }
 
 

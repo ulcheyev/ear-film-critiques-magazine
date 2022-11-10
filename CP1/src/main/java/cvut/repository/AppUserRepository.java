@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<AppUser, Long>{
+public interface AppUserRepository extends JpaRepository<AppUser, Long>{
     AppUser findUserByUsername(String username);
     List<AppUser> findUsersByLastname(String lastname);
     List<AppUser> findUsersByFirstname(String firstname);

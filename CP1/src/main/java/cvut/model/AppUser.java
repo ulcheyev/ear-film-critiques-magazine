@@ -6,7 +6,7 @@ import static javax.persistence.GenerationType.*;
 
 @Entity
 @Table(name = "app_user")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class AppUser {
 
     @GeneratedValue(strategy = AUTO)

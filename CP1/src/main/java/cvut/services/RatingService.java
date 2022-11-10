@@ -1,6 +1,7 @@
 package cvut.services;
 
 import cvut.config.utils.EarUtils;
+import cvut.model.AppUser;
 import cvut.model.Critic;
 import cvut.model.Critique;
 import cvut.model.RatingVote;
@@ -38,11 +39,20 @@ public class RatingService {
      */
 
     @Transactional
-    public void createAndUpdate(@NonNull Critique critique, @NonNull double stars){
-
-        RatingVote ratingVote = new RatingVote(critique, stars, new Date());
-        Critic critic = critique.getCritiqueOwner();
+    public void createAndUpdate(@NonNull AppUser appUser, @NonNull Critique critique, @NonNull double stars) {
+        RatingVote ratingVote = findVoteByVoteOwnerAndCritique(appUser, critique);
+        if (ratingVote != null) {
+            ratingVote = ratingVoteRepository.findByVoteOwner_IdAndCritique_Id(appUser.getId(), critique.getId());
+            ratingVote.setStars(stars);
+        } else {
+            ratingVote = new RatingVote(critique, stars, new Date(), appUser);
+        }
         ratingVoteRepository.save(ratingVote);
+        updateCritiqueAndCriticEntities(critique);
+    }
+
+    private void updateCritiqueAndCriticEntities(@NonNull Critique critique){
+        Critic critic = critique.getCritiqueOwner();
 
         //Update critique
         int critiqueCount = ratingVoteRepository.findQuantityOfVotesByCritiqueId(critique.getId());
@@ -59,8 +69,15 @@ public class RatingService {
         double resultToCritic = EarUtils.floorNumber(1,critic_c);
         critic.setCriticRating(resultToCritic);
         criticRepository.save(critic);
-
     }
+
+    @Transactional
+    public RatingVote findVoteByVoteOwnerAndCritique(@NonNull AppUser appUser, @NonNull Critique critique){
+        RatingVote ratingVote = ratingVoteRepository.findByVoteOwner_IdAndCritique_Id(appUser.getId(), critique.getId());
+        return ratingVote;
+    }
+
+
 
     @Transactional
     public RatingVote findById(@NonNull Long id){

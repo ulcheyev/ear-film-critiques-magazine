@@ -21,6 +21,7 @@ public class Comment{
     private Date dateOfPublic;
 
     @ManyToOne
+    @JoinColumn(name = "comment_owner", referencedColumnName = "id", nullable = false)
     private AppUser appUser;
 
     @ManyToOne

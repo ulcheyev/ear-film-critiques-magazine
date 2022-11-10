@@ -22,7 +22,7 @@ public class RatingVoteRepositoryTest {
     private CritiqueRepository critiqueRepository;
 
     @Test
-    public void addRatingToCritique(){
+    public void addRatingToCritique() {
         Critique critique = critiqueRepository.findById(Generator.generateId()).get();
         RatingVote ratingVote = Generator.generateRating(critique);
         ratingVoteRepository.save(ratingVote);
@@ -30,5 +30,6 @@ public class RatingVoteRepositoryTest {
         RatingVote founded = ratingVoteRepository.findById(ratingVote.getId()).get();
         Assertions.assertEquals(founded.getId(), ratingVote.getId());
         Assertions.assertEquals(founded.getStars(), ratingVote.getStars());
+
     }
 }

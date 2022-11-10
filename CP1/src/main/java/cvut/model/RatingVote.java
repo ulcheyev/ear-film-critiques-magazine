@@ -14,6 +14,7 @@ public class RatingVote {
     @Id
     private Long id;
 
+    //TODO ubrat cascade type-postavit MERGE
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "critique", referencedColumnName = "id", nullable = false)
     private Critique critique;
@@ -21,6 +22,7 @@ public class RatingVote {
     @Column(name = "stars", nullable = false)
     private double stars;
 
+    //TODO ubrat cascade type
     @ManyToOne
     @JoinColumn(name = "vote_owner", referencedColumnName = "id", nullable = false)
     private AppUser voteOwner;
@@ -32,10 +34,11 @@ public class RatingVote {
 
     public RatingVote() {}
 
-    public RatingVote(Critique critique, double stars, Date date) {
+    public RatingVote(Critique critique, double stars, Date date, AppUser voteOwner) {
         this.critique = critique;
         this.stars = stars;
         this.date = date;
+        this.voteOwner = voteOwner;
     }
 
     public Critique getCritique() {

@@ -12,16 +12,18 @@ import java.util.List;
 public interface RatingVoteRepository extends JpaRepository<RatingVote, Long> {
 
     @Query("select min(r.stars) from RatingVote r")
-    double findTheLowestRating();
+    Double findTheLowestRating();
 
     @Query("select max(r.stars) from RatingVote r")
-    double findTheHighestRating();
+    Double findTheHighestRating();
 
     @Query("select count(r) from RatingVote r where r.critique.id = ?1")
-    int findQuantityOfVotesByCritiqueId(Long Id);
+    Integer findQuantityOfVotesByCritiqueId(Long id);
+
+    RatingVote findByVoteOwner_IdAndCritique_Id(Long id1, Long id2);
 
     @Query("select sum(r.stars) from RatingVote r where r.critique.id = ?1")
-    double findSumOfVotesByCritiqueId(Long Id);
+    Double findSumOfVotesByCritiqueId(Long Id);
 
     List<RatingVote> findByCritique_Id(Long id);
     List<RatingVote> findAllByDate(Date date);
