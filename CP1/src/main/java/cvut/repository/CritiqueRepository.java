@@ -16,12 +16,12 @@ public interface CritiqueRepository extends JpaRepository<Critique, Long> {
     @Query("select sum(c.rating) from Critique c where c.critiqueOwner.id = ?1")
     double findSumOfCritiquesRatingByCriticId(Long id);
 
+    //TODO select na critique state
+    List<Critique> findCritiquesByCritiqueOwner_Id(Long id);
+    List<Critique> findCritiquesByAdmin_Id(Long id);
+
     List<Critique> findAllByCritiqueState(CritiqueState critiqueState);
     List<Critique> findAllByDateOfAcceptance(Date dateOfAcceptance);
-    List<Critique> findAllByDateOfAcceptanceAfter(Date dateOfAcceptance);
-    List<Critique> findAllByDateOfAcceptanceBefore(Date dateOfAcceptance);
-    List<Critique> findAllByDateOfAcceptanceBetween(Date date1, Date date2);
-    List<Critique> findAllByAdmin_Id(Long id);
-    List<Critique> findAllByCritiqueOwner_Id(Long id);
+
 
 }

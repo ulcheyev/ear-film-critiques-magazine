@@ -9,9 +9,6 @@ import java.util.List;
 @Repository
 public interface CriticRepository extends JpaRepository<Critic, Long> {
     List<Critic> findAllByCriticRating(double rating);
-    List<Critic> findAllByCriticRatingAfter(double rating);
-    List<Critic> findAllByCriticRatingBefore(double rating);
-    List<Critic> findAllByCriticRatingBetween(double rating1, double rating2);
     List<Critic> findByOrderByCriticRatingDesc();
     List<Critic> findByOrderByCriticRatingAsc();
 }

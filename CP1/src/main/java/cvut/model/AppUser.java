@@ -4,6 +4,8 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
+//TODO email attribute
+
 @Entity
 @Table(name = "app_user")
 @Inheritance(strategy = InheritanceType.JOINED)

@@ -12,7 +12,5 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByAppUser_Id(Long id);
     List<Comment> findAllByDateOfPublic(Date date);
-    List<Comment> findAllByDateOfPublicAfter(Date date);
-    List<Comment> findAllByDateOfPublicBefore(Date date);
-    List<Comment> findAllByDateOfPublicBetween(Date date1, Date date2);
+    List<Comment> findAllByCritique_Id(Long id);
 }

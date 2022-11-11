@@ -31,10 +31,11 @@ public class Comment{
 
     public Comment() {}
 
-    public Comment(String text, Date dateOfPublic, Critic appUser) {
+    public Comment(String text, Date dateOfPublic, AppUser appUser, Critique critique) {
         this.text = text;
         this.dateOfPublic = dateOfPublic;
         this.appUser = appUser;
+        this.critique = critique;
     }
 
     public Long getId() {return id;}

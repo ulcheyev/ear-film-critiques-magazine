@@ -3,6 +3,7 @@ package cvut.repository;
 import cvut.model.RatingVote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -12,16 +13,18 @@ import java.util.List;
 public interface RatingVoteRepository extends JpaRepository<RatingVote, Long> {
 
     @Query("select min(r.stars) from RatingVote r")
-    Double findTheLowestRating();
+    double findTheLowestRating();
 
     @Query("select max(r.stars) from RatingVote r")
-    Double findTheHighestRating();
+    double findTheHighestRating();
 
     @Query("select count(r) from RatingVote r where r.critique.id = ?1")
     Integer findQuantityOfVotesByCritiqueId(Long id);
 
+    @Nullable
     RatingVote findByVoteOwner_IdAndCritique_Id(Long id1, Long id2);
 
+    @Nullable
     @Query("select sum(r.stars) from RatingVote r where r.critique.id = ?1")
     Double findSumOfVotesByCritiqueId(Long Id);
 
