@@ -83,6 +83,11 @@ public class Generator {
         return ratingVote;
     }
 
+    public static String generateString(){
+        String std = faker.name().firstName()+faker.book();
+        return std;
+    }
+
 
 
     //Generatory v2

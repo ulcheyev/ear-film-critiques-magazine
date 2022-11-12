@@ -42,6 +42,18 @@ public class AppUserService {
         return appUser;
     }
 
+    public AppUser findByUsername(@NonNull String username){
+        AppUser appUser = appUserRepository.findAppUserByUsername(username)
+                .orElseThrow(()->new NotFoundException("User with username "+username+" does not exist"));
+        return appUser;
+    }
+
+    public AppUser findByEmail(@NonNull String email){
+        AppUser appUser = appUserRepository.findAppUserByEmail(email)
+                .orElseThrow(()->new NotFoundException("User with email "+email+" does not exist"));
+        return appUser;
+    }
+
     public List<AppUser> getAll(){
        return appUserRepository.findAll();
     }
@@ -69,8 +81,8 @@ public class AppUserService {
         if(email != null && email.length()>0 && !appUser.getEmail().equals(email)){
             Optional<AppUser> appUserByEmail = appUserRepository
                     .findAppUserByEmail(email);
-            if(appUserByEmail.isPresent()){
-                throw new ValidationException("Email " + appUser.getEmail()+" has been taken");
+            if(appUserByEmail.isPresent()) {
+                throw new ValidationException("Email " + appUser.getEmail() + " has been taken");
             }
             appUser.setEmail(email);
         }

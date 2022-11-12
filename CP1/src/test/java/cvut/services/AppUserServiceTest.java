@@ -1,17 +1,17 @@
 package cvut.services;
 
 import cvut.Application;
+import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.AppUser;
-import cvut.repository.AppUserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ComponentScan(basePackageClasses = Application.class)
 public class AppUserServiceTest {
 
-    @Autowired
-    private AppUserRepository appUserRepository;
     @Autowired
     private AppUserService appUserService;
 
@@ -37,7 +35,7 @@ public class AppUserServiceTest {
 
         //check that a user with non-unique mail has not been added to the table
         assertThrows(NotFoundException.class, () -> {
-            appUserService.findById(appUser1.getId());
+            appUserService.findByUsername("blablahe");
         });
 
         //verify username
@@ -47,7 +45,7 @@ public class AppUserServiceTest {
 
         //check that a user with non-unique username has not been added to the table
         assertThrows(NotFoundException.class, () -> {
-            appUserService.findById(appUser2.getId());
+            appUserService.findByEmail("kostechka@gmail.com");
         });
 
     }
@@ -55,15 +53,15 @@ public class AppUserServiceTest {
     @Test
     public void deleteUserById(){
 
-        AppUser appUser1 = new AppUser("Kasha", "Molochnaya", "kashechka", "213132dsaddfx", "kashecka_mleko@gmail.com");
+        AppUser appUser1 = new AppUser("Kasha", "Molochnaya", "kashechka1", "213132dsaddfx", "kashecka_mleko1@gmail.com");
         AppUser appUser2 = new AppUser("Joji", "Jojik", "jjoji6", "qedkqmdkada", "jjjjoji543@gmail.com");
 
         appUserService.save(appUser1);
 
-        //nefungue, protoze id = null
-//        assertThrows(NotFoundException.class, () -> {
-//            appUserService.findById(appUser2.getId());
-//        });
+
+        assertThrows(NotFoundException.class, () -> {
+            appUserService.findByUsername(appUser2.getUsername());
+        });
 
         int count1 = appUserService.getAll().size();
 
@@ -75,35 +73,36 @@ public class AppUserServiceTest {
 
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
     public void updateEmailUser(){
-        AppUser appUser1 = new AppUser("Goga", "Gogov", "gggoga902", "wefkwffw4423", "goga902@gmail.com");
-        AppUser appUser2 = new AppUser("Giga", "Gigav", "gggoga1002", "wefdswqfw4423", "giga1002@gmail.com");
+
+        AppUser appUser = appUserService.findById(300L);
+        AppUser appUser1 = Generator.generateUser();
 
         appUserService.save(appUser1);
-        appUserService.save(appUser2);
 
         //verify username
         assertThrows(ValidationException.class, () -> {
-            appUserService.update(appUser1.getId(), "tina.runte", "goga902@gmail.com");
+            appUserService.update(appUser1.getId(), appUser.getUsername(), Generator.generateString());
         });
 
         //verify email
         assertThrows(ValidationException.class, () -> {
-            appUserService.update(appUser1.getId(), "gggoga902", "DomenicoJast@gmail.com");
+            appUserService.update(appUser1.getId(), Generator.generateString(), appUser.getEmail());
         });
 
         //verify update
-        appUserService.update(appUser2.getId(), "gogol1", "gogol24@gmail.com");
+        String username = Generator.generateString();
+        String mail = Generator.generateString()+"@gmail.com";
+        appUserService.update(appUser1.getId(), username, mail);
 
-        String checkNewUsername = "gogol1";
-        String checkNewEmail = "gogol24@gmail.com";
+        System.out.println("USER: "+appUser1.getUsername());
+        System.out.println("String: "+username);
 
-        Assertions.assertEquals(checkNewUsername, appUser2.getUsername());
-        Assertions.assertEquals(checkNewEmail, appUser2.getEmail());
+        Assertions.assertEquals(username, appUser1.getUsername());
+        Assertions.assertEquals(mail, appUser1.getEmail());
 
-        appUserService.deleteById(appUser1.getId());
-        appUserService.deleteById(appUser2.getId());
     }
 
 }
