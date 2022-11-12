@@ -1,5 +1,4 @@
 package cvut.services;
-
 import cvut.Application;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
@@ -10,6 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import cvut.exception.ValidationException;
+import cvut.model.AppUser;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
@@ -17,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
+
+
+
 public class AppUserServiceTest {
 
     @Autowired
@@ -37,7 +43,7 @@ public class AppUserServiceTest {
 
         //check that a user with non-unique mail has not been added to the table
         assertThrows(NotFoundException.class, () -> {
-            appUserService.findById(appUser1.getId());
+            appUserService.findByUsername("blablahe");
         });
 
         //verify username
@@ -47,7 +53,7 @@ public class AppUserServiceTest {
 
         //check that a user with non-unique username has not been added to the table
         assertThrows(NotFoundException.class, () -> {
-            appUserService.findById(appUser2.getId());
+            appUserService.findByEmail("kostechka@gmail.com");
         });
 
     }
@@ -55,15 +61,15 @@ public class AppUserServiceTest {
     @Test
     public void deleteUserById(){
 
-        AppUser appUser1 = new AppUser("Kasha", "Molochnaya", "kashechka", "213132dsaddfx", "kashecka_mleko@gmail.com");
+        AppUser appUser1 = new AppUser("Kasha", "Molochnaya", "kashechka1", "213132dsaddfx", "kashecka_mleko1@gmail.com");
         AppUser appUser2 = new AppUser("Joji", "Jojik", "jjoji6", "qedkqmdkada", "jjjjoji543@gmail.com");
 
         appUserService.save(appUser1);
 
-        //nefungue, protoze id = null
-//        assertThrows(NotFoundException.class, () -> {
-//            appUserService.findById(appUser2.getId());
-//        });
+
+        assertThrows(NotFoundException.class, () -> {
+            appUserService.findByUsername(appUser2.getUsername());
+        });
 
         int count1 = appUserService.getAll().size();
 

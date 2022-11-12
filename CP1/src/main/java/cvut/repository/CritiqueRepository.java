@@ -2,6 +2,7 @@ package cvut.repository;
 import cvut.model.Critic;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
+import cvut.model.Film;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,21 +13,33 @@ import java.util.Optional;
 @Repository
 public interface CritiqueRepository extends JpaRepository<Critique, Long> {
 
-    @Query("SELECT COUNT(c) FROM Critique c WHERE c.critiqueOwner.id = ?1")
+    @Query("SELECT COUNT(c) FROM Critique c WHERE c.critiqueOwner.id = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
     Optional<Integer> findQuantityOfCritiquesByCriticId(Long id);
 
-    @Query("SELECT SUM(c.rating) FROM Critique c WHERE c.critiqueOwner.id = ?1")
+    @Query("SELECT SUM(c.rating) FROM Critique c WHERE c.critiqueOwner.id = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
     Optional<Double> findSumOfCritiquesRatingByCriticId(Long id);
 
     Optional<List<Critique>> findCritiquesByCritiqueOwner_Id(Long id);
-
-    Optional<List<Critique>> findCritiqueByCritiqueState(CritiqueState critiqueState);
 
     Optional<List<Critique>> findCritiquesByAdmin_Id(Long id);
 
     Optional<List<Critique>> findAllByCritiqueState(CritiqueState critiqueState);
 
+    @Query("SELECT c FROM Critique c WHERE c.critiqueOwner.firstname LIKE %:firstname% AND c.critiqueOwner.lastname LIKE %:lastname% AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
+    Optional<List<Critique>> findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(String lastname, String firstname);
+
+    @Query("SELECT c FROM Critique c WHERE c.film.name LIKE %:name% AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
+    Optional<List<Critique>> findAllByFilm_NameLike(String name);
+
+    @Query("SELECT c FROM Critique c WHERE c.rating = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
+    Optional<List<Critique>> findAllByRating(double rating);
+
+    @Query("SELECT c FROM Critique c WHERE c.dateOfAcceptance = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
     Optional<List<Critique>> findAllByDateOfAcceptance(Date dateOfAcceptance);
 
+
+    Optional<List<Critique>> findByOrderByDateOfAcceptanceAsc();
+
+    Optional<List<Critique>> findByOrderByDateOfAcceptanceDesc();
 
 }

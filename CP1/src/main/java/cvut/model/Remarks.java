@@ -38,4 +38,10 @@ public class Remarks {
     @Temporal(TemporalType.TIMESTAMP)
     private Date remarksMakeDay;
 
+    public Remarks(Admin admin, String text, Critique critique, Date remarksMakeDay) {
+        this.admin = admin;
+        this.text = text;
+        this.critique = critique;
+        this.remarksMakeDay = remarksMakeDay;
+    }
 }

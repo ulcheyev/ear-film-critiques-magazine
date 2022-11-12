@@ -13,6 +13,12 @@ public interface CriticRepository extends JpaRepository<Critic, Long> {
 
     Optional<List<Critic>> findAllByCriticRating(double rating);
 
+    Optional<Critic> findByUsername(String username);
+
+    Optional<Critic> findByEmail(String email);
+
+    Optional<List<Critic>> findAllByLastnameAndFirstnameLike(String lastname, String firstname);
+
     Optional<List<Critic>> findByOrderByCriticRatingDesc();
 
     Optional<List<Critic>> findByOrderByCriticRatingAsc();

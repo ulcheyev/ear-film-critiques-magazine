@@ -1,5 +1,4 @@
 package cvut.services;
-
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.AppUser;
@@ -20,11 +19,16 @@ import java.util.List;
 
 import java.util.List;
 
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 //
 //@SpringBootTest
 //@ComponentScan(basePackageClasses = Application.class)
 //public class CommentServiceTest {
+
+@SpringBootTest
+@ComponentScan(basePackageClasses = Application.class)
+public class CommentServiceTest {
 
 //    @Autowired
 //    private CommentService commentService;
@@ -54,6 +58,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 //
 //    }
 
+//    @Autowired
+//    private CommentService commentService;
+//
+//    @Autowired
+//
 //    @Autowired
 //    private CommentService commentService;
 //
@@ -128,3 +137,5 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 //    }
 //
 //}
+
+}

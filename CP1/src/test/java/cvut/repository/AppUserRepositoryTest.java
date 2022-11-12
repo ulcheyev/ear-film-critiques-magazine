@@ -8,6 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+
+import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
@@ -21,36 +26,38 @@ public class AppUserRepositoryTest {
     void addUser(){
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
-        Assertions.assertNotNull(appUserRepository.findById(appUser.getId()));
+        Optional<AppUser> byId = appUserRepository.findById(appUser.getId());
+
+        //Assert
+        Assertions.assertTrue(byId.isPresent());
     }
 
     @Test
     void findByUsername(){
-        AppUser appUser = Generator.generateUser();
-        appUserRepository.save(appUser);
-        AppUser foundedAppUser = appUserRepository.findAppUserByUsername(appUser.getUsername()).get();
-        Assertions.assertEquals(appUser.getId(), foundedAppUser.getId());
+        String username = "joey.reynolds";
+        Optional<AppUser> appUserByUsername = appUserRepository.findAppUserByUsername(username);
+        //Assert
+        Assertions.assertTrue(appUserByUsername.isPresent());
+        Assertions.assertEquals(username, appUserByUsername.get().getUsername());
     }
 
-    @Test
-    void findByLastname(){
-        AppUser appUser = Generator.generateUser();
-        appUserRepository.save(appUser);
-        Assertions.assertNotNull(appUserRepository.findAppUsersByLastname(appUser.getLastname()));
-    }
 
     @Test
-    void findByFirstname(){
+    void findByFirstnameAndLastnameGeneratedUser(){
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
-        Assertions.assertNotNull(appUserRepository.findAppUsersByFirstname(appUser.getFirstname()));
-    }
+        Optional<List<AppUser>> appUsersByFirstnameAndLastname = appUserRepository
+                .findAppUsersByFirstnameAndLastname(appUser.getFirstname(), appUser.getLastname());
 
-    @Test
-    void findByFirstnameAndLastname(){
-        AppUser appUser = Generator.generateUser();
-        appUserRepository.save(appUser);
-        Assertions.assertNotNull(appUserRepository.findAppUsersByFirstnameAndLastname(appUser.getFirstname(), appUser.getLastname()));
+        //Assert
+        Assertions.assertTrue(appUsersByFirstnameAndLastname.isPresent());
+
+        //Assert
+        assertThat(appUsersByFirstnameAndLastname.get())
+                .extracting(AppUser::getFirstname, AppUser::getLastname)
+                .containsExactlyInAnyOrder(
+                        tuple(appUser.getFirstname(), appUser.getLastname())
+                );
     }
 
 

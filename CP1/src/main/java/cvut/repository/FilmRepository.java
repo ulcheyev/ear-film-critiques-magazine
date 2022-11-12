@@ -11,12 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface FilmRepository extends JpaRepository<Film, Long> {
-
     Optional<List<Film>> findAllByDateOfRelease(Date date);
 
-    Optional<List<Film>> findAllByDateOfReleaseAfter(Date date);
-
-    Optional<List<Film>> findAllByDateOfReleaseBefore(Date date);
-
-    Optional<List<Film>> findAllByDateOfReleaseBetween(Date date1, Date date2);
 }

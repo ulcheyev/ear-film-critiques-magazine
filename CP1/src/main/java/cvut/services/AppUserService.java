@@ -7,7 +7,10 @@ import cvut.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +36,23 @@ public class AppUserService {
             throw new ValidationException("Email " + appUser.getEmail()+" has been taken");
         }
         appUserRepository.save(appUser);
-
     }
 
     public AppUser findById(@NonNull Long appUserId){
         AppUser appUser = appUserRepository.findById(appUserId)
                 .orElseThrow(()->new NotFoundException("User with id "+appUserId+" does not exist"));
+        return appUser;
+    }
+
+    public AppUser findByUsername(@NonNull String username){
+        AppUser appUser = appUserRepository.findAppUserByUsername(username)
+                .orElseThrow(()->new NotFoundException("User with username "+username+" does not exist"));
+        return appUser;
+    }
+
+    public AppUser findByEmail(@NonNull String email){
+        AppUser appUser = appUserRepository.findAppUserByEmail(email)
+                .orElseThrow(()->new NotFoundException("User with email "+email+" does not exist"));
         return appUser;
     }
 
@@ -62,7 +76,7 @@ public class AppUserService {
             Optional<AppUser> appUserByUsername = appUserRepository
                     .findAppUserByUsername(username);
             if(appUserByUsername.isPresent()){
-                throw new ValidationException("Username " + appUser.getUsername()+" has been taken");
+                throw new ValidationException("Username " + username +" has been taken");
             }
             appUser.setUsername(username);
         }
@@ -70,7 +84,7 @@ public class AppUserService {
             Optional<AppUser> appUserByEmail = appUserRepository
                     .findAppUserByEmail(email);
             if(appUserByEmail.isPresent()){
-                throw new ValidationException("Email " + appUser.getEmail()+" has been taken");
+                throw new ValidationException("Email " + email +" has been taken");
             }
             appUser.setEmail(email);
         }

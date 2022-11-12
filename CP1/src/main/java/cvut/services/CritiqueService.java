@@ -1,45 +1,189 @@
 package cvut.services;
 
+import cvut.exception.NotFoundException;
+import cvut.exception.ValidationException;
+import cvut.model.Critique;
+import cvut.model.CritiqueState;
+import cvut.model.Film;
+import cvut.repository.AdminRepository;
+import cvut.repository.CriticRepository;
+import cvut.repository.CritiqueRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CritiqueService {
 
-//    private final CritiqueRepository critiqueRepository;
-//    private final AdminRepository adminRepository;
-//    private final CriticRepository criticRepository;
-//
-//    @Autowired
-//    public CritiqueService(CritiqueRepository critiqueRepository, AdminRepository adminRepository, CriticRepository criticRepository) {
-//        this.critiqueRepository = critiqueRepository;
-//        this.adminRepository = adminRepository;
-//        this.criticRepository = criticRepository;
-//    }
-//
-//
-//    @Transactional
-//    public void updateCritiqueState(@NonNull Long critiqueId, @NonNull CritiqueState critiqueState){
-//        Critique critique = critiqueRepository.findById(critiqueId).get();
-//        if(!critique.getId().equals(critiqueId)){
-//            throw new NotFoundException("Critique with specified id "+critiqueId+"does not exist");
-//        }
-//        critique.setCritiqueState(critiqueState);
-//        critiqueRepository.save(critique);
-//    }
-//
-//    @Transactional
-//    public Critique findById(Long id){return critiqueRepository.findById(id).get();}
-//
-//    @Transactional
-//    public List<Critique> findByCritiqueOwnerId(Long id){
-//        return critiqueRepository.findCritiquesByCritiqueOwner_Id(id);
-//    }
-//
-//    @Transactional
-//    public int findQuantityOfCritiquesByCriticId(Long id){return critiqueRepository.findQuantityOfCritiquesByCriticId(id);}
-//
-//    @Transactional
-//    public double findSumOfCritiquesByCriticId(Long id){return critiqueRepository.findSumOfCritiquesRatingByCriticId(id);}
+    private final CritiqueRepository critiqueRepository;
+    private static final int TEXT_LENGTH_MAX = 3000;
+    private static final int TEXT_LENGTH_MIN = 300;
+    private static final int TITLE_LENGTH_MAX = 150;
+    private static final int TITLE_LENGTH_MIN = 15;
+
+    @Autowired
+    public CritiqueService(CritiqueRepository critiqueRepository, AdminRepository adminRepository, CriticRepository criticRepository) {
+        this.critiqueRepository = critiqueRepository;
+    }
+
+    public Critique findById(Long id) {
+        Optional<Critique> byId = critiqueRepository.findById(id);
+        if (byId.isEmpty()) {
+            throw new ValidationException("Critique with id " + id + "does not exist");
+        }
+        return byId.get();
+    }
+
+    public List<Critique> getAll() {
+        List<Critique> all = critiqueRepository.findAll();
+        return all;
+    }
+
+    public List<Critique> findByFilm(String filmName) {
+        Optional<List<Critique>> allByFilm_nameLike = critiqueRepository.findAllByFilm_NameLike(filmName);
+        if(allByFilm_nameLike.isEmpty()){
+            throw new NotFoundException("At the request \" "+filmName+" \" there was no critiques");
+        }
+        return allByFilm_nameLike.get();
+    }
+
+    public List<Critique> findByRating(double rating) {
+        List<Critique> allByRating = critiqueRepository
+                .findAllByRating(rating).orElseThrow(() ->  new NotFoundException(
+                        "Critiques not found with rating " + rating
+        ));
+        return allByRating;
+    }
+
+    public List<Critique> findAllByCritiqueState(CritiqueState critiqueState){
+        return critiqueRepository.findAllByCritiqueState(critiqueState).orElseThrow(
+                () -> new NotFoundException("Critiques not found")
+        );
+    }
 
 
+    public List<Critique> findByCritiqueOwnerId(Long id) {
+        Optional<List<Critique>> critiquesByCritiqueOwner_id = critiqueRepository.findCritiquesByCritiqueOwner_Id(id);
+        if (critiquesByCritiqueOwner_id.isEmpty()) {
+            throw new ValidationException("Critique with critique owner id " + id + " does not exist");
+        }
+        return critiquesByCritiqueOwner_id.get();
+    }
+
+    public int findQuantityOfCritiquesByCriticId(Long id) {
+        Optional<Integer> quantityOfCritiquesByCriticId = critiqueRepository.findQuantityOfCritiquesByCriticId(id);
+        if (quantityOfCritiquesByCriticId.isEmpty()) {
+            return 0;
+        }
+        return quantityOfCritiquesByCriticId.get();
+    }
+
+    public double findSumOfCritiquesByCriticId(Long id) {
+        Optional<Double> sumOfCritiquesRatingByCriticId = critiqueRepository.findSumOfCritiquesRatingByCriticId(id);
+        if (sumOfCritiquesRatingByCriticId.isEmpty()) {
+            return 0;
+        }
+        return sumOfCritiquesRatingByCriticId.get();
+    }
+
+    public List<Critique> findByCriticsLastnameAndFirstname(String firstname, String lastname){
+        return critiqueRepository.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(lastname, firstname)
+                .orElseThrow(
+                        ()-> new NotFoundException("Critiques with specified critic not found ")
+                );
+    }
+
+    public List<Critique> findByDateOfAcceptance(Date date){
+        return critiqueRepository.findAllByDateOfAcceptance(date)
+                .orElseThrow(
+                        ()-> new NotFoundException("Critiques with specified date not found ")
+                );
+    }
+
+    public List<Critique> getAllOrderByDateDesc(){
+        return critiqueRepository.findByOrderByDateOfAcceptanceDesc()
+                .orElseThrow(
+                        ()-> new NotFoundException("Critiques not found ")
+                );
+    }
+
+    public List<Critique> getAllOrderByDateAsc(){
+        return critiqueRepository.findByOrderByDateOfAcceptanceAsc()
+                .orElseThrow(
+                        ()-> new NotFoundException("Critiques not found ")
+                );
+    }
+
+    @Transactional
+    public void updateCritiqueState(@NonNull Long critiqueId, @NonNull CritiqueState critiqueState) {
+        Critique crtq = critiqueRepository.findById(critiqueId)
+                .orElseThrow(() -> new NotFoundException("Critique with specified id " + critiqueId + " does not exist"));
+
+        crtq.setCritiqueState(critiqueState);
+    }
+
+    @Transactional
+    public void updateCritique(@NonNull Long critiqueId, String title, String text) {
+        Critique critique = critiqueRepository.findById(critiqueId).orElseThrow(
+                () -> new NotFoundException("Critique with id " + critiqueId + " does not found")
+        );
+        if (text != null && !critique.getText().equals(text)
+                && title.length() > TEXT_LENGTH_MIN
+                && title.length() < TEXT_LENGTH_MAX)
+        {
+            critique.setText(text);
+        }
+        if(title != null && !critique.getTitle().equals(text)
+            && title.length() > TITLE_LENGTH_MIN
+            && title.length() < TITLE_LENGTH_MAX)
+        {
+            critique.setTitle(title);
+        }
+    }
+
+    public void correctCritiqueAfterCreateRemarks(@NonNull Long critiqueId, String title, String text) {
+        Critique critique = critiqueRepository.findById(critiqueId).orElseThrow(
+                ()-> new NotFoundException("Critique with id "+critiqueId+" does not found")
+        );
+        if(critique.getCritiqueState() != CritiqueState.SENT_FOR_CORRECTIONS){
+            throw new ValidationException("Critique does not have status" + CritiqueState.SENT_FOR_CORRECTIONS.name());
+        }
+        if(text != null && !critique.getText().equals(text)){
+            critique.setText(text);
+        }
+        if(title != null && !critique.getTitle().equals(text)){
+            critique.setTitle(title);
+        }
+        save(critique);
+        critique.setCritiqueState(CritiqueState.CORRECTED);
+    }
+
+    public void save(Critique critique){
+
+
+        if(critique.getText().length() > TEXT_LENGTH_MAX || critique.getText().length() < TEXT_LENGTH_MIN){
+            throw new ValidationException("Text length must be less than 3000 symbols and greater than 300 symbols");
+        }
+
+        if(critique.getTitle().length() > TITLE_LENGTH_MAX || critique.getTitle().length() < TITLE_LENGTH_MIN){
+            throw new ValidationException("Title length must be less than 150 symbols and greater than 15 symbols");
+        }
+
+        critiqueRepository.save(critique);
+    }
+
+    public void deleteById(Long id){
+        if(!critiqueRepository.existsById(id)){
+            throw new NotFoundException("Can not delete critique with id "+id+" . Critique does not exist.");
+        }
+        critiqueRepository.deleteById(id);
+
+    }
 }
+
+

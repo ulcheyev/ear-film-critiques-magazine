@@ -26,7 +26,7 @@ public class Critique {
     @Enumerated(EnumType.STRING)
     private CritiqueState critiqueState = CritiqueState.IN_PROCESSED;
 
-    @OneToMany(mappedBy = "critique")
+    @OneToMany(mappedBy = "critique", fetch = FetchType.EAGER)
     private List<RatingVote> critiqueRatingVote;
 
     @Column(name = "title",columnDefinition = "TEXT", nullable = false)

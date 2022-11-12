@@ -84,14 +84,13 @@ public class Generator {
     }
 
 
-
     //Generatory v2
     public static RatingVote generateRating(Critique critique, AppUser appUser){
         RatingVote ratingVote = new RatingVote();
         ratingVote.setStars(random.nextInt(5));
         ratingVote.setCritique(critique);
         ratingVote.setDate(generateDate());
-        ratingVote.setVoteOwner(generateUser());
+        ratingVote.setVoteOwner(appUser);
         return ratingVote;
     }
 
