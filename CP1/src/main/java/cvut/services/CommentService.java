@@ -29,14 +29,13 @@ public class CommentService {
     }
 
 
-    public List<Comment> findCritiquesByAppUser_Id(@NonNull Long id){
-        if(appUserRepository.findById(id).isPresent()){
+    public List<Comment> findCommentsByAppUser_Id(@NonNull Long id){
+        if(!appUserRepository.findById(id).isPresent()){
             throw new NotFoundException("User with specified id: "+id+"does not found");
         }
         List<Comment> comments = commentRepository.findAllByAppUser_Id(id);
         return commentRepository.findAllByAppUser_Id(id);
     }
-
 
     public void createComment(@NonNull String text, @NonNull Long appUserId, @NonNull Long critiqueId){
 
@@ -58,7 +57,7 @@ public class CommentService {
 
     }
 
-    public void deleteComemnt(@NonNull Long commentId){
+    public void deleteComment(@NonNull Long commentId){
         Comment comment = commentRepository.findById(commentId).get();
         if(!comment.getId().equals(commentId)){
             throw new NotFoundException("Comment with specified id: "+commentId+"does not found");
@@ -70,7 +69,7 @@ public class CommentService {
     private void checkReps(@NonNull String text, @NonNull Long appUserId, @NonNull Long critiqueId) {
         AppUser appUser = appUserRepository.findById(appUserId).get();
         Critique critique = critiqueRepository.findById(critiqueId).get();
-        if(critique.getId().equals(critiqueId)){
+        if(!critique.getId().equals(critiqueId)){
             throw new NotFoundException("Critique with specified id: "+critiqueId+"does not found");
         }
         if(text.length() > 180){

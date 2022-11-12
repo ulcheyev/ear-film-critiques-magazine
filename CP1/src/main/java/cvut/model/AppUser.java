@@ -4,8 +4,6 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
-//TODO email attribute
-
 @Entity
 @Table(name = "app_user")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -74,17 +72,17 @@ public class AppUser {
         this.password = password;
     }
 
-    public List<Comment> getCommentList() {
-        return commentList;
-    }
-
     public void setCommentList(List<Comment> commentList) {
         this.commentList = commentList;
     }
 
-    public Long getId() {return id;}
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
 
     public void setId(Long id) {this.id = id;}
+
+    public Long getId() {return id;}
 
     public List<RatingVote> getRatingVotes() {return ratingVotes;}
 
