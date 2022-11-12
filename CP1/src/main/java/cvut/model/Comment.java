@@ -45,4 +45,59 @@ public class Comment{
         this.critique = critique;
     }
 
+<<<<<<< HEAD
+=======
+//    public Comment(String text, Date date, AppUser appUser, Critique critique) {
+//    }
+
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Date getDateOfPublic() {
+        return dateOfPublic;
+    }
+
+    public void setDateOfPublic(Date dateOfPublic) {
+        this.dateOfPublic = dateOfPublic;
+    }
+
+    public AppUser getCommentOwner() {
+        return appUser;
+    }
+
+    public void setCommentOwner(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
+    public AppUser getAppUser() {return appUser;}
+
+    public void setAppUser(AppUser appUser) {this.appUser = appUser;}
+
+
+
+    public Critique getCritique() {
+        return critique;
+    }
+
+    public void setCritique(Critique critique) {
+        this.critique = critique;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "text='" + text + '\'' +
+                ", dateOfPublic=" + dateOfPublic +
+                ", user=" + appUser +
+                '}';
+    }
+>>>>>>> b0e68c113e4f697a54566bd28f9d27ee7e2b6d33
 }
