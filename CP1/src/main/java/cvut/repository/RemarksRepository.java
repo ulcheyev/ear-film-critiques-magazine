@@ -14,5 +14,4 @@ public interface RemarksRepository extends JpaRepository<Remarks, Long> {
 
     Optional<List<Remarks>> findAllByRemarksMakeDay(Date date);
 
-
 }

@@ -60,7 +60,7 @@ public class AppUserService {
 
         if(username != null && username.length()>0 && !appUser.getUsername().equals(username)){
             Optional<AppUser> appUserByUsername = appUserRepository
-                    .findAppUserByUsername(appUser.getUsername());
+                    .findAppUserByUsername(username);
             if(appUserByUsername.isPresent()){
                 throw new ValidationException("Username " + appUser.getUsername()+" has been taken");
             }
@@ -68,7 +68,7 @@ public class AppUserService {
         }
         if(email != null && email.length()>0 && !appUser.getEmail().equals(email)){
             Optional<AppUser> appUserByEmail = appUserRepository
-                    .findAppUserByEmail(appUser.getEmail());
+                    .findAppUserByEmail(email);
             if(appUserByEmail.isPresent()){
                 throw new ValidationException("Email " + appUser.getEmail()+" has been taken");
             }

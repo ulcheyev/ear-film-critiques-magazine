@@ -45,8 +45,6 @@ public class Comment{
         this.critique = critique;
     }
 
-<<<<<<< HEAD
-=======
 //    public Comment(String text, Date date, AppUser appUser, Critique critique) {
 //    }
 
@@ -99,5 +97,4 @@ public class Comment{
                 ", user=" + appUser +
                 '}';
     }
->>>>>>> b0e68c113e4f697a54566bd28f9d27ee7e2b6d33
 }

@@ -52,9 +52,6 @@ public class AppUser {
         this.password = password;
         this.email = email;
     }
-
-<<<<<<< HEAD
-=======
     public String getFirstname() {
         return firstname;
     }
@@ -113,5 +110,4 @@ public class AppUser {
                 ", commentList=" + commentList +
                 '}';
     }
->>>>>>> b0e68c113e4f697a54566bd28f9d27ee7e2b6d33
 }
