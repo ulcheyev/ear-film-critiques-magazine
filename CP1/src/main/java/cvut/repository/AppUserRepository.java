@@ -4,11 +4,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long>{
-    AppUser findUserByUsername(String username);
-    List<AppUser> findUsersByLastname(String lastname);
-    List<AppUser> findUsersByFirstname(String firstname);
-    List<AppUser> findUsersByFirstnameAndLastname(String firstname, String lastname);
+
+    Optional<AppUser> findAppUserByUsername(String username);
+
+    Optional<AppUser> findAppUserByEmail(String email);
+
+    Optional<List<AppUser>> findAppUsersByLastname(String lastname);
+
+    Optional<List<AppUser>> findAppUsersByFirstname(String firstname);
+
+    Optional<List<AppUser>> findAppUsersByFirstnameAndLastname(String firstname, String lastname);
 }

@@ -28,7 +28,7 @@ public class AppUserRepositoryTest {
     void findByUsername(){
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
-        AppUser foundedAppUser = appUserRepository.findUserByUsername(appUser.getUsername());
+        AppUser foundedAppUser = appUserRepository.findAppUserByUsername(appUser.getUsername()).get();
         Assertions.assertEquals(appUser.getId(), foundedAppUser.getId());
     }
 
@@ -36,21 +36,21 @@ public class AppUserRepositoryTest {
     void findByLastname(){
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
-        Assertions.assertNotNull(appUserRepository.findUsersByLastname(appUser.getLastname()));
+        Assertions.assertNotNull(appUserRepository.findAppUsersByLastname(appUser.getLastname()));
     }
 
     @Test
     void findByFirstname(){
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
-        Assertions.assertNotNull(appUserRepository.findUsersByFirstname(appUser.getFirstname()));
+        Assertions.assertNotNull(appUserRepository.findAppUsersByFirstname(appUser.getFirstname()));
     }
 
     @Test
     void findByFirstnameAndLastname(){
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
-        Assertions.assertNotNull(appUserRepository.findUsersByFirstnameAndLastname(appUser.getFirstname(), appUser.getLastname()));
+        Assertions.assertNotNull(appUserRepository.findAppUsersByFirstnameAndLastname(appUser.getFirstname(), appUser.getLastname()));
     }
 
 

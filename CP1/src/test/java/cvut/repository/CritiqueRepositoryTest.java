@@ -19,36 +19,19 @@ public class CritiqueRepositoryTest {
     @Autowired
     private CritiqueRepository critiqueRepository;
 
-    @Test
-    public void addCritique(){
-        Critique critique = Generator.generateCritique();
-        critiqueRepository.save(critique);
-
-        Critique founded = critiqueRepository.findById(critique.getId()).get();
-        Assertions.assertEquals(critique.getAdmin().getId(), founded.getAdmin().getId());
-    }
-
 
     @Test
-    public void findByState(){
-        List<Critique> founded = critiqueRepository.findAllByCritiqueState(CritiqueState.IN_PROCESSED).stream().toList();
+    public void findQuantityOfCritiquesByCriticIdTest() {
 
-        for(Critique critique: founded){
-            Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.IN_PROCESSED);
-        }
     }
 
     @Test
-    public void findByDate(){
-        Critique critique = Generator.generateCritique();
-        critiqueRepository.save(critique);
+    public void findSumOfCritiquesRatingByCriticIdTest() {
 
-        Date date = critique.getDateOfAcceptance();
-        List<Critique> founded = critiqueRepository.findAllByDateOfAcceptance(date).stream().toList();
-        for(Critique crit: founded){
-            Assertions.assertEquals(date.compareTo(crit.getDateOfAcceptance()), 0);
-        }
     }
+
+
+
 
 
 

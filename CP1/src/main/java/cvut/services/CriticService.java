@@ -1,6 +1,6 @@
 package cvut.services;
 
-import cvut.config.exception.ValidationException;
+import cvut.exception.ValidationException;
 import cvut.model.Critic;
 import org.springframework.beans.factory.annotation.Autowired;
 

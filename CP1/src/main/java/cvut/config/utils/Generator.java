@@ -26,7 +26,8 @@ public class Generator {
         String lastname = faker.name().lastName();
         String password = faker.phoneNumber().phoneNumber();
         String username = faker.name().username();
-        return new AppUser(firstname,lastname,username,password);
+        String email = firstname + lastname +"@gmail.com";
+        return new AppUser(firstname,lastname,username,password, email);
     }
 
     public static Critic generateCritic(){
@@ -34,7 +35,8 @@ public class Generator {
         String lastname = faker.name().lastName();
         String password = faker.phoneNumber().phoneNumber();
         String username = faker.name().username();
-        return new Critic(firstname,lastname,username,password);
+        String email = firstname + lastname +"@gmail.com";
+        return new Critic(firstname,lastname,username,password, email);
     }
 
     public static Admin generateAdmin(){
@@ -42,7 +44,8 @@ public class Generator {
         String lastname = faker.name().lastName();
         String password = faker.phoneNumber().phoneNumber();
         String username = faker.name().username();
-        return new Admin(firstname,lastname,username,password);
+        String email = firstname + lastname +"@gmail.com";
+        return new Admin(firstname,lastname,username,password, email);
     }
 
     public static Film generateFilm(){

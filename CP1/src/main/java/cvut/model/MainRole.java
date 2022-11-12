@@ -1,5 +1,10 @@
 package cvut.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -7,6 +12,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "main_role")
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 public class MainRole{
 
     @GeneratedValue(strategy = IDENTITY)
@@ -25,35 +34,4 @@ public class MainRole{
     @ManyToMany(mappedBy = "mainRoleList")
     private List<Film> filmList;
 
-    public MainRole() {}
-
-    public FilmRole getFilmRole() {
-        return filmRole;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public List<Film> getFilmList() {
-        return filmList;
-    }
-
-    public Long getId() {return id;}
-
-    public void setId(Long id) {this.id = id;}
-
-    @Override
-    public String toString() {
-        return "MainRole{" +
-                "filmRole=" + filmRole +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", filmList=" + filmList +
-                '}';
-    }
 }

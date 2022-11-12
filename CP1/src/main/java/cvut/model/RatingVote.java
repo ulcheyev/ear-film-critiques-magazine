@@ -1,5 +1,10 @@
 package cvut.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 
 import java.util.Date;
@@ -8,6 +13,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "rating")
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 public class RatingVote {
 
     @GeneratedValue(strategy = IDENTITY)
@@ -32,8 +41,6 @@ public class RatingVote {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    public RatingVote() {}
-
     public RatingVote(Critique critique, double stars, Date date, AppUser voteOwner) {
         this.critique = critique;
         this.stars = stars;
@@ -41,44 +48,4 @@ public class RatingVote {
         this.voteOwner = voteOwner;
     }
 
-    public Critique getCritique() {
-        return critique;
-    }
-
-    public void setCritique(Critique critique) {
-        this.critique = critique;
-    }
-
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
-
-    public double getStars() {
-        return stars;
-    }
-
-    public void setStars(double stars) {
-        this.stars = stars;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public AppUser getVoteOwner() {return voteOwner;}
-
-    public void setVoteOwner(AppUser voteOwner) {this.voteOwner = voteOwner;}
-
-    @Override
-    public String toString() {
-        return "Rating{" +
-                "id=" + id +
-                ", critique=" + critique +
-                ", stars=" + stars +
-                ", date=" + date +
-                '}';
-    }
 }

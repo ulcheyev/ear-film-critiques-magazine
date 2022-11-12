@@ -1,34 +1,28 @@
 package cvut.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.List;
 
 
 @Entity
 @Table(name = "admin")
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 public class Admin extends AppUser {
 
     @OneToMany(mappedBy = "admin")
+    @ToString.Exclude
     private List<Critique> critiqueList;
 
-    public Admin() {}
-
-    public Admin(String firstname, String lastname, String username, String password) {
-        super(firstname, lastname, username, password);
+    public Admin(String firstname, String lastname, String username, String password, String email) {
+        super(firstname, lastname, username, password, email);
     }
 
-    public List<Critique> getCritiqueList() {
-        return critiqueList;
-    }
-
-    public void setCritiqueList(List<Critique> critiqueList) {
-        this.critiqueList = critiqueList;
-    }
-
-    @Override
-    public String toString() {
-        return "Admin{" +
-                "critiqueList=" + critiqueList +
-                '}';
-    }
 }

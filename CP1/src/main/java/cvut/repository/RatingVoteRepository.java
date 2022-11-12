@@ -1,5 +1,6 @@
 package cvut.repository;
 
+import cvut.model.Film;
 import cvut.model.RatingVote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,29 +9,27 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RatingVoteRepository extends JpaRepository<RatingVote, Long> {
 
-    @Query("select min(r.stars) from RatingVote r")
-    double findTheLowestRating();
+    @Query("SELECT MIN(r.stars) FROM RatingVote r")
+    Optional<Double> findTheLowestRating();
 
-    @Query("select max(r.stars) from RatingVote r")
-    double findTheHighestRating();
+    @Query("SELECT MAX(r.stars) FROM RatingVote r")
+    Optional<Double> findTheHighestRating();
 
-    @Query("select count(r) from RatingVote r where r.critique.id = ?1")
-    Integer findQuantityOfVotesByCritiqueId(Long id);
+    @Query("SELECT COUNT(r) FROM RatingVote r WHERE r.critique.id = ?1")
+    Optional<Integer> findQuantityOfVotesByCritiqueId(Long id);
 
-    @Nullable
-    RatingVote findByVoteOwner_IdAndCritique_Id(Long id1, Long id2);
+    Optional<RatingVote> findByVoteOwner_IdAndCritique_Id(Long id1, Long id2);
 
-    @Nullable
-    @Query("select sum(r.stars) from RatingVote r where r.critique.id = ?1")
-    Double findSumOfVotesByCritiqueId(Long Id);
+    @Query("SELECT SUM(r.stars) FROM RatingVote r WHERE r.critique.id = ?1")
+    Optional<Double> findSumOfVotesByCritiqueId(Long Id);
 
-    List<RatingVote> findByCritique_Id(Long id);
-    List<RatingVote> findAllByDate(Date date);
-    List<RatingVote> findAllByDateAfter(Date date);
-    List<RatingVote> findAllByDateBefore(Date date);
-    List<RatingVote> findAllByDateBetween(Date date1, Date date2);
+    Optional<List<RatingVote>> findByCritique_Id(Long id);
+
+    Optional<List<RatingVote>> findAllByDate(Date date);
+
 }

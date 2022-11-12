@@ -1,9 +1,16 @@
 package cvut.model;
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "critic")
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+@AllArgsConstructor
 public class Critic extends AppUser {
 
     @Column(name = "critic_rating", nullable = false)
@@ -12,33 +19,8 @@ public class Critic extends AppUser {
     @OneToMany(mappedBy = "critiqueOwner")
     private List<Critique> critiqueList;
 
-    public Critic() {}
-
-    public Critic(String firstname, String lastname, String username, String password) {
-        super(firstname, lastname, username, password);
+    public Critic(String firstname, String lastname, String username, String password, String email) {
+        super(firstname, lastname, username, password, email);
     }
 
-    public double getCriticRating() {
-        return criticRating;
-    }
-
-    public void setCriticRating(double criticRating) {
-        this.criticRating = criticRating;
-    }
-
-    public List<Critique> getCritiqueList() {
-        return critiqueList;
-    }
-
-    public void setCritiqueList(List<Critique> critiqueList) {
-        this.critiqueList = critiqueList;
-    }
-
-    @Override
-    public String toString() {
-        return "Critic{" +
-                "criticRating=" + criticRating +
-                ", critiqueList=" + critiqueList +
-                '}';
-    }
 }

@@ -5,12 +5,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RemarksRepository extends JpaRepository<Remarks, Long> {
-    List<Remarks>  findAllByAdmin_Id(Long id);
-    List<Remarks> findAllByRemarksMakeDay(Date date);
-    List<Remarks> findAllByRemarksMakeDayAfter(Date date);
-    List<Remarks> findAllByRemarksMakeDayBefore(Date date);
-    List<Remarks> findAllByRemarksMakeDayBetween(Date date1, Date date2);
+
+    Optional<List<Remarks>> findAllByAdmin_Id(Long id);
+
+    Optional<List<Remarks>> findAllByRemarksMakeDay(Date date);
+
+
 }

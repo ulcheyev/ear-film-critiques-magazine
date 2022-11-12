@@ -1,5 +1,10 @@
 package cvut.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +13,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "film")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Film {
 
     @GeneratedValue(strategy = IDENTITY)
@@ -38,50 +46,5 @@ public class Film {
     @Column(name="film_description", columnDefinition = "TEXT", nullable = false)
     private String description;
 
-    public Film() {}
 
-    public List<MainRole> getMainRoleList() {
-        return mainRoleList;
-    }
-
-    public void setMainRoleList(List<MainRole> mainRoleList) {
-        this.mainRoleList = mainRoleList;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getDateOfRelease() {
-        return dateOfRelease;
-    }
-
-    public void setDateOfRelease(Date dateOfRelease) {
-        this.dateOfRelease = dateOfRelease;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
-
-    @Override
-    public String toString() {
-        return "Film{" +
-                "mainRoleList=" + mainRoleList +
-                ", name='" + name + '\'' +
-                ", dateOfRelease=" + dateOfRelease +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }

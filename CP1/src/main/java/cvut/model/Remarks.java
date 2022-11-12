@@ -1,5 +1,10 @@
 package cvut.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -7,14 +12,15 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "remarks")
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 public class Remarks {
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
-
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
 
     @ManyToOne
     @JoinColumn(name = "admin", referencedColumnName = "id", nullable = false)
@@ -32,23 +38,4 @@ public class Remarks {
     @Temporal(TemporalType.TIMESTAMP)
     private Date remarksMakeDay;
 
-    public Remarks() {}
-
-    public Admin getAdmin() {return admin;}
-    public void setAdmin(Admin admin) {this.admin = admin;}
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    @Override
-    public String toString() {
-        return "Remarks{" +
-                "admin=" + admin +
-                '}';
-    }
 }
