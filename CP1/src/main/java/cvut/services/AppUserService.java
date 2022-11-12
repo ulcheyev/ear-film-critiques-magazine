@@ -83,8 +83,13 @@ public class AppUserService {
         if(email != null && email.length()>0 && !appUser.getEmail().equals(email)){
             Optional<AppUser> appUserByEmail = appUserRepository
                     .findAppUserByEmail(email);
+<<<<<<< HEAD
             if(appUserByEmail.isPresent()){
                 throw new ValidationException("Email " + email +" has been taken");
+=======
+            if(appUserByEmail.isPresent()) {
+                throw new ValidationException("Email " + appUser.getEmail() + " has been taken");
+>>>>>>> f4acbef5fb4d6d208c0c68a6db4bae0570de63c0
             }
             appUser.setEmail(email);
         }

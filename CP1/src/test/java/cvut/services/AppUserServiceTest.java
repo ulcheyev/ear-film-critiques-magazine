@@ -1,20 +1,25 @@
 package cvut.services;
 import cvut.Application;
+import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.AppUser;
-import cvut.repository.AppUserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+<<<<<<< HEAD
 import cvut.exception.ValidationException;
 import cvut.model.AppUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+=======
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+>>>>>>> f4acbef5fb4d6d208c0c68a6db4bae0570de63c0
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,8 +30,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AppUserServiceTest {
 
-    @Autowired
-    private AppUserRepository appUserRepository;
     @Autowired
     private AppUserService appUserService;
 
@@ -81,35 +84,36 @@ public class AppUserServiceTest {
 
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
     public void updateEmailUser(){
-        AppUser appUser1 = new AppUser("Goga", "Gogov", "gggoga902", "wefkwffw4423", "goga902@gmail.com");
-        AppUser appUser2 = new AppUser("Giga", "Gigav", "gggoga1002", "wefdswqfw4423", "giga1002@gmail.com");
+
+        AppUser appUser = appUserService.findById(300L);
+        AppUser appUser1 = Generator.generateUser();
 
         appUserService.save(appUser1);
-        appUserService.save(appUser2);
 
         //verify username
         assertThrows(ValidationException.class, () -> {
-            appUserService.update(appUser1.getId(), "tina.runte", "goga902@gmail.com");
+            appUserService.update(appUser1.getId(), appUser.getUsername(), Generator.generateString());
         });
 
         //verify email
         assertThrows(ValidationException.class, () -> {
-            appUserService.update(appUser1.getId(), "gggoga902", "DomenicoJast@gmail.com");
+            appUserService.update(appUser1.getId(), Generator.generateString(), appUser.getEmail());
         });
 
         //verify update
-        appUserService.update(appUser2.getId(), "gogol1", "gogol24@gmail.com");
+        String username = Generator.generateString();
+        String mail = Generator.generateString()+"@gmail.com";
+        appUserService.update(appUser1.getId(), username, mail);
 
-        String checkNewUsername = "gogol1";
-        String checkNewEmail = "gogol24@gmail.com";
+        System.out.println("USER: "+appUser1.getUsername());
+        System.out.println("String: "+username);
 
-        Assertions.assertEquals(checkNewUsername, appUser2.getUsername());
-        Assertions.assertEquals(checkNewEmail, appUser2.getEmail());
+        Assertions.assertEquals(username, appUser1.getUsername());
+        Assertions.assertEquals(mail, appUser1.getEmail());
 
-        appUserService.deleteById(appUser1.getId());
-        appUserService.deleteById(appUser2.getId());
     }
 
 }
