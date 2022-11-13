@@ -2,13 +2,11 @@ package cvut.services;
 
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
-import cvut.model.Admin;
-import cvut.model.Critique;
-import cvut.model.CritiqueState;
-import cvut.model.Remarks;
+import cvut.model.*;
 import cvut.repository.AdminRepository;
 import cvut.repository.CritiqueRepository;
 import cvut.repository.RemarksRepository;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,7 @@ public class RemarksService {
     private AdminRepository adminRepository;
 
     private final static int REMARKS_MIN_TEXT_LENGTH = 5;
-    private final static int REMARKS_MAX_TEXT_LENGTH = 5;
+    private final static int REMARKS_MAX_TEXT_LENGTH = 3000;
 
     @Autowired
     public RemarksService(RemarksRepository remarksRepository, CritiqueRepository critiqueRepository, AdminRepository adminRepository) {
@@ -55,6 +53,12 @@ public class RemarksService {
         Remarks remarks = new Remarks(admin, text, critique, new Date());
         critique.setCritiqueState(CritiqueState.SENT_FOR_CORRECTIONS);
         remarksRepository.save(remarks);
+    }
+
+    public Remarks findById(@NonNull Long remarkId) {
+        Remarks remarks = remarksRepository.findById(remarkId)
+                .orElseThrow(() -> new NotFoundException("Remark with id " + remarkId + " does not exist"));
+        return remarks;
     }
 
     @Transactional
@@ -94,5 +98,9 @@ public class RemarksService {
             throw new NotFoundException("Remarks maked in date "+date+" not found");
         }
         return allByRemarksMakeDay;
+    }
+
+    public List<Remarks> getAll() {
+        return remarksRepository.findAll();
     }
 }

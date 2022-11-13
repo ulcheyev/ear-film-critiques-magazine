@@ -9,11 +9,13 @@ import cvut.repository.AppUserRepository;
 import cvut.repository.CommentRepository;
 import cvut.repository.CriticRepository;
 import cvut.repository.CritiqueRepository;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.stream.XMLStreamReader;
 import java.util.Date;
 import java.util.List;
 
@@ -101,6 +103,12 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
+    public Comment findById(@NonNull Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Comment with id " + commentId + " does not exist"));
+        return comment;
+    }
+
     @Transactional
     public void updateComment(@NonNull Long commentId, @NonNull String text){
 
@@ -118,11 +126,9 @@ public class CommentService {
         }
     }
 
-
-
-
-
-
+    public List<Comment> getAll() {
+        return commentRepository.findAll();
+    }
 }
 
 
