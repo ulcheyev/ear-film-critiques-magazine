@@ -13,13 +13,13 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    Optional<List<Comment>> findAllByAppUser_Id(Long id);
+    List<Comment> findAllByAppUser_Id(Long id);
 
-    Optional<List<Comment>> findAllByDateOfPublic(Date date);
+    List<Comment> findAllByDateOfPublic(Date date);
 
-    Optional<List<Comment>> findAllByCritique_IdOrderByDateOfPublicDesc(Long id);
+    List<Comment> findAllByCritique_IdOrderByDateOfPublicDesc(Long id);
 
-    Optional<List<Comment>> findAllByCritique_IdOrderByDateOfPublicAsc(Long id);
+    List<Comment> findAllByCritique_IdOrderByDateOfPublicAsc(Long id);
 
-    Optional<List<Comment>> findAllByCritique_Id(Long id);
+   List<Comment> findAllByCritique_Id(Long id);
 }

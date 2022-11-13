@@ -9,17 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-<<<<<<< HEAD
 import cvut.exception.ValidationException;
 import cvut.model.AppUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
-=======
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
->>>>>>> f4acbef5fb4d6d208c0c68a6db4bae0570de63c0
 
 import static org.junit.jupiter.api.Assertions.*;
 

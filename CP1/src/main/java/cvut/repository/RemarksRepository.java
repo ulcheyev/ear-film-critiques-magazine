@@ -10,9 +10,9 @@ import java.util.Optional;
 @Repository
 public interface RemarksRepository extends JpaRepository<Remarks, Long> {
 
-    Optional<List<Remarks>> findAllByAdmin_Id(Long id);
+    List<Remarks> findAllByAdmin_Id(Long id);
 
-    Optional<List<Remarks>> findAllByRemarksMakeDay(Date date);
+    List<Remarks> findAllByRemarksMakeDay(Date date);
 
-    Optional<List<Remarks>> findAllByCritique_Id(Long id);
+    List<Remarks> findAllByCritique_Id(Long id);
 }

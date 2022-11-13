@@ -36,21 +36,32 @@ public class CriticService {
     }
 
    public List<Critic> findAllByLastnameAndFirstnameLike(String lastname, String firstname){
-       return criticRepository.findAllByLastnameAndFirstnameLike(lastname, firstname)
-               .orElseThrow(()-> new NotFoundException("Critics were not found"));
+       List<Critic> allByLastnameAndFirstnameLike = findAllByLastnameAndFirstnameLike(lastname, firstname);
+       if(allByLastnameAndFirstnameLike.isEmpty()){
+           throw new NotFoundException("Critics were not found");
+       }
+       return allByLastnameAndFirstnameLike;
 
     }
 
     List<Critic> findByOrderByCriticRatingDesc(){
-        return criticRepository.findByOrderByCriticRatingDesc().orElseThrow(()-> new NotFoundException(
-                "Critics not found"
-        ));
+        List<Critic> byOrderByCriticRatingDesc = criticRepository.findByOrderByCriticRatingDesc();
+        if(byOrderByCriticRatingDesc.isEmpty()){
+            throw new NotFoundException(
+                    "Critics not found"
+            );
+        }
+        return byOrderByCriticRatingDesc;
     }
 
     List<Critic> findByOrderByCriticRatingAsc(){
-        return criticRepository.findByOrderByCriticRatingAsc().orElseThrow(()-> new NotFoundException(
-                "Critics not found"
-        ));
+        List<Critic> byOrderByCriticRatingAsc = criticRepository.findByOrderByCriticRatingAsc();
+        if(byOrderByCriticRatingAsc.isEmpty()){
+            throw new NotFoundException(
+                    "Critics not found"
+            );
+        }
+        return byOrderByCriticRatingAsc;
     };
 
 
@@ -58,9 +69,11 @@ public class CriticService {
         if(rating < 0 || rating > 5){
             throw new ValidationException("Stars must be greater or equals than 0 and less or equals than 5, but was: " + rating);
         }
-        return criticRepository.findAllByCriticRating(rating).orElseThrow(
-                ()-> new NotFoundException("Critics not found")
-        );
+        List<Critic> allByCriticRating = criticRepository.findAllByCriticRating(rating);
+        if(allByCriticRating.isEmpty()){
+            throw new NotFoundException("Critics not found");
+        }
+        return allByCriticRating;
     }
 
     @Transactional

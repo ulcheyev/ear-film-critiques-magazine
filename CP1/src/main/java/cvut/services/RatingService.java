@@ -63,11 +63,11 @@ public class RatingService {
     }
 
     public List<RatingVote> findByCritiqueId(@NonNull Long id) {
-        Optional<List<RatingVote>> byCritique_id = ratingVoteRepository.findByCritique_Id(id);
+        List<RatingVote> byCritique_id = ratingVoteRepository.findByCritique_Id(id);
         if(byCritique_id.isEmpty()){
             throw new NotFoundException("Critique with id "+id+"does not exist in RatingVote table");
         }
-        return byCritique_id.get();
+        return byCritique_id;
     }
 
     public int findQuantityOfVotesByCritiqueId(@NonNull Long id) {

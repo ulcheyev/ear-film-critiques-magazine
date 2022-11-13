@@ -81,14 +81,18 @@ public class RemarksService {
     }
 
     public List<Remarks> getAllByCritiqueId(@NonNull Long critiqueId){
-        return remarksRepository.findAllByCritique_Id(critiqueId).orElseThrow(
-                () -> new NotFoundException("Remarks on critique with id "+critiqueId+" not found")
-        );
+        List<Remarks> allByCritique_id = remarksRepository.findAllByCritique_Id(critiqueId);
+        if(allByCritique_id.isEmpty()){
+            throw new NotFoundException("Remarks on critique with id "+critiqueId+" not found");
+        }
+        return allByCritique_id;
     }
 
     public List<Remarks> getAllByDate(@NonNull Date date){
-        return remarksRepository.findAllByRemarksMakeDay(date).orElseThrow(
-                () -> new NotFoundException("Remarks maked in date "+date+" not found")
-        );
+        List<Remarks> allByRemarksMakeDay = remarksRepository.findAllByRemarksMakeDay(date);
+        if(allByRemarksMakeDay.isEmpty()){
+            throw new NotFoundException("Remarks maked in date "+date+" not found");
+        }
+        return allByRemarksMakeDay;
     }
 }

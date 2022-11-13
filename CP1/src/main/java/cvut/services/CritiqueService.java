@@ -45,34 +45,37 @@ public class CritiqueService {
     }
 
     public List<Critique> findByFilm(String filmName) {
-        Optional<List<Critique>> allByFilm_nameLike = critiqueRepository.findAllByFilm_NameLike(filmName);
+        List<Critique> allByFilm_nameLike = critiqueRepository.findAllByFilm_NameLike(filmName);
         if(allByFilm_nameLike.isEmpty()){
             throw new NotFoundException("At the request \" "+filmName+" \" there was no critiques");
         }
-        return allByFilm_nameLike.get();
+        return allByFilm_nameLike;
     }
 
     public List<Critique> findByRating(double rating) {
         List<Critique> allByRating = critiqueRepository
-                .findAllByRating(rating).orElseThrow(() ->  new NotFoundException(
-                        "Critiques not found with rating " + rating
-        ));
+                .findAllByRating(rating);
+        if(allByRating.isEmpty()) {
+            throw new NotFoundException("Critiques not found with rating " + rating);
+        }
         return allByRating;
     }
 
     public List<Critique> findAllByCritiqueState(CritiqueState critiqueState){
-        return critiqueRepository.findAllByCritiqueState(critiqueState).orElseThrow(
-                () -> new NotFoundException("Critiques not found")
-        );
+        List<Critique> allByCritiqueState = critiqueRepository.findAllByCritiqueState(critiqueState);
+        if(allByCritiqueState.isEmpty()){
+            throw new NotFoundException("Critiques not found");
+        }
+        return allByCritiqueState;
     }
 
 
     public List<Critique> findByCritiqueOwnerId(Long id) {
-        Optional<List<Critique>> critiquesByCritiqueOwner_id = critiqueRepository.findCritiquesByCritiqueOwner_Id(id);
+        List<Critique> critiquesByCritiqueOwner_id = critiqueRepository.findCritiquesByCritiqueOwner_Id(id);
         if (critiquesByCritiqueOwner_id.isEmpty()) {
             throw new ValidationException("Critique with critique owner id " + id + " does not exist");
         }
-        return critiquesByCritiqueOwner_id.get();
+        return critiquesByCritiqueOwner_id;
     }
 
     public int findQuantityOfCritiquesByCriticId(Long id) {
@@ -92,31 +95,36 @@ public class CritiqueService {
     }
 
     public List<Critique> findByCriticsLastnameAndFirstname(String firstname, String lastname){
-        return critiqueRepository.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(lastname, firstname)
-                .orElseThrow(
-                        ()-> new NotFoundException("Critiques with specified critic not found ")
-                );
+        List<Critique> allByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike
+                = critiqueRepository.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(lastname, firstname);
+        if(allByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike.isEmpty()){
+            throw  new NotFoundException("Critiques with specified critic not found ");
+        }
+        return allByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike;
     }
 
     public List<Critique> findByDateOfAcceptance(Date date){
-        return critiqueRepository.findAllByDateOfAcceptance(date)
-                .orElseThrow(
-                        ()-> new NotFoundException("Critiques with specified date not found ")
-                );
+        List<Critique> allByDateOfAcceptance = critiqueRepository.findAllByDateOfAcceptance(date);
+        if(allByDateOfAcceptance.isEmpty()){
+            throw new NotFoundException("Critiques with specified date not found ");
+        }
+        return allByDateOfAcceptance;
     }
 
     public List<Critique> getAllOrderByDateDesc(){
-        return critiqueRepository.findByOrderByDateOfAcceptanceDesc()
-                .orElseThrow(
-                        ()-> new NotFoundException("Critiques not found ")
-                );
+        List<Critique> byOrderByDateOfAcceptanceDesc = critiqueRepository.findByOrderByDateOfAcceptanceDesc();
+        if(byOrderByDateOfAcceptanceDesc.isEmpty()){
+            throw new NotFoundException("Critiques not found ");
+        }
+        return byOrderByDateOfAcceptanceDesc;
     }
 
     public List<Critique> getAllOrderByDateAsc(){
-        return critiqueRepository.findByOrderByDateOfAcceptanceAsc()
-                .orElseThrow(
-                        ()-> new NotFoundException("Critiques not found ")
-                );
+        List<Critique> byOrderByDateOfAcceptanceAsc = critiqueRepository.findByOrderByDateOfAcceptanceAsc();
+        if(byOrderByDateOfAcceptanceAsc.isEmpty()){
+            throw new  NotFoundException("Critiques not found ");
+        }
+        return byOrderByDateOfAcceptanceAsc;
     }
 
     @Transactional

@@ -62,23 +62,35 @@ public class CommentService {
     }
 
     public List<Comment> findCommentsByCritique_Id(Long id){
-        return commentRepository.findAllByCritique_Id(id).orElseThrow(
-                ()-> new NotFoundException("Critique with id "+id+ " does not have comments"));
+        List<Comment> allByCritique_id = commentRepository.findAllByCritique_Id(id);
+        if(allByCritique_id.isEmpty()){
+            throw new NotFoundException("Critique with id "+id+ " does not have comments");
+        }
+        return allByCritique_id;
     }
 
     public List<Comment> findCommentsByCritique_IdOrderDateDesc(Long id){
-        return commentRepository.findAllByCritique_IdOrderByDateOfPublicDesc(id).orElseThrow(
-                ()-> new NotFoundException("Critique with id "+id+ " does not have comments"));
+        List<Comment> allByCritique_idOrderByDateOfPublicDesc = commentRepository.findAllByCritique_IdOrderByDateOfPublicDesc(id);
+        if(allByCritique_idOrderByDateOfPublicDesc.isEmpty()){
+            throw new NotFoundException("Critique with id "+id+ " does not have comments");
+        }
+        return allByCritique_idOrderByDateOfPublicDesc;
     }
 
     public List<Comment> findCommentsByCritique_IdOrderDateAsc(Long id){
-        return commentRepository.findAllByCritique_IdOrderByDateOfPublicAsc(id).orElseThrow(
-                ()-> new NotFoundException("Critique with id "+id+ " does not have comments"));
+        List<Comment> allByCritique_idOrderByDateOfPublicAsc = commentRepository.findAllByCritique_IdOrderByDateOfPublicAsc(id);
+        if(allByCritique_idOrderByDateOfPublicAsc.isEmpty()){
+            throw new NotFoundException("Critique with id "+id+ " does not have comments");
+        }
+        return allByCritique_idOrderByDateOfPublicAsc;
     }
 
     public List<Comment> findCommentsByDate(Date date){
-        return commentRepository.findAllByDateOfPublic(date).orElseThrow(
-                ()-> new NotFoundException("Critique does not have comments with this date"));
+        List<Comment> allByDateOfPublic = commentRepository.findAllByDateOfPublic(date);
+        if(allByDateOfPublic.isEmpty()){
+            throw new NotFoundException("Critique does not have comments with this date");
+        }
+        return allByDateOfPublic;
     }
 
     public void deleteComment(@NonNull Long commentId){

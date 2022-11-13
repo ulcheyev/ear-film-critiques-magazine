@@ -21,7 +21,7 @@ public class GenerateCritique {
     @Test
     public void generate(){
         for(int i = 0; i < 100; i++) {
-            Critique critique = Generator.generateCritique();
+            Critique critique = Generator.generateCritique(400);
             critiqueRepository.save(critique);
         }
     }

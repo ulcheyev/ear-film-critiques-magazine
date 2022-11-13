@@ -46,14 +46,14 @@ public class AppUserRepositoryTest {
     void findByFirstnameAndLastnameGeneratedUser(){
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
-        Optional<List<AppUser>> appUsersByFirstnameAndLastname = appUserRepository
+        List<AppUser> appUsersByFirstnameAndLastname = appUserRepository
                 .findAppUsersByFirstnameAndLastname(appUser.getFirstname(), appUser.getLastname());
 
         //Assert
-        Assertions.assertTrue(appUsersByFirstnameAndLastname.isPresent());
+        Assertions.assertFalse(appUsersByFirstnameAndLastname.isEmpty());
 
         //Assert
-        assertThat(appUsersByFirstnameAndLastname.get())
+        assertThat(appUsersByFirstnameAndLastname)
                 .extracting(AppUser::getFirstname, AppUser::getLastname)
                 .containsExactlyInAnyOrder(
                         tuple(appUser.getFirstname(), appUser.getLastname())

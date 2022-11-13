@@ -2,6 +2,7 @@ package cvut.config.utils;
 
 import com.github.javafaker.Faker;
 import cvut.model.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.Random;
@@ -57,11 +58,11 @@ public class Generator {
         return film;
     }
 
-    public static Critique generateCritique(){
+    public static Critique generateCritique(Integer textLength){
         Critique critique = new Critique();
         Date dateOfAccept = faker.date().birthday();
         String title = faker.book().title();
-        String text = faker.book().title()+faker.book().title();
+        String text = StringUtils.repeat("B", textLength);
         Admin admin = generateAdmin();
         Critic owner = generateCritic();
         critique.setAdmin(admin);
@@ -99,11 +100,11 @@ public class Generator {
         return ratingVote;
     }
 
-    public static Critique generateCritique(Film film, Critic critic){
+    public static Critique generateCritique(Film film, Critic critic, Integer textLength){
         Critique critique = new Critique();
         Date dateOfAccept = faker.date().birthday();
         String title = faker.book().title();
-        String text = faker.book().title()+faker.book().title();
+        String text = StringUtils.repeat("B", textLength);
         critique.setCritiqueOwner(critic);
         critique.setDateOfAcceptance(dateOfAccept);
         critique.setText(text);

@@ -28,8 +28,8 @@ public interface RatingVoteRepository extends JpaRepository<RatingVote, Long> {
     @Query("SELECT SUM(r.stars) FROM RatingVote r WHERE r.critique.id = ?1")
     Optional<Double> findSumOfVotesByCritiqueId(Long Id);
 
-    Optional<List<RatingVote>> findByCritique_Id(Long id);
+    List<RatingVote> findByCritique_Id(Long id);
 
-    Optional<List<RatingVote>> findAllByDate(Date date);
+    List<RatingVote> findAllByDate(Date date);
 
 }

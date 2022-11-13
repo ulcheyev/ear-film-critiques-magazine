@@ -43,8 +43,10 @@ public class FilmService {
     }
 
     public List<Film> findByDate(@NonNull Date date){
-        return filmRepository.findAllByDateOfRelease(date).orElseThrow(
-                ()->new NotFoundException("Film with date "+ date + " does not exist")
-        );
+        List<Film> allByDateOfRelease = filmRepository.findAllByDateOfRelease(date);
+        if(allByDateOfRelease.isEmpty()){
+            throw new NotFoundException("Film with date "+ date + " does not exist");
+        }
+        return allByDateOfRelease;
     }
 }

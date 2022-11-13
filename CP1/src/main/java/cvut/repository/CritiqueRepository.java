@@ -19,27 +19,27 @@ public interface CritiqueRepository extends JpaRepository<Critique, Long> {
     @Query("SELECT SUM(c.rating) FROM Critique c WHERE c.critiqueOwner.id = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
     Optional<Double> findSumOfCritiquesRatingByCriticId(Long id);
 
-    Optional<List<Critique>> findCritiquesByCritiqueOwner_Id(Long id);
+    List<Critique> findCritiquesByCritiqueOwner_Id(Long id);
 
-    Optional<List<Critique>> findCritiquesByAdmin_Id(Long id);
+    List<Critique> findCritiquesByAdmin_Id(Long id);
 
-    Optional<List<Critique>> findAllByCritiqueState(CritiqueState critiqueState);
+    @Query("SELECT c FROM Critique c WHERE c.critiqueState = ?1")
+    List<Critique> findAllByCritiqueState(CritiqueState state);
 
     @Query("SELECT c FROM Critique c WHERE c.critiqueOwner.firstname LIKE %:firstname% AND c.critiqueOwner.lastname LIKE %:lastname% AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
-    Optional<List<Critique>> findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(String lastname, String firstname);
+    List<Critique> findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(String lastname, String firstname);
 
     @Query("SELECT c FROM Critique c WHERE c.film.name LIKE %:name% AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
-    Optional<List<Critique>> findAllByFilm_NameLike(String name);
+    List<Critique> findAllByFilm_NameLike(String name);
 
     @Query("SELECT c FROM Critique c WHERE c.rating = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
-    Optional<List<Critique>> findAllByRating(double rating);
+    List<Critique> findAllByRating(double rating);
 
     @Query("SELECT c FROM Critique c WHERE c.dateOfAcceptance = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
-    Optional<List<Critique>> findAllByDateOfAcceptance(Date dateOfAcceptance);
+    List<Critique> findAllByDateOfAcceptance(Date dateOfAcceptance);
 
+    List<Critique> findByOrderByDateOfAcceptanceAsc();
 
-    Optional<List<Critique>> findByOrderByDateOfAcceptanceAsc();
-
-    Optional<List<Critique>> findByOrderByDateOfAcceptanceDesc();
+    List<Critique> findByOrderByDateOfAcceptanceDesc();
 
 }

@@ -48,8 +48,10 @@ public class MainRoleService {
     }
 
     public List<MainRole> findByFilmRole(@NonNull FilmRole filmRole){
-        return mainRoleRepository.findAllByFilmRole(filmRole).orElseThrow(
-                ()->new NotFoundException("Main role with role "+ filmRole + " does not exist")
-        );
+        List<MainRole> allByFilmRole = mainRoleRepository.findAllByFilmRole(filmRole);
+        if(allByFilmRole.isEmpty()){
+            throw new NotFoundException("Main role with role "+ filmRole + " does not exist");
+        }
+        return allByFilmRole;
     }
 }
