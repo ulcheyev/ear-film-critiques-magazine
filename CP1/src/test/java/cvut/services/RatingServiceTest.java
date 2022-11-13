@@ -39,7 +39,8 @@ public class RatingServiceTest {
         AppUser appUser = appUserService.findById(300L);
         ratingService.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getId(), critique.getId(), stars);
 
-        double expectedForCritique = stars;
+        double expectedForCritique = ratingService.findSumOfVotesByCritiqueId(critique.getId())/
+                ratingService.findQuantityOfVotesByCritiqueId(critique.getId());
         double expectedForCritic = critiqueService.findSumOfCritiquesByCriticId(critic.getId())
                 / critic.getCritiqueList().size();
 
@@ -63,7 +64,8 @@ public class RatingServiceTest {
 
         ratingService.deleteAndUpdate(appUser.getId(),critique.getId());
 
-        double expectedForCritique = 0;
+        double expectedForCritique = ratingService.findSumOfVotesByCritiqueId(critique.getId())/
+                ratingService.findQuantityOfVotesByCritiqueId(critique.getId());
         double expectedForCritic = critiqueService.findSumOfCritiquesByCriticId(critic.getId())
                 / critic.getCritiqueList().size();
 

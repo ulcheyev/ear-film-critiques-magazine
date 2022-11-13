@@ -14,8 +14,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.*;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -106,6 +104,12 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
+    public Comment findById(@NonNull Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Comment with id " + commentId + " does not exist"));
+        return comment;
+    }
+
     @Transactional
     public void updateComment(@NonNull Long commentId, @NonNull String text){
 
@@ -128,9 +132,8 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
-    public Comment findById(long l) {
-        return commentRepository.findById(l).get();
-    }
+
+
 }
 
 

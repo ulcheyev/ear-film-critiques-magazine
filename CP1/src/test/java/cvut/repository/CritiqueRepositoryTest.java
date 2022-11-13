@@ -1,19 +1,16 @@
 package cvut.repository;
+
 import cvut.Application;
-import cvut.config.utils.Generator;
 import cvut.model.Critic;
 import cvut.model.Critique;
-import cvut.model.CritiqueState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)

@@ -1,4 +1,5 @@
 package cvut.services;
+
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
@@ -9,16 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import cvut.exception.ValidationException;
-import cvut.model.AppUser;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)

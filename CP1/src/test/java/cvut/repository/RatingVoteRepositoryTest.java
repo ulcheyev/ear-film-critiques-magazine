@@ -72,7 +72,7 @@ public class RatingVoteRepositoryTest {
 
     @Test
     public void findSumOfVotesByCritiqueIdTest(){
-        Optional<Critique> byId = critiqueRepository.findById(Generator.generateId());
+        Optional<Critique> byId = critiqueRepository.findById(1L);
 
         //Assert
         Assertions.assertTrue(byId.isPresent());

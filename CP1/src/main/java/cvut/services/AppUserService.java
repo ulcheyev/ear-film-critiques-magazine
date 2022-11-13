@@ -1,5 +1,4 @@
 package cvut.services;
-
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.AppUser;
