@@ -14,6 +14,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.*;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -44,8 +46,11 @@ public class CommentService {
             throw new ValidationException("Comment length must be max "+COMMENT_MAX_LENGTH + " and min "+ COMMENT_MIN_LENGTH +" symbols");
         }
 
-        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()-> new NotFoundException("User with id "+ appUserId+" does not found"));
-        Critique critique = critiqueRepository.findById(critiqueId).orElseThrow(()-> new NotFoundException("Critique with id "+ critiqueId+" does not found"));
+        AppUser appUser = appUserRepository.findById(appUserId)
+                .orElseThrow(()-> new NotFoundException("User with id "+ appUserId+" does not found"));
+
+        Critique critique = critiqueRepository.findById(critiqueId)
+                .orElseThrow(()-> new NotFoundException("Critique with id "+ critiqueId+" does not found"));
 
         Comment comment = new Comment(text, new Date(), appUser, critique);
 
@@ -119,10 +124,13 @@ public class CommentService {
     }
 
 
+    public List<Comment> getAll() {
+        return commentRepository.findAll();
+    }
 
-
-
-
+    public Comment findById(long l) {
+        return commentRepository.findById(l).get();
+    }
 }
 
 

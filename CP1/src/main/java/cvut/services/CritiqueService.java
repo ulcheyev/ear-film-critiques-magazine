@@ -140,18 +140,38 @@ public class CritiqueService {
         Critique critique = critiqueRepository.findById(critiqueId).orElseThrow(
                 () -> new NotFoundException("Critique with id " + critiqueId + " does not found")
         );
-        if (text != null && !critique.getText().equals(text)
-                && title.length() > TEXT_LENGTH_MIN
-                && title.length() < TEXT_LENGTH_MAX)
+
+        if(title.length() > TITLE_LENGTH_MAX ||
+                title.length() < TITLE_LENGTH_MIN) {
+            throw new ValidationException("Max title length " +
+                    TITLE_LENGTH_MAX + ", Min title length " + TEXT_LENGTH_MIN +
+                    " but was " + title.length());
+        }
+
+        if(text.length() > TEXT_LENGTH_MAX ||
+                text.length() < TEXT_LENGTH_MIN ){
+            throw new ValidationException( "Max text length " + TEXT_LENGTH_MAX + ", Min text length "+
+                    TEXT_LENGTH_MIN + " but was " + text.length());
+        }
+
+        if (!critique.getText().equals(text)
+                && text.length() > TEXT_LENGTH_MIN
+                && text.length() < TEXT_LENGTH_MAX)
         {
             critique.setText(text);
         }
-        if(title != null && !critique.getTitle().equals(text)
+
+        if(!critique.getTitle().equals(title)
             && title.length() > TITLE_LENGTH_MIN
             && title.length() < TITLE_LENGTH_MAX)
         {
             critique.setTitle(title);
         }
+
+
+
+
+
     }
 
     public void correctCritiqueAfterCreateRemarks(@NonNull Long critiqueId, String title, String text) {

@@ -5,6 +5,7 @@ import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.AppUser;
 import cvut.model.Critique;
+import cvut.model.CritiqueState;
 import cvut.repository.AppUserRepository;
 import cvut.repository.CritiqueRepository;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ public class GenerateCritique {
     @Test
     public void generate(){
         for(int i = 0; i < 100; i++) {
-            Critique critique = Generator.generateCritique(400);
+            Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED,400);
             critiqueRepository.save(critique);
         }
     }

@@ -105,8 +105,6 @@ public class AppUserServiceTest {
         String mail = Generator.generateString()+"@gmail.com";
         appUserService.update(appUser1.getId(), username, mail);
 
-        System.out.println("USER: "+appUser1.getUsername());
-        System.out.println("String: "+username);
 
         Assertions.assertEquals(username, appUser1.getUsername());
         Assertions.assertEquals(mail, appUser1.getEmail());
