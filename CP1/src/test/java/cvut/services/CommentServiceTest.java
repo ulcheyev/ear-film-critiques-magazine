@@ -50,7 +50,9 @@ public class CommentServiceTest {
                 "ipsum est, rhoncus eu ligula eu, semper tristique nisl. Donec luctus leo arcu. Duis in justo id turpis.";
 
         AppUser appUser = Generator.generateUser();
+        AppUser appUser_notCritic = appUserService.findById(1080L);
         Critique critique = critiqueService.findById(205L);
+        Critique critique_in_proc = critiqueService.findById(6L);
         Critique critique_neex = Generator.generateCritique(300);
         AppUser appUser_neex = Generator.generateUser();
         appUserService.save(appUser);
@@ -69,6 +71,17 @@ public class CommentServiceTest {
         assertThrows(NotFoundException.class, () -> {
             commentService.save(normal_text, 2000000000L, critique.getId());
         });
+
+        //checking that when a critic is in the "IN_PROCESSED" state, only the critic can comment on it
+
+        int count_before_save_comment = commentService.getAll().size();
+
+        commentService.save(normal_text, 1080L, 6L);
+
+        int count_after_save = commentService.getAll().size();
+
+        assertEquals(count_before_save_comment, count_after_save);
+
 
         //verify not found critique
         assertThrows(NotFoundException.class, () -> {
