@@ -3,10 +3,11 @@ package cvut.services;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.Critique;
+import cvut.model.CritiqueSearchCriteria;
 import cvut.model.CritiqueState;
-import cvut.model.Film;
 import cvut.repository.AdminRepository;
 import cvut.repository.CriticRepository;
+import cvut.model.CritiqueCriteriaRepository;
 import cvut.repository.CritiqueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -21,26 +22,31 @@ import java.util.Optional;
 public class CritiqueService {
 
     private final CritiqueRepository critiqueRepository;
+    private final CritiqueCriteriaRepository critiqueCriteriaRepository;
     private static final int TEXT_LENGTH_MAX = 3000;
     private static final int TEXT_LENGTH_MIN = 300;
     private static final int TITLE_LENGTH_MAX = 150;
     private static final int TITLE_LENGTH_MIN = 15;
 
     @Autowired
-    public CritiqueService(CritiqueRepository critiqueRepository, AdminRepository adminRepository, CriticRepository criticRepository) {
+    public CritiqueService(CritiqueRepository critiqueRepository, AdminRepository adminRepository, CriticRepository criticRepository, CritiqueCriteriaRepository critiqueCriteriaRepository) {
         this.critiqueRepository = critiqueRepository;
+        this.critiqueCriteriaRepository = critiqueCriteriaRepository;
     }
 
     public Critique findById(Long id) {
         Optional<Critique> byId = critiqueRepository.findById(id);
         if (byId.isEmpty()) {
-            throw new ValidationException("Critique with id " + id + "does not exist");
+            throw new ValidationException("Critique with id " + id + " does not exist");
         }
         return byId.get();
     }
 
-    public List<Critique> getAll() {
-        List<Critique> all = critiqueRepository.findAll();
+    public List<Critique> getAll(CritiqueSearchCriteria critiqueSearchCriteria) {
+        List<Critique> all = critiqueCriteriaRepository.findAllByFilters(critiqueSearchCriteria);
+        if(all.isEmpty()){
+            throw new ValidationException("Critiques with specified parameters does not exist");
+        }
         return all;
     }
 
@@ -73,7 +79,7 @@ public class CritiqueService {
     public List<Critique> findByCritiqueOwnerId(Long id) {
         List<Critique> critiquesByCritiqueOwner_id = critiqueRepository.findCritiquesByCritiqueOwner_Id(id);
         if (critiquesByCritiqueOwner_id.isEmpty()) {
-            throw new ValidationException("Critique with critique owner id " + id + " does not exist");
+            throw new NotFoundException("Critique with critique owner id " + id + " does not exist");
         }
         return critiquesByCritiqueOwner_id;
     }
@@ -136,42 +142,39 @@ public class CritiqueService {
     }
 
     @Transactional
-    public void updateCritique(@NonNull Long critiqueId, String title, String text) {
-        Critique critique = critiqueRepository.findById(critiqueId).orElseThrow(
+    public void updateCritique(@NonNull Long critiqueId, @NonNull Critique critique) {
+        Critique toChange = critiqueRepository.findById(critiqueId).orElseThrow(
                 () -> new NotFoundException("Critique with id " + critiqueId + " does not found")
         );
+        String text = critique.getText();
+        String title = critique.getTitle();
 
         if(title.length() > TITLE_LENGTH_MAX ||
                 title.length() < TITLE_LENGTH_MIN) {
             throw new ValidationException("Max title length " +
-                    TITLE_LENGTH_MAX + ", Min title length " + TEXT_LENGTH_MIN +
-                    " but was " + title.length());
+                    TITLE_LENGTH_MAX + ", Min title length " + TITLE_LENGTH_MIN +
+                    ", but was " + title.length());
         }
 
         if(text.length() > TEXT_LENGTH_MAX ||
                 text.length() < TEXT_LENGTH_MIN ){
             throw new ValidationException( "Max text length " + TEXT_LENGTH_MAX + ", Min text length "+
-                    TEXT_LENGTH_MIN + " but was " + text.length());
+                    TEXT_LENGTH_MIN + ", but was " + text.length());
         }
 
-        if (!critique.getText().equals(text)
+        if (!toChange.getText().equals(text)
                 && text.length() > TEXT_LENGTH_MIN
                 && text.length() < TEXT_LENGTH_MAX)
         {
-            critique.setText(text);
+            toChange.setText(text);
         }
 
-        if(!critique.getTitle().equals(title)
+        if(!toChange.getTitle().equals(title)
             && title.length() > TITLE_LENGTH_MIN
             && title.length() < TITLE_LENGTH_MAX)
         {
-            critique.setTitle(title);
+            toChange.setTitle(title);
         }
-
-
-
-
-
     }
 
     public void correctCritiqueAfterCreateRemarks(@NonNull Long critiqueId, String title, String text) {

@@ -99,48 +99,47 @@ public class CritiqueServiceTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateCritiqueTest(){
         Long id = 40L;
-        Critique critique = critiqueService.findById(40L);
+        Critique critique = critiqueService.findById(id);
 
-        String textToChange = Generator.generateString("Test", 400);
-        String titleToChange = Generator.generateString("Ear@e", 20);
+        Critique critique1 = Generator.generateCritique(566);
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.IN_PROCESSED);
 
         //Change
-        critiqueService.updateCritique(id, titleToChange, textToChange);
+        critiqueService.updateCritique(id, critique1);
 
-        Assertions.assertEquals(textToChange, critique.getText());
-        Assertions.assertEquals(titleToChange, critique.getTitle());
+        Assertions.assertEquals(critique1.getText(), critique.getText());
+        Assertions.assertEquals(critique1.getTitle(), critique.getTitle());
 
         //Try to update with min text length
         String textToChange_min = Generator.generateString("Test", 50);
-
+        critique1.setText(textToChange_min);
         //Change
         assertThrows(ValidationException.class, () -> {
-            critiqueService.updateCritique(id, titleToChange, textToChange_min);
+            critiqueService.updateCritique(id, critique1);
         });
 
         //Try to update with min title length
         String titleToChange_min = Generator.generateString("Test", 3);
-
+        critique1.setTitle(titleToChange_min);
         //Change
         assertThrows(ValidationException.class, () -> {
-            critiqueService.updateCritique(id, titleToChange_min, textToChange);
+            critiqueService.updateCritique(id, critique1);
         });
 
         //Try to update with max text length
         String textToChange_max = Generator.generateString("Test", 5000);
-
+        critique1.setText(textToChange_max);
         //Change
         assertThrows(ValidationException.class, () -> {
-            critiqueService.updateCritique(id, titleToChange, textToChange_max);
+            critiqueService.updateCritique(id, critique1);
         });
 
         //Try to update with max title length
         String titleToChange_max = Generator.generateString("Test", 1500);
-
+        critique1.setTitle(titleToChange_max);
         //Change
         assertThrows(ValidationException.class, () -> {
-            critiqueService.updateCritique(id, titleToChange_max, textToChange);
+            critiqueService.updateCritique(id, critique1);
         });
     }
 

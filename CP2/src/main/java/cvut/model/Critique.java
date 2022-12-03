@@ -1,5 +1,6 @@
 package cvut.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +27,8 @@ public class Critique {
     @Enumerated(EnumType.STRING)
     private CritiqueState critiqueState = CritiqueState.IN_PROCESSED;
 
-    @OneToMany(mappedBy = "critique", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "critique", fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<RatingVote> critiqueRatingVote;
 
     @Column(name = "title",columnDefinition = "TEXT", nullable = false)
@@ -44,10 +46,10 @@ public class Critique {
     private Date dateOfAcceptance;
 
     @OneToMany(mappedBy = "critique")
+    @JsonBackReference
     private List<Remarks> critiqueRemarks;
 
-    //TODO ubrat cascade type
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "admin", referencedColumnName = "id")
     private Admin  admin;
 
@@ -57,13 +59,14 @@ public class Critique {
     private Critic critiqueOwner;
 
     @OneToMany(mappedBy = "admin")
+    @JsonBackReference
     private List<Remarks> remarksList;
 
     @OneToMany(mappedBy = "critique")
+    @JsonBackReference
     private List<Comment> comments;
 
-    //TODO ubrat cascade type
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "film", referencedColumnName = "id", nullable = false)
     private Film film;
 

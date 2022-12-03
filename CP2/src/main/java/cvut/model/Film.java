@@ -1,5 +1,6 @@
 package cvut.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,7 @@ public class Film {
     private List<MainRole> mainRoleList;
 
     @OneToMany(mappedBy = "film")
+    @JsonBackReference
     private List<Critique> critiques;
 
     @Column(name = "film_name", nullable = false)
