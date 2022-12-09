@@ -11,6 +11,11 @@ import java.util.Optional;
 
 @Repository
 public interface FilmRepository extends JpaRepository<Film, Long> {
+
     List<Film> findAllByDateOfRelease(Date date);
+
+    List<Film> findMovieNamesForASpecificPeriod(Date from, Date to);
+
+    List<Film> findMovieNamesCriticizedByAParticularCritic(Long id);
 
 }

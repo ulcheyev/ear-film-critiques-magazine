@@ -17,6 +17,12 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @NoArgsConstructor
 @ToString
+@NamedQueries({
+        @NamedQuery(name = "RatingVote.findTheLowestRating", query = "SELECT MIN(r.stars) FROM RatingVote r"),
+        @NamedQuery(name = "RatingVote.findTheHighestRating", query = "SELECT MAX(r.stars) FROM RatingVote r"),
+        @NamedQuery(name = "RatingVote.findQuantityOfVotesByCritiqueId", query = "SELECT COUNT(r) FROM RatingVote r WHERE r.critique.id = ?1"),
+        @NamedQuery(name = "RatingVote.findSumOfVotesByCritiqueId", query = "SELECT SUM(r.stars) FROM RatingVote r WHERE r.critique.id = ?1"),
+})
 public class RatingVote {
 
     @GeneratedValue(strategy = IDENTITY)

@@ -13,4 +13,5 @@ public interface AppUserService {
     void save( AppUser appUser);
     void update(Long appUserId, String username, String email);
     void deleteById(Long appUserId);
+    void findUsersWithSpecifiedCommentQuantity(int quantity);
 }

@@ -9,6 +9,10 @@ import java.util.Optional;
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long>{
 
+    List<AppUser> findUsersWithSpecifiedCommentQuantity(int quantity);
+
+//    List<AppUser> findUserWithHighCommentQuantity();
+
     Optional<AppUser> findAppUserByUsername(String username);
 
     Optional<AppUser> findAppUserByEmail(String email);

@@ -14,6 +14,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @ToString
+@NamedQueries({
+        @NamedQuery(name = "Admin.findAdminWithSpecifiedCritiqueQuantity", query = "SELECT admin FROM Admin admin join Critique critique on critique.admin.id = admin.id where size(admin.critiqueList)>?1 and critique.critiqueState = 'IN_PROCESSED'")
+})
 public class Admin extends AppUser {
 
     @OneToMany(mappedBy = "admin")

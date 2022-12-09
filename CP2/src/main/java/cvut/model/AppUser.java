@@ -16,6 +16,9 @@ import static javax.persistence.GenerationType.*;
 @Setter
 @NoArgsConstructor
 @ToString
+@NamedQueries({
+        @NamedQuery(name = "AppUser.findUsersWithSpecifiedCommentQuantity", query = "SELECT user FROM AppUser user where size(user.commentList)>?1"),
+})
 public class AppUser {
 
     @GeneratedValue(strategy = AUTO)

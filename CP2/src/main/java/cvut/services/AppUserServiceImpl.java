@@ -90,5 +90,15 @@ public class AppUserServiceImpl implements AppUserService{
             }
         }
 
+    public void findUsersWithSpecifiedCommentQuantity(int quantity){
+        List<AppUser> appUsers = appUserRepository.findAll();
+        List<AppUser> appUserListWithSpecifiedCommentQuantity = null;
+        for (int i = 0; i < appUsers.size(); i++){
+            if (appUsers.get(i).getCommentList().size() == quantity){
+                appUserListWithSpecifiedCommentQuantity.add(appUsers.get(i));
+            }
+        }
+    }
+
 }
 

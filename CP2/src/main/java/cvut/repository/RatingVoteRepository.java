@@ -14,18 +14,14 @@ import java.util.Optional;
 @Repository
 public interface RatingVoteRepository extends JpaRepository<RatingVote, Long> {
 
-    @Query("SELECT MIN(r.stars) FROM RatingVote r")
     Optional<Double> findTheLowestRating();
 
-    @Query("SELECT MAX(r.stars) FROM RatingVote r")
     Optional<Double> findTheHighestRating();
 
-    @Query("SELECT COUNT(r) FROM RatingVote r WHERE r.critique.id = ?1")
     Optional<Integer> findQuantityOfVotesByCritiqueId(Long id);
 
     Optional<RatingVote> findByVoteOwner_IdAndCritique_Id(Long id1, Long id2);
 
-    @Query("SELECT SUM(r.stars) FROM RatingVote r WHERE r.critique.id = ?1")
     Optional<Double> findSumOfVotesByCritiqueId(Long Id);
 
     List<RatingVote> findByCritique_Id(Long id);

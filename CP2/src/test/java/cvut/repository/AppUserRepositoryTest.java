@@ -19,7 +19,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 public class AppUserRepositoryTest {
 
     @Autowired
-
     private AppUserRepository appUserRepository;
 
 
@@ -60,4 +59,13 @@ public class AppUserRepositoryTest {
                         tuple(appUser.getFirstname(), appUser.getLastname())
                 );
     }
+
+    @Test
+    void testNamedQueryFindUsersWithCSpecifiedCommentQuantity(){
+        List<AppUser> appUsers = appUserRepository.findUsersWithSpecifiedCommentQuantity(1);
+        Assertions.assertNotNull(appUsers);
+        Assertions.assertFalse(appUsers.isEmpty());
+        Assertions.assertNotEquals(appUsers.size(), 0);
+    }
+
 }

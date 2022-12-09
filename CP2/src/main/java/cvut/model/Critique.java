@@ -18,6 +18,16 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @NoArgsConstructor
 @ToString
+@NamedQueries({
+        @NamedQuery(name = "Critique.findByFilmIdAndRating", query = "select critique from Critique critique join Film film on critique.film.id = film.id where critique.critiqueState = 'IN_PROCESSED' and critique.rating > ?1 and film.id= ?1"),
+        @NamedQuery(name = "Critique.findQuantityOfCritiquesByCriticId", query = "SELECT COUNT(c) FROM Critique c WHERE c.critiqueOwner.id = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED"),
+        @NamedQuery(name = "Critique.findSumOfCritiquesRatingByCriticId", query = "SELECT SUM(c.rating) FROM Critique c WHERE c.critiqueOwner.id = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED"),
+        @NamedQuery(name = "Critique.findAllByCritiqueState", query = "SELECT c FROM Critique c WHERE c.critiqueState = ?1"),
+        @NamedQuery(name = "Critique.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike", query = "SELECT c FROM Critique c WHERE c.critiqueOwner.firstname LIKE :firstname AND c.critiqueOwner.lastname LIKE :lastname AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED"),
+        @NamedQuery(name = "Critique.findAllByFilm_NameLike", query = "SELECT c FROM Critique c WHERE c.film.name LIKE :name AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED"),
+        @NamedQuery(name = "Critique.findAllByRating", query = "SELECT c FROM Critique c WHERE c.rating = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED"),
+        @NamedQuery(name = "Critique.findAllByDateOfAcceptance", query = "SELECT c FROM Critique c WHERE c.dateOfAcceptance = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
+})
 public class Critique {
 
     @GeneratedValue(strategy = IDENTITY)

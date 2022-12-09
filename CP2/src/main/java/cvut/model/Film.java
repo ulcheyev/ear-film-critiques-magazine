@@ -17,6 +17,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @Setter
 @NoArgsConstructor
+@NamedQueries({
+        @NamedQuery(name = "Film.findMovieNamesForASpecificPeriod", query = "select film from Film as film join Critique as critique on critique.film.id = film.id where (critique.dateOfAcceptance between ?1 and ?2) and critique.critiqueState = 'ACCEPTED'"),
+        @NamedQuery(name = "Film.findMovieNamesCriticizedByAParticularCritic", query = "select film from Film as film join Critique c on film.id = c.film.id where c.critiqueOwner.id = ?1")
+})
 public class Film {
 
     @GeneratedValue(strategy = IDENTITY)

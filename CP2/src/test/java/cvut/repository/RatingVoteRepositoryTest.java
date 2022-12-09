@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -88,6 +89,38 @@ public class RatingVoteRepositoryTest {
 
         //Assert
         Assertions.assertEquals(sum, sumOfVotesByCritiqueId.get() );
+    }
+
+    @Test
+    void testNamedQueryFindTheLowestRating(){
+        Optional<Double> rating = ratingVoteRepository.findTheLowestRating();
+        Assertions.assertNotNull(rating);
+        Assertions.assertFalse(rating.isEmpty());
+        Assertions.assertEquals(rating.get().byteValue(), 1.0);
+    }
+
+    @Test
+    void testNamedQueryFindTheHighestRating(){
+        Optional<Double> rating = ratingVoteRepository.findTheHighestRating();
+        Assertions.assertNotNull(rating);
+        Assertions.assertFalse(rating.isEmpty());
+        Assertions.assertEquals(rating.get().byteValue(), 4.0);
+    }
+
+    @Test
+    void testNamedQueryFindQuantityOfVotesByCritiqueId(){
+        Optional<Integer> rating = ratingVoteRepository.findQuantityOfVotesByCritiqueId(1L);
+        Assertions.assertNotNull(rating);
+        Assertions.assertFalse(rating.isEmpty());
+        Assertions.assertEquals(rating.get().byteValue(), 6);
+    }
+
+    @Test
+    void testNamedQueryFindSumOfVotesByCritiqueId(){
+        Optional<Double> rating = ratingVoteRepository.findSumOfVotesByCritiqueId(1L);
+        Assertions.assertNotNull(rating);
+        Assertions.assertFalse(rating.isEmpty());
+        Assertions.assertEquals(rating.get().byteValue(), 18.0);
     }
 
 
