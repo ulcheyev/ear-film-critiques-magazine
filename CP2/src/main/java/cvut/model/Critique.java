@@ -37,7 +37,7 @@ public class Critique {
     @Enumerated(EnumType.STRING)
     private CritiqueState critiqueState = CritiqueState.IN_PROCESSED;
 
-    @OneToMany(mappedBy = "critique", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "critique", fetch = FetchType.EAGER)
     @JsonBackReference
     private List<RatingVote> critiqueRatingVote;
 

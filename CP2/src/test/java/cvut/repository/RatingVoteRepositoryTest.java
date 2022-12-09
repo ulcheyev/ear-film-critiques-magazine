@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -31,6 +33,7 @@ public class RatingVoteRepositoryTest {
 
     Random random = new Random();
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
     public void addRatingWithSpecifiedCritique() {
         Optional<Critique> critiqueById = critiqueRepository.findById(1L);
@@ -55,6 +58,7 @@ public class RatingVoteRepositoryTest {
         Assertions.assertEquals(critiqueById.get().getId(), ratingById.get().getCritique().getId());
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
     public void findQuantityOfVotesByCritiqueIdTest(){
         Optional<Critique> byId = critiqueRepository.findById(1L);
@@ -71,6 +75,7 @@ public class RatingVoteRepositoryTest {
         Assertions.assertEquals(critiqueRatingVote.size(), quantityOfVotesByCritiqueId.get());
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
     public void findSumOfVotesByCritiqueIdTest(){
         Optional<Critique> byId = critiqueRepository.findById(1L);
@@ -96,7 +101,7 @@ public class RatingVoteRepositoryTest {
         Optional<Double> rating = ratingVoteRepository.findTheLowestRating();
         Assertions.assertNotNull(rating);
         Assertions.assertFalse(rating.isEmpty());
-        Assertions.assertEquals(rating.get().byteValue(), 1.0);
+        Assertions.assertEquals(rating.get().byteValue(), 0.0);
     }
 
     @Test
@@ -112,7 +117,7 @@ public class RatingVoteRepositoryTest {
         Optional<Integer> rating = ratingVoteRepository.findQuantityOfVotesByCritiqueId(1L);
         Assertions.assertNotNull(rating);
         Assertions.assertFalse(rating.isEmpty());
-        Assertions.assertEquals(rating.get().byteValue(), 6);
+        Assertions.assertEquals(rating.get().byteValue(), 14);
     }
 
     @Test
@@ -120,7 +125,7 @@ public class RatingVoteRepositoryTest {
         Optional<Double> rating = ratingVoteRepository.findSumOfVotesByCritiqueId(1L);
         Assertions.assertNotNull(rating);
         Assertions.assertFalse(rating.isEmpty());
-        Assertions.assertEquals(rating.get().byteValue(), 18.0);
+        Assertions.assertEquals(rating.get().byteValue(), 29.0);
     }
 
 

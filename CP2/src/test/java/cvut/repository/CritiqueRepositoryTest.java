@@ -28,36 +28,36 @@ public class CritiqueRepositoryTest {
     private CriticRepository criticRepository;
 
 
-//    @Test
-//    public void findQuantityOfCritiquesByCriticIdTest() {
-//        Optional<Critic> criticbyId = criticRepository.findById(315L);
-//
-//        //Assert
-//        Assertions.assertFalse(criticbyId.isEmpty());
-//
-//        List<Critique> critiqueList = criticbyId.get().getCritiqueList();
-//        Optional<Integer> quantityOfCritiquesByCriticId = critiqueRepository.findQuantityOfCritiquesByCriticId(criticbyId.get().getId());
-//
-//        //Assert
-//        Assertions.assertEquals(critiqueList.size(), quantityOfCritiquesByCriticId.get());
-//    }
+    @Test
+    public void findQuantityOfCritiquesByCriticIdTest() {
+        Optional<Critic> criticbyId = criticRepository.findById(315L);
 
-//    @Test
-//    public void findSumOfCritiquesRatingByCriticIdTest() {
-//        Optional<Critic> criticbyId = criticRepository.findById(315L);
-//
-//        //Assert
-//        Assertions.assertFalse(criticbyId.isEmpty());
-//
-//        List<Critique> critiqueList = criticbyId.get().getCritiqueList();
-//        Double sum  = critiqueList.stream()
-//                .map(x -> x.getRating())
-//                .reduce(0.0, Double::sum);
-//
-//        Optional<Double> sumOfCritiquesRatingByCriticId = critiqueRepository.findSumOfCritiquesRatingByCriticId(criticbyId.get().getId());
-//        //Assert
-//        Assertions.assertEquals(sum, sumOfCritiquesRatingByCriticId.orElse(0.0));
-//    }
+        //Assert
+        Assertions.assertFalse(criticbyId.isEmpty());
+
+        List<Critique> critiqueList = criticbyId.get().getCritiqueList();
+        Optional<Integer> quantityOfCritiquesByCriticId = critiqueRepository.findQuantityOfCritiquesByCriticId(criticbyId.get().getId());
+
+        //Assert
+        Assertions.assertEquals(critiqueList.size(), quantityOfCritiquesByCriticId.get());
+    }
+
+    @Test
+    public void findSumOfCritiquesRatingByCriticIdTest() {
+        Optional<Critic> criticbyId = criticRepository.findById(315L);
+
+        //Assert
+        Assertions.assertFalse(criticbyId.isEmpty());
+
+        List<Critique> critiqueList = criticbyId.get().getCritiqueList();
+        Double sum  = critiqueList.stream()
+                .map(x -> x.getRating())
+                .reduce(0.0, Double::sum);
+
+        Optional<Double> sumOfCritiquesRatingByCriticId = critiqueRepository.findSumOfCritiquesRatingByCriticId(criticbyId.get().getId());
+        //Assert
+        Assertions.assertEquals(sum, sumOfCritiquesRatingByCriticId.orElse(0.0));
+    }
 
     @Test
     void testNamedQueryFindByFilmIdAndRating(){

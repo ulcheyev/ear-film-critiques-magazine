@@ -1,5 +1,6 @@
 package cvut.repository;
 
+import cvut.exception.NotFoundException;
 import cvut.model.AppUser;
 import cvut.model.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ public class AppUserCriteriaRepository {
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
-    @SuppressWarnings("unchecked")
     public List<AppUser> getMostCommentedPosts(int page, int postsPerPage){
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -40,7 +40,7 @@ public class AppUserCriteriaRepository {
         List<AppUser> resultList = (List<AppUser>) typedQuery.getResultList();
 
         if (resultList.isEmpty())
-            return null;
+            throw new NotFoundException("Result list is empty while searching most commented post");
         else
             return resultList;
     }

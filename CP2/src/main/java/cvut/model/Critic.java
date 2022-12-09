@@ -17,7 +17,7 @@ public class Critic extends AppUser {
     @Column(name = "critic_rating", nullable = false)
     private double criticRating;
 
-    @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.EAGER)
     @JsonBackReference
     @ToString.Exclude
     private List<Critique> critiqueList;
