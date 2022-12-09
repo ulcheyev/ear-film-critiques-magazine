@@ -1,6 +1,8 @@
-package cvut.model;
+package cvut.repository;
 
-import cvut.exception.ValidationException;
+import cvut.model.AppUser;
+import cvut.model.Critique;
+import cvut.model.Film;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -28,11 +30,7 @@ public class CritiqueCriteriaRepository {
     public List<Critique> findAllByFilters(CritiqueSearchCriteria critiqueSearchCriteria){
         CriteriaQuery<Critique> critiqueCriteriaQuery = criteriaBuilder.createQuery(Critique.class);
         Root<Critique> critiqueRoot = critiqueCriteriaQuery.from(Critique.class);
-
-        Subquery<Long> sq = critiqueCriteriaQuery.subquery(Long.class);
-        Join<Critique, AppUser> sqEmp = critiqueRoot.join("critiqueOwner");
-
-        Predicate predicate = getPredicate(critiqueSearchCriteria, critiqueRoot, sqEmp);
+        Predicate predicate = getPredicate(critiqueSearchCriteria, critiqueRoot);
 
         critiqueCriteriaQuery.where(predicate);
         TypedQuery<Critique> typedQuery = entityManager.createQuery(critiqueCriteriaQuery);
@@ -40,7 +38,7 @@ public class CritiqueCriteriaRepository {
     }
 
     private Predicate getPredicate(CritiqueSearchCriteria critiqueSearchCriteria,
-                                   Root<Critique> critiqueRoot, Join<Critique, AppUser> join) {
+                                   Root<Critique> critiqueRoot) {
         List<Predicate> predicates = new ArrayList<>();
         if(Objects.nonNull(critiqueSearchCriteria.getTitle())){
             predicates.add(
@@ -56,8 +54,16 @@ public class CritiqueCriteriaRepository {
         }
 
         if(Objects.nonNull(critiqueSearchCriteria.getUsername())){
+            Join<Critique, AppUser> subqueryCritiqueAppUser = critiqueRoot.join("critiqueOwner");
             predicates.add(
-                    criteriaBuilder.like(join.get("username"), "%"+ critiqueSearchCriteria.getUsername()+"%")
+                    criteriaBuilder.like(subqueryCritiqueAppUser.get("username"), "%"+ critiqueSearchCriteria.getUsername()+"%")
+            );
+        }
+
+        if(Objects.nonNull(critiqueSearchCriteria.getFilm())){
+            Join<Critique, Film> subqueryCritiqueFilm = critiqueRoot.join("film");
+            predicates.add(
+                    criteriaBuilder.like(subqueryCritiqueFilm.get("name"), "%"+ critiqueSearchCriteria.getFilm()+"%")
             );
         }
 

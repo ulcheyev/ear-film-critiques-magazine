@@ -1,10 +1,7 @@
 package cvut.repository;
-import cvut.model.Critic;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
-import cvut.model.Film;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.Date;

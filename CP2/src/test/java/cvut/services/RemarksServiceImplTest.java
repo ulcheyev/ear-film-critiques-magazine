@@ -16,16 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
-public class RemarksServiceTest {
+public class RemarksServiceImplTest {
 
     @Autowired
-    private RemarksService remarksService;
+    private RemarksServiceImpl remarksServiceImpl;
 
     @Autowired
-    private AppUserService appUserService;
+    private AppUserServiceImpl appUserServiceImpl;
 
     @Autowired
-    private CritiqueService critiqueService;
+    private CritiqueServiceImpl critiqueServiceImpl;
 
     @Test
     public void makeAndSaveRemark(){
@@ -52,14 +52,14 @@ public class RemarksServiceTest {
 
         //verify text <5 and >3000
         assertThrows(ValidationException.class, () -> {
-            remarksService.makeRemarksAndSave(velky_text, 205L, 481L);
-            remarksService.makeRemarksAndSave(maly_text, 205L, 481L);
+            remarksServiceImpl.makeRemarksAndSave(velky_text, 205L, 481L);
+            remarksServiceImpl.makeRemarksAndSave(maly_text, 205L, 481L);
         });
 
         //verify not found admin, critique
         assertThrows(NotFoundException.class, () -> {
-            remarksService.makeRemarksAndSave(norm_text, 20000L, 481L);
-            remarksService.makeRemarksAndSave(norm_text, 205L, 40000L);
+            remarksServiceImpl.makeRemarksAndSave(norm_text, 20000L, 481L);
+            remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, 40000L);
         });
 
         //verify save remark
@@ -67,11 +67,11 @@ public class RemarksServiceTest {
         int count_1 = 0;
         int count_2 = 0;
 
-        count_1 = remarksService.getAll().size();
+        count_1 = remarksServiceImpl.findAll().size();
 
-        remarksService.makeRemarksAndSave(norm_text, 205L, 481L);
+        remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, 481L);
 
-        count_2 = remarksService.getAll().size();
+        count_2 = remarksServiceImpl.findAll().size();
 
         assertEquals(count_1 + 1, count_2);
     }
@@ -83,17 +83,17 @@ public class RemarksServiceTest {
 
         String norm_text = "Je to proste super";
 
-        int count_1 = remarksService.getAll().size();
+        int count_1 = remarksServiceImpl.findAll().size();
         int count_2 = 0;
 
         //verify not found remark
         assertThrows(NotFoundException.class, () -> {
-            remarksService.deleteById(100L);
+            remarksServiceImpl.deleteById(100L);
         });
 
-        remarksService.deleteById(3L);
+        remarksServiceImpl.deleteById(3L);
 
-        count_2 = remarksService.getAll().size();
+        count_2 = remarksServiceImpl.findAll().size();
 
         assertEquals(count_1, count_2 + 1);
 
@@ -124,22 +124,22 @@ public class RemarksServiceTest {
 
         //verify not found remark
         assertThrows(NotFoundException.class, () -> {
-            remarksService.update( norm_text, 52L);
+            remarksServiceImpl.update( norm_text, 52L);
         });
 
         //verify update na text, ktery <5 and >3000
         assertThrows(ValidationException.class, () -> {
-            remarksService.update(maly_text, 52L);
-            remarksService.update(velky_text, 52L);
+            remarksServiceImpl.update(maly_text, 52L);
+            remarksServiceImpl.update(velky_text, 52L);
         });
 
         //verify update
 
         String text = Generator.generateString();
 
-        remarksService.update(text, 1L);
+        remarksServiceImpl.update(text, 1L);
 
-        Assertions.assertEquals(text, remarksService.findById(1L).getText());
+        Assertions.assertEquals(text, remarksServiceImpl.findById(1L).getText());
     }
 
 

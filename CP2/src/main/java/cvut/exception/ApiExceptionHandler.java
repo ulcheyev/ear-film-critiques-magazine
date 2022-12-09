@@ -37,5 +37,16 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(foo, badRequest);
     }
 
+    @ExceptionHandler(value = {BadRequestException.class})
+    public ResponseEntity<Object> handleValidationException(BadRequestException e){
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        BadRequestExceptionPayload foo = new BadRequestExceptionPayload(
+                e.getMessage(),
+                badRequest,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+        return new ResponseEntity<>(foo, badRequest);
+    }
+
 
 }

@@ -21,16 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
-public class CritiqueServiceTest {
+public class CritiqueServiceImplTest {
 
     @Autowired
-    private CritiqueService critiqueService;
+    private CritiqueServiceImpl critiqueServiceImpl;
 
     @Test
     public void findAllByCritiqueStateTest(){
 
         CritiqueState critiqueState = CritiqueState.IN_PROCESSED;
-        List<Critique> allByCritiqueState = critiqueService.findAllByCritiqueState(critiqueState);
+        List<Critique> allByCritiqueState = critiqueServiceImpl.findAllByCritiqueState(critiqueState);
         for(Critique critique: allByCritiqueState){
             //Assert
             Assertions.assertEquals(critiqueState, critique.getCritiqueState());
@@ -39,7 +39,7 @@ public class CritiqueServiceTest {
         CritiqueState critiqueState2 = CritiqueState.CANCELED;
         //Assert
         Assertions.assertThrows(NotFoundException.class,
-                ()->critiqueService.findAllByCritiqueState(critiqueState2)
+                ()-> critiqueServiceImpl.findAllByCritiqueState(critiqueState2)
         );
 
     }
@@ -47,7 +47,7 @@ public class CritiqueServiceTest {
     @Test
     public void findAllByFilmTest(){
         String filmName = "National Optimization";
-        List<Critique> critiques = critiqueService.findByFilm(filmName);
+        List<Critique> critiques = critiqueServiceImpl.findByFilmName(filmName);
 
         for(Critique critique: critiques){
             assertThat(critique.getFilm().getName()).contains(filmName);
@@ -58,7 +58,7 @@ public class CritiqueServiceTest {
     @Test
     public void findAllByRatingTest(){
         double rating = 0;
-        List<Critique> critiques = critiqueService.findByRating(rating);
+        List<Critique> critiques = critiqueServiceImpl.findByRating(rating);
 
         for(Critique critique: critiques){
             Assertions.assertEquals(rating, critique.getRating());
@@ -69,14 +69,14 @@ public class CritiqueServiceTest {
     public void findAllByLastnameAndFirstnameLikeTest(){
         long id = 502L;
 
-        List<Critique> critiques1 = critiqueService.findByCritiqueOwnerId(id);
+        List<Critique> critiques1 = critiqueServiceImpl.findByCritiqueOwnerId(id);
         Assertions.assertFalse(critiques1.isEmpty());
         Assertions.assertTrue(critiques1.size() == 1);
 
         String firstname = critiques1.get(0).getCritiqueOwner().getFirstname();
         String lastname = critiques1.get(0).getCritiqueOwner().getLastname();
 
-        List<Critique> critiques = critiqueService.findByCriticsLastnameAndFirstname(firstname, lastname);
+        List<Critique> critiques = critiqueServiceImpl.findByCriticsLastnameAndFirstname(firstname, lastname);
 
         for(Critique critique: critiques){
             Assertions.assertEquals(firstname, critique.getCritiqueOwner().getFirstname());
@@ -88,10 +88,10 @@ public class CritiqueServiceTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateCritiqueStateTest(){
         Long id = 40L;
-        Critique critique = critiqueService.findById(40L);
+        Critique critique = critiqueServiceImpl.findById(40L);
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.IN_PROCESSED);
 
-        critiqueService.updateCritiqueState(id, CritiqueState.CANCELED);
+        critiqueServiceImpl.updateCritiqueState(id, CritiqueState.CANCELED);
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.CANCELED);
     }
 
@@ -99,13 +99,13 @@ public class CritiqueServiceTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateCritiqueTest(){
         Long id = 40L;
-        Critique critique = critiqueService.findById(id);
+        Critique critique = critiqueServiceImpl.findById(id);
 
         Critique critique1 = Generator.generateCritique(566);
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.IN_PROCESSED);
 
         //Change
-        critiqueService.updateCritique(id, critique1);
+        critiqueServiceImpl.updateCritique(id, critique1);
 
         Assertions.assertEquals(critique1.getText(), critique.getText());
         Assertions.assertEquals(critique1.getTitle(), critique.getTitle());
@@ -115,7 +115,7 @@ public class CritiqueServiceTest {
         critique1.setText(textToChange_min);
         //Change
         assertThrows(ValidationException.class, () -> {
-            critiqueService.updateCritique(id, critique1);
+            critiqueServiceImpl.updateCritique(id, critique1);
         });
 
         //Try to update with min title length
@@ -123,7 +123,7 @@ public class CritiqueServiceTest {
         critique1.setTitle(titleToChange_min);
         //Change
         assertThrows(ValidationException.class, () -> {
-            critiqueService.updateCritique(id, critique1);
+            critiqueServiceImpl.updateCritique(id, critique1);
         });
 
         //Try to update with max text length
@@ -131,7 +131,7 @@ public class CritiqueServiceTest {
         critique1.setText(textToChange_max);
         //Change
         assertThrows(ValidationException.class, () -> {
-            critiqueService.updateCritique(id, critique1);
+            critiqueServiceImpl.updateCritique(id, critique1);
         });
 
         //Try to update with max title length
@@ -139,7 +139,7 @@ public class CritiqueServiceTest {
         critique1.setTitle(titleToChange_max);
         //Change
         assertThrows(ValidationException.class, () -> {
-            critiqueService.updateCritique(id, critique1);
+            critiqueServiceImpl.updateCritique(id, critique1);
         });
     }
 
@@ -148,7 +148,7 @@ public class CritiqueServiceTest {
     public void correctCritiqueAfterCreateRemarksTest() {
         Long id = 12L;
 
-        Critique critique = critiqueService.findById(id);
+        Critique critique = critiqueServiceImpl.findById(id);
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.IN_PROCESSED);
 
         String textToChange = Generator.generateString("ef3w", 100);
@@ -156,12 +156,12 @@ public class CritiqueServiceTest {
 
         //Wrong state
         assertThrows(ValidationException.class, () -> {
-            critiqueService.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
+            critiqueServiceImpl.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
         });
 
         //Right state
         critique.setCritiqueState(CritiqueState.SENT_FOR_CORRECTIONS);
-        critiqueService.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
+        critiqueServiceImpl.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
 
         //Assert
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.CORRECTED);

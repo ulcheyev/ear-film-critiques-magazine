@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 
-public class AppUserServiceTest {
+public class AppUserServiceImplTest {
 
     @Autowired
-    private AppUserService appUserService;
+    private AppUserServiceImpl appUserServiceImpl;
 
     @Test
     public void verifyThatUserDoesNotHaveUniqueUsernameAndEmail(){
@@ -34,22 +34,22 @@ public class AppUserServiceTest {
 
         //verify email
         assertThrows(ValidationException.class, () -> {
-            appUserService.save(appUser1);
+            appUserServiceImpl.save(appUser1);
         });
 
         //check that a user with non-unique mail has not been added to the table
         assertThrows(NotFoundException.class, () -> {
-            appUserService.findByUsername("blablahe");
+            appUserServiceImpl.findByUsername("blablahe");
         });
 
         //verify username
         assertThrows(ValidationException.class, () -> {
-            appUserService.save(appUser2);
+            appUserServiceImpl.save(appUser2);
         });
 
         //check that a user with non-unique username has not been added to the table
         assertThrows(NotFoundException.class, () -> {
-            appUserService.findByEmail("kostechka@gmail.com");
+            appUserServiceImpl.findByEmail("kostechka@gmail.com");
         });
 
     }
@@ -60,18 +60,18 @@ public class AppUserServiceTest {
         AppUser appUser1 = new AppUser("Kasha", "Molochnaya", "kashechka1", "213132dsaddfx", "kashecka_mleko1@gmail.com");
         AppUser appUser2 = new AppUser("Joji", "Jojik", "jjoji6", "qedkqmdkada", "jjjjoji543@gmail.com");
 
-        appUserService.save(appUser1);
+        appUserServiceImpl.save(appUser1);
 
 
         assertThrows(NotFoundException.class, () -> {
-            appUserService.findByUsername(appUser2.getUsername());
+            appUserServiceImpl.findByUsername(appUser2.getUsername());
         });
 
-        int count1 = appUserService.getAll().size();
+        int count1 = appUserServiceImpl.findAll().size();
 
-        appUserService.deleteById(appUser1.getId());
+        appUserServiceImpl.deleteById(appUser1.getId());
 
-        int count2 = appUserService.getAll().size();
+        int count2 = appUserServiceImpl.findAll().size();
 
         assertEquals(count1, count2 + 1);
 
@@ -81,25 +81,25 @@ public class AppUserServiceTest {
     @Test
     public void updateEmailUser(){
 
-        AppUser appUser = appUserService.findById(300L);
+        AppUser appUser = appUserServiceImpl.findById(300L);
         AppUser appUser1 = Generator.generateUser();
 
-        appUserService.save(appUser1);
+        appUserServiceImpl.save(appUser1);
 
         //verify username
         assertThrows(ValidationException.class, () -> {
-            appUserService.update(appUser1.getId(), appUser.getUsername(), Generator.generateString());
+            appUserServiceImpl.update(appUser1.getId(), appUser.getUsername(), Generator.generateString());
         });
 
         //verify email
         assertThrows(ValidationException.class, () -> {
-            appUserService.update(appUser1.getId(), Generator.generateString(), appUser.getEmail());
+            appUserServiceImpl.update(appUser1.getId(), Generator.generateString(), appUser.getEmail());
         });
 
         //verify update
         String username = Generator.generateString();
         String mail = Generator.generateString()+"@gmail.com";
-        appUserService.update(appUser1.getId(), username, mail);
+        appUserServiceImpl.update(appUser1.getId(), username, mail);
 
 
         Assertions.assertEquals(username, appUser1.getUsername());

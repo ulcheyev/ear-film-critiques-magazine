@@ -1,5 +1,5 @@
 package cvut.repository;
-
+import com.github.javafaker.App;
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.AppUser;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 public class AppUserRepositoryTest {
 
     @Autowired
+
     private AppUserRepository appUserRepository;
 
 
@@ -60,6 +60,4 @@ public class AppUserRepositoryTest {
                         tuple(appUser.getFirstname(), appUser.getLastname())
                 );
     }
-
-
 }

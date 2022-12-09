@@ -16,32 +16,32 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
-public class RatingServiceTest {
+public class RatingServiceImplTest {
 
     @Autowired
-    private RatingService ratingService;
+    private RatingServiceImpl ratingServiceImpl;
 
     @Autowired
-    private AppUserService appUserService;
+    private AppUserServiceImpl appUserServiceImpl;
 
     @Autowired
-    private CritiqueService critiqueService;
+    private CritiqueServiceImpl critiqueServiceImpl;
 
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addRatingToCritiqueAndCritic(){
         double stars = 4;
-        Critique critique = critiqueService.findById(1L);
+        Critique critique = critiqueServiceImpl.findById(1L);
         critique.setCritiqueState(CritiqueState.ACCEPTED);
         Critic critic = critique.getCritiqueOwner();
 
-        AppUser appUser = appUserService.findById(300L);
-        ratingService.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getId(), critique.getId(), stars);
+        AppUser appUser = appUserServiceImpl.findById(300L);
+        ratingServiceImpl.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getId(), critique.getId(), stars);
 
-        double expectedForCritique = ratingService.findSumOfVotesByCritiqueId(critique.getId())/
-                ratingService.findQuantityOfVotesByCritiqueId(critique.getId());
-        double expectedForCritic = critiqueService.findSumOfCritiquesByCriticId(critic.getId())
+        double expectedForCritique = ratingServiceImpl.findSumOfVotesByCritiqueId(critique.getId())/
+                ratingServiceImpl.findQuantityOfVotesByCritiqueId(critique.getId());
+        double expectedForCritic = critiqueServiceImpl.findSumOfCritiquesByCriticId(critic.getId())
                 / critic.getCritiqueList().size();
 
         Assertions.assertEquals(EarUtils.floorNumber(1, expectedForCritique), critique.getRating());
@@ -53,20 +53,20 @@ public class RatingServiceTest {
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteRatingFromCritiqueAndCritic(){
-        Critique critique = critiqueService.findById(1L);
+        Critique critique = critiqueServiceImpl.findById(1L);
         critique.setCritiqueState(CritiqueState.ACCEPTED);
         Critic critic = critique.getCritiqueOwner();
-        AppUser appUser = appUserService.findById(300L);
+        AppUser appUser = appUserServiceImpl.findById(300L);
 
         //Create
-        ratingService.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getId(), critique.getId(), 5);
+        ratingServiceImpl.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getId(), critique.getId(), 5);
 
 
-        ratingService.deleteAndUpdate(appUser.getId(),critique.getId());
+        ratingServiceImpl.deleteAndUpdate(appUser.getId(),critique.getId());
 
-        double expectedForCritique = ratingService.findSumOfVotesByCritiqueId(critique.getId())/
-                ratingService.findQuantityOfVotesByCritiqueId(critique.getId());
-        double expectedForCritic = critiqueService.findSumOfCritiquesByCriticId(critic.getId())
+        double expectedForCritique = ratingServiceImpl.findSumOfVotesByCritiqueId(critique.getId())/
+                ratingServiceImpl.findQuantityOfVotesByCritiqueId(critique.getId());
+        double expectedForCritic = critiqueServiceImpl.findSumOfCritiquesByCriticId(critic.getId())
                 / critic.getCritiqueList().size();
 
 

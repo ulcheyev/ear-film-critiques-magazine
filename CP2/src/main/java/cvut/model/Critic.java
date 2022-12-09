@@ -19,6 +19,7 @@ public class Critic extends AppUser {
 
     @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.LAZY)
     @JsonBackReference
+    @ToString.Exclude
     private List<Critique> critiqueList;
 
     public Critic(String firstname, String lastname, String username, String password, String email) {

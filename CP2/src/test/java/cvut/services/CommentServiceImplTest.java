@@ -19,16 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
-public class CommentServiceTest {
+public class CommentServiceImplTest {
 
     @Autowired
-    private CommentService commentService;
+    private CommentServiceImpl commentServiceImpl;
 
     @Autowired
-    private AppUserService appUserService;
+    private AppUserServiceImpl appUserServiceImpl;
 
     @Autowired
-    private CritiqueService critiqueService;
+    private CritiqueServiceImpl critiqueServiceImpl;
 
 
     @Test
@@ -50,13 +50,13 @@ public class CommentServiceTest {
                 "ipsum est, rhoncus eu ligula eu, semper tristique nisl. Donec luctus leo arcu. Duis in justo id turpis.";
 
         AppUser appUser = Generator.generateUser();
-        AppUser appUser_notCritic = appUserService.findById(1080L);
-        Critique critique = critiqueService.findById(205L);
-        Critique critique_in_proc = critiqueService.findById(6L);
+        AppUser appUser_notCritic = appUserServiceImpl.findById(1080L);
+        Critique critique = critiqueServiceImpl.findById(205L);
+        Critique critique_in_proc = critiqueServiceImpl.findById(6L);
         Critique critique_neex = Generator.generateCritique(300);
         AppUser appUser_neex = Generator.generateUser();
-        appUserService.save(appUser);
-        critiqueService.save(critique);
+        appUserServiceImpl.save(appUser);
+        critiqueServiceImpl.save(critique);
 
 
         String normal_text = "Its my first comment";
@@ -64,28 +64,28 @@ public class CommentServiceTest {
 
         //verify long text (>180 words)
         assertThrows(ValidationException.class, () -> {
-            commentService.save(text_200, appUser.getId(), critique.getId());
+            commentServiceImpl.save(text_200, appUser.getId(), critique.getId());
         });
 
         //verify not found appUser
         assertThrows(NotFoundException.class, () -> {
-            commentService.save(normal_text, 2000000000L, critique.getId());
+            commentServiceImpl.save(normal_text, 2000000000L, critique.getId());
         });
 
         //checking that when a critic is in the "IN_PROCESSED" state, only the critic can comment on it
 
-        int count_before_save_comment = commentService.getAll().size();
+        int count_before_save_comment = commentServiceImpl.findAll().size();
 
-        commentService.save(normal_text, 1080L, 6L);
+        commentServiceImpl.save(normal_text, 1080L, 6L);
 
-        int count_after_save = commentService.getAll().size();
+        int count_after_save = commentServiceImpl.findAll().size();
 
         assertEquals(count_before_save_comment, count_after_save);
 
 
         //verify not found critique
         assertThrows(NotFoundException.class, () -> {
-            commentService.save(normal_text, appUser.getId(), 200000000000L);
+            commentServiceImpl.save(normal_text, appUser.getId(), 200000000000L);
         });
 
 
@@ -93,11 +93,11 @@ public class CommentServiceTest {
         int count1 = 0;
         int count2 = 0;
 
-        count1 = commentService.getAll().size();
+        count1 = commentServiceImpl.findAll().size();
 
-        commentService.save(normal_text, appUser.getId(), critique.getId());
+        commentServiceImpl.save(normal_text, appUser.getId(), critique.getId());
 
-        count2 = commentService.getAll().size();
+        count2 = commentServiceImpl.findAll().size();
 
         assertEquals(count1 + 1, count2);
 
@@ -108,28 +108,28 @@ public class CommentServiceTest {
     public void deleteCommentTest(){
 
         AppUser appUser = Generator.generateUser();
-        Critique critique = critiqueService.findById(205L);
+        Critique critique = critiqueServiceImpl.findById(205L);
 
-        appUserService.save(appUser);
-        critiqueService.save(critique);
+        appUserServiceImpl.save(appUser);
+        critiqueServiceImpl.save(critique);
 
 
         String normal_text = "Its my first comment";
 
         //verify delete comment, ktery neexistuje v tabulce
         assertThrows(NotFoundException.class, () -> {
-            commentService.deleteComment(52L);
+            commentServiceImpl.deleteComment(52L);
         });
 
         //verify delete comment
         int count1 = 0;
         int count2 = 0;
 
-        count1 = commentService.getAll().size();
+        count1 = commentServiceImpl.findAll().size();
 
-        commentService.deleteComment(10L);
+        commentServiceImpl.deleteComment(10L);
 
-        count2 = commentService.getAll().size();
+        count2 = commentServiceImpl.findAll().size();
 
         assertEquals(count1, count2+1);
 
@@ -155,24 +155,24 @@ public class CommentServiceTest {
 
 
         AppUser appUser = Generator.generateUser();
-        Critique critique = critiqueService.findById(205L);
-        appUserService.save(appUser);
-        critiqueService.save(critique);
+        Critique critique = critiqueServiceImpl.findById(205L);
+        appUserServiceImpl.save(appUser);
+        critiqueServiceImpl.save(critique);
 
         String normal_text = "Its my first comment";
 
         //verify update comment, ktery neexistuje v tabulce
         assertThrows(NotFoundException.class, () -> {
-            commentService.updateComment( 52L, normal_text);
+            commentServiceImpl.update( 52L, normal_text);
         });
 
         //verify update comment
 
         String text = Generator.generateString();
 
-        commentService.updateComment(12L, text);
+        commentServiceImpl.update(12L, text);
 
-        Assertions.assertEquals(text, commentService.findById(12L).getText());
+        Assertions.assertEquals(text, commentServiceImpl.findById(12L).getText());
 
     }
 }
