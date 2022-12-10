@@ -1,5 +1,6 @@
 package cvut.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +40,7 @@ public class RatingVote {
 
     //TODO ubrat cascade type
     @ManyToOne
+    @JsonManagedReference("ratingVotes")
     @JoinColumn(name = "vote_owner", referencedColumnName = "id", nullable = false)
     private AppUser voteOwner;
 

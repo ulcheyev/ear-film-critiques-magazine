@@ -1,26 +1,48 @@
 package cvut.services;
+import cvut.controllers.RegistrationRequest;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
+import cvut.model.Admin;
 import cvut.model.AppUser;
+import cvut.model.Critic;
 import cvut.repository.AppUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class AppUserServiceImpl implements AppUserService{
 
     private final AppUserRepository appUserRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public AppUserServiceImpl(AppUserRepository appUserRepository) {
-        this.appUserRepository = appUserRepository;
-//        this.passwordEncoder = passwordEncoder;
+
+    public void save(@NonNull RegistrationRequest registrationRequest) {
+        Optional<AppUser> appUserByUsername = appUserRepository
+                .findAppUserByUsername(registrationRequest.getUsername());
+        if (appUserByUsername.isPresent()) {
+            throw new ValidationException("Username " + registrationRequest.getUsername() + " has been taken");
+        }
+        Optional<AppUser> appUserByEmail = appUserRepository
+                .findAppUserByEmail(registrationRequest.getEmail());
+        if (appUserByEmail.isPresent()) {
+            throw new ValidationException("Email " + registrationRequest.getEmail() + " has been taken");
+        }
+
+        if(Objects.equals(registrationRequest.getRole(), "CRITIC")){
+            appUserRepository.save(new Critic(registrationRequest.getFirstname(), registrationRequest.getLastname(), registrationRequest.getUsername(), registrationRequest.getPassword(), registrationRequest.getEmail()));
+        }
+        else {
+            appUserRepository.save(new AppUser(registrationRequest.getFirstname(), registrationRequest.getLastname(), registrationRequest.getUsername(), registrationRequest.getPassword(), registrationRequest.getEmail()));
+        }
     }
 
     public void save(@NonNull AppUser appUser) {
@@ -34,9 +56,17 @@ public class AppUserServiceImpl implements AppUserService{
         if (appUserByEmail.isPresent()) {
             throw new ValidationException("Email " + appUser.getEmail() + " has been taken");
         }
-//        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         appUserRepository.save(appUser);
     }
+
+    //TODO
+//    public void giveAdminPrivelege(@NonNull Long appUserID){
+//        AppUser appUser = findById(appUserID);
+//        AppUser newAdmin = new Admin(appUser.getFirstname(), appUser.getLastname(), appUser.getUsername(), appUser.getPassword(), appUser.getEmail());
+//        appUserRepository.deleteById(appUserID);
+//        appUserRepository.save(newAdmin);
+//    }
 
     public AppUser findById(@NonNull Long appUserId) {
         AppUser appUser = appUserRepository.findById(appUserId)
@@ -99,6 +129,15 @@ public class AppUserServiceImpl implements AppUserService{
             }
         }
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        AppUser appUser = findByUsername(username);
+        Collection<SimpleGrantedAuthority> simpleGrantedAuthorityCollection = new ArrayList<>();
+        simpleGrantedAuthorityCollection.add(new SimpleGrantedAuthority(appUser.getRole()));
+        return new org.springframework.security.core.userdetails.User(appUser.getUsername(), appUser.getPassword(), simpleGrantedAuthorityCollection);
+    }
+
 
 }
 

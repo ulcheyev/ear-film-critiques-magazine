@@ -12,6 +12,8 @@ import static javax.persistence.GenerationType.*;
 @Entity
 @Table(name = "app_user")
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue(AppUser.DISCRIMINATOR_VALUE)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,6 +22,8 @@ import static javax.persistence.GenerationType.*;
         @NamedQuery(name = "AppUser.findUsersWithSpecifiedCommentQuantity", query = "SELECT user FROM AppUser user where size(user.commentList)>?1"),
 })
 public class AppUser {
+
+    public static final String DISCRIMINATOR_VALUE = "USER";
 
     @GeneratedValue(strategy = AUTO)
     @Id
@@ -54,6 +58,11 @@ public class AppUser {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    @Transient
+    public String getRole() {
+        return this.getClass().getAnnotation(DiscriminatorValue.class).value();
     }
 
 }

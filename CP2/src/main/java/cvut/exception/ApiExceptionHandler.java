@@ -26,6 +26,17 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(foo, notFound);
     }
 
+    @ExceptionHandler(value = {BadCredentialException.class})
+    public ResponseEntity<Object> handleBadCredential(BadCredentialException e){
+        HttpStatus bad = HttpStatus.BAD_REQUEST;
+        BadCredentialExceptionPayload foo = new BadCredentialExceptionPayload(
+                e.getMessage(),
+                bad,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+        return new ResponseEntity<>(foo, bad);
+    }
+
     @ExceptionHandler(value = {ValidationException.class})
     public ResponseEntity<Object> handleValidationException(ValidationException e){
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
@@ -38,7 +49,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(value = {BadRequestException.class})
-    public ResponseEntity<Object> handleValidationException(BadRequestException e){
+    public ResponseEntity<Object> handleBadRequestException(BadRequestException e){
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         BadRequestExceptionPayload foo = new BadRequestExceptionPayload(
                 e.getMessage(),

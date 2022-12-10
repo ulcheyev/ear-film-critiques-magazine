@@ -7,12 +7,15 @@ import java.util.List;
 
 @Entity
 @Table(name = "critic")
+@DiscriminatorValue(Critic.DISCRIMINATOR_VALUE)
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
 @AllArgsConstructor
 public class Critic extends AppUser {
+
+    public static final String DISCRIMINATOR_VALUE = "CRITIC";
 
     @Column(name = "critic_rating", nullable = false)
     private double criticRating;

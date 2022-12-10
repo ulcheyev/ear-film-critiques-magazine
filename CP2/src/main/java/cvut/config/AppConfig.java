@@ -14,6 +14,4 @@ public class AppConfig {
         return new MethodValidationPostProcessor();
     }
 
-//    @Bean
-//    public PasswordEncoder encoder() {return new BCryptPasswordEncoder();}
 }

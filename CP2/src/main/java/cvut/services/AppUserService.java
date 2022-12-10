@@ -1,16 +1,17 @@
 package cvut.services;
 
+import cvut.controllers.RegistrationRequest;
 import cvut.model.AppUser;
-import org.springframework.lang.NonNull;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface AppUserService {
+public interface AppUserService extends UserDetailsService {
     AppUser findById( Long appUserId);
     List<AppUser> findAll();
     AppUser findByUsername(String username);
     AppUser findByEmail( String email);
-    void save( AppUser appUser);
+    void save( RegistrationRequest appUser);
     void update(Long appUserId, String username, String email);
     void deleteById(Long appUserId);
     void findUsersWithSpecifiedCommentQuantity(int quantity);
