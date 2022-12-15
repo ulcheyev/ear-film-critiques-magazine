@@ -29,7 +29,7 @@ public class AuthenticationController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
 
         if(!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())){
-            throw new BadCredentialException("Invalid password");
+            throw new BadCredentialException("Invalid password or username");
         }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(

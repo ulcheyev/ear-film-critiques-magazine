@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ public class CritiqueController {
 
     //TODO toklo autorizovaniy
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('CRITIC')")
     public ResponseEntity<String> addNewCritique(@Valid @NonNull @RequestBody Critique critique){
         service.save(critique);
         return ResponseEntity.ok("Critique successfully added");

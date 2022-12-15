@@ -12,7 +12,7 @@ import static javax.persistence.GenerationType.*;
 @Entity
 @Table(name = "app_user")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "rolex", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue(AppUser.DISCRIMINATOR_VALUE)
 @Getter
 @Setter

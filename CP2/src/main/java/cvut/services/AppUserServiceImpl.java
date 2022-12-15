@@ -37,12 +37,12 @@ public class AppUserServiceImpl implements AppUserService{
             throw new ValidationException("Email " + registrationRequest.getEmail() + " has been taken");
         }
 
-        if(Objects.equals(registrationRequest.getRole(), "CRITIC")){
+        /*if(Objects.equals(registrationRequest.getRole(), "CRITIC")){
             appUserRepository.save(new Critic(registrationRequest.getFirstname(), registrationRequest.getLastname(), registrationRequest.getUsername(), registrationRequest.getPassword(), registrationRequest.getEmail()));
         }
         else {
             appUserRepository.save(new AppUser(registrationRequest.getFirstname(), registrationRequest.getLastname(), registrationRequest.getUsername(), registrationRequest.getPassword(), registrationRequest.getEmail()));
-        }
+        */
     }
 
     public void save(@NonNull AppUser appUser) {
