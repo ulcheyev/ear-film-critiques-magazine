@@ -23,7 +23,7 @@ import static javax.persistence.GenerationType.*;
 })
 public class AppUser {
 
-    public static final String DISCRIMINATOR_VALUE = "USER";
+    public static final String DISCRIMINATOR_VALUE = "ROLE_USER";
 
     @GeneratedValue(strategy = AUTO)
     @Id

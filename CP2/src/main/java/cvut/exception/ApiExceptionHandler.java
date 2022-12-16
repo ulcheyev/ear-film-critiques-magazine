@@ -2,9 +2,11 @@ package cvut.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -57,6 +59,17 @@ public class ApiExceptionHandler {
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
         return new ResponseEntity<>(foo, badRequest);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public final ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
+        HttpStatus accessDenied = HttpStatus.PRECONDITION_FAILED;
+        ValidationExceptionPayload foo = new ValidationExceptionPayload(
+               "Access is denied",
+                accessDenied,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+        return new ResponseEntity<>(foo, accessDenied);
     }
 
 

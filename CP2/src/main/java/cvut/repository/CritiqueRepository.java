@@ -35,6 +35,8 @@ public interface CritiqueRepository extends JpaRepository<Critique, Long> {
 
     List<Critique> findByOrderByDateOfAcceptanceDesc();
 
+    List<Critique> findAllByCritiqueOwnerUsername(String username);
+
     List<Critique> findByFilmIdAndRating(double rating, Long id);
 
 }

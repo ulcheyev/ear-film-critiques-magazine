@@ -1,11 +1,13 @@
 package cvut.services;
 
 import cvut.Application;
+import cvut.config.utils.EarUtils;
 import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
+import cvut.model.dto.CritiqueDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +103,11 @@ public class CritiqueServiceImplTest {
         Long id = 40L;
         Critique critique = critiqueServiceImpl.findById(id);
 
-        Critique critique1 = Generator.generateCritique(566);
+        CritiqueDTO critique1 = new CritiqueDTO();
+        critique1.setText(Generator.generateString("d",342));
+        critique1.setTitle(Generator.generateString("f",100));
+        critique1.setFilmId(1L);
+
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.IN_PROCESSED);
 
         //Change

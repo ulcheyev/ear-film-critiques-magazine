@@ -20,7 +20,7 @@ import java.util.List;
 })
 public class Admin extends AppUser {
 
-    public static final String DISCRIMINATOR_VALUE = "ADMIN";
+    public static final String DISCRIMINATOR_VALUE = "ROLE_ADMIN";
 
     @OneToMany(mappedBy = "admin")
     @ToString.Exclude

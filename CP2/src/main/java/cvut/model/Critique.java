@@ -1,6 +1,7 @@
 package cvut.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ import static javax.persistence.GenerationType.IDENTITY;
         @NamedQuery(name = "Critique.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike", query = "SELECT c FROM Critique c WHERE c.critiqueOwner.firstname LIKE :firstname AND c.critiqueOwner.lastname LIKE :lastname AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED"),
         @NamedQuery(name = "Critique.findAllByFilm_NameLike", query = "SELECT c FROM Critique c WHERE c.film.name LIKE :name AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED"),
         @NamedQuery(name = "Critique.findAllByRating", query = "SELECT c FROM Critique c WHERE c.rating = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED"),
+        @NamedQuery(name = "Critique.findAllByCritiqueOwnerUsername", query = "SELECT c FROM Critique c WHERE c.critiqueOwner.username = ?1"),
         @NamedQuery(name = "Critique.findAllByDateOfAcceptance", query = "SELECT c FROM Critique c WHERE c.dateOfAcceptance = ?1 AND c.critiqueState = cvut.model.CritiqueState.ACCEPTED")
 })
 public class Critique {
@@ -60,7 +62,8 @@ public class Critique {
     @JsonBackReference
     private List<Remarks> critiqueRemarks;
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonManagedReference("critiqueList")
     @JoinColumn(name = "admin", referencedColumnName = "id")
     private Admin  admin;
@@ -78,10 +81,16 @@ public class Critique {
     @JsonBackReference
     private List<Comment> comments;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "film", referencedColumnName = "id", nullable = false)
     private Film film;
 
+    public Critique(String title, String text, Film film, Critic critiqueOwner){
+        this.title = title;
+        this.text = text;
+        this.film = film;
+        this.critiqueOwner = critiqueOwner;
+    }
 
 }
 

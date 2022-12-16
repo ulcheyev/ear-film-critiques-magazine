@@ -1,4 +1,4 @@
-package cvut.services.security.validators;
+package cvut.security.validators;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

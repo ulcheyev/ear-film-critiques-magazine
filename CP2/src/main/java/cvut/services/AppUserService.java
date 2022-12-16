@@ -1,6 +1,6 @@
 package cvut.services;
 
-import cvut.controllers.RegistrationRequest;
+import cvut.model.dto.RegistrationRequest;
 import cvut.model.AppUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

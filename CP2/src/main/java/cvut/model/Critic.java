@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Critic extends AppUser {
 
-    public static final String DISCRIMINATOR_VALUE = "CRITIC";
+    public static final String DISCRIMINATOR_VALUE = "ROLE_CRITIC";
 
     @Column(name = "critic_rating", nullable = false)
     private double criticRating;

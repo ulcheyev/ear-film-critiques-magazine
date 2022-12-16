@@ -1,10 +1,12 @@
 package cvut.services;
 
+import cvut.model.dto.CritiqueDTO;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
 import cvut.repository.CritiqueSearchCriteria;
-import org.springframework.lang.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +24,10 @@ public interface CritiqueService {
     List<Critique> findByDateOfAcceptance(Date date);
     List<Critique> findAllOrderByDateDesc();
     void updateCritiqueState(Long critiqueId, CritiqueState critiqueState);
-    void updateCritique(Long critiqueId,Critique critique);
+    void updateCritique(Long critiqueId, CritiqueDTO critiqueDTO);
+    String readPdf(MultipartFile multipartFile) throws IOException;
     void correctCritiqueAfterCreateRemarks(Long critiqueId, String title, String text);
     void save(Critique critique);
+    Critique save(CritiqueDTO critique);
     void deleteById(Long id);
 }

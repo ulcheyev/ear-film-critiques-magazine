@@ -1,8 +1,8 @@
 package cvut.services;
-import cvut.controllers.RegistrationRequest;
+import cvut.config.utils.EarUtils;
+import cvut.model.dto.RegistrationRequest;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
-import cvut.model.Admin;
 import cvut.model.AppUser;
 import cvut.model.Critic;
 import cvut.repository.AppUserRepository;
@@ -26,6 +26,10 @@ public class AppUserServiceImpl implements AppUserService{
 
 
     public void save(@NonNull RegistrationRequest registrationRequest) {
+
+        if(!registrationRequest.fieldsIsNotEmpty()){
+            throw new ValidationException("You have to fill all fields");
+        }
         Optional<AppUser> appUserByUsername = appUserRepository
                 .findAppUserByUsername(registrationRequest.getUsername());
         if (appUserByUsername.isPresent()) {
@@ -37,12 +41,21 @@ public class AppUserServiceImpl implements AppUserService{
             throw new ValidationException("Email " + registrationRequest.getEmail() + " has been taken");
         }
 
-        /*if(Objects.equals(registrationRequest.getRole(), "CRITIC")){
-            appUserRepository.save(new Critic(registrationRequest.getFirstname(), registrationRequest.getLastname(), registrationRequest.getUsername(), registrationRequest.getPassword(), registrationRequest.getEmail()));
+        AppUser appUser = new AppUser(
+                registrationRequest.getFirstname(),
+                registrationRequest.getLastname(),
+                registrationRequest.getUsername(),
+                registrationRequest.getPassword(),
+                registrationRequest.getEmail()
+        );
+
+        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+
+        if(registrationRequest.getRole().equals(Critic.DISCRIMINATOR_VALUE)){
+            appUserRepository.save(EarUtils.toCritic(appUser));
+        }else{
+            appUserRepository.save(appUser);
         }
-        else {
-            appUserRepository.save(new AppUser(registrationRequest.getFirstname(), registrationRequest.getLastname(), registrationRequest.getUsername(), registrationRequest.getPassword(), registrationRequest.getEmail()));
-        */
     }
 
     public void save(@NonNull AppUser appUser) {
@@ -61,7 +74,7 @@ public class AppUserServiceImpl implements AppUserService{
     }
 
     //TODO
-//    public void giveAdminPrivelege(@NonNull Long appUserID){
+//    public void giveAdminPrivilege(@NonNull Long appUserID){
 //        AppUser appUser = findById(appUserID);
 //        AppUser newAdmin = new Admin(appUser.getFirstname(), appUser.getLastname(), appUser.getUsername(), appUser.getPassword(), appUser.getEmail());
 //        appUserRepository.deleteById(appUserID);

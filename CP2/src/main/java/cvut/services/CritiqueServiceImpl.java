@@ -1,39 +1,45 @@
 package cvut.services;
 
+import cvut.config.security_utils.AuthenticationFacade;
+import cvut.model.dto.CritiqueDTO;
 import cvut.exception.BadRequestException;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
-import cvut.model.Critique;
+import cvut.model.*;
 import cvut.repository.CritiqueSearchCriteria;
-import cvut.model.CritiqueState;
-import cvut.repository.AdminRepository;
-import cvut.repository.CriticRepository;
 import cvut.repository.CritiqueCriteriaRepository;
 import cvut.repository.CritiqueRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CritiqueServiceImpl implements CritiqueService{
 
     private final CritiqueRepository critiqueRepository;
     private final CritiqueCriteriaRepository critiqueCriteriaRepository;
+    private final FilmService filmService;
+    private final AppUserService appUserService;
+    private final AuthenticationFacade authenticationFacade;
+
     private static final int TEXT_LENGTH_MAX = 3000;
     private static final int TEXT_LENGTH_MIN = 300;
     private static final int TITLE_LENGTH_MAX = 150;
     private static final int TITLE_LENGTH_MIN = 15;
-
-    @Autowired
-    public CritiqueServiceImpl(CritiqueRepository critiqueRepository, AdminRepository adminRepository, CriticRepository criticRepository, CritiqueCriteriaRepository critiqueCriteriaRepository) {
-        this.critiqueRepository = critiqueRepository;
-        this.critiqueCriteriaRepository = critiqueCriteriaRepository;
-    }
+    private static final int FILE_MAX_SIZE = 512000;
 
     public Critique findById(@NonNull Long id) {
         Optional<Critique> byId = critiqueRepository.findById(id);
@@ -96,6 +102,14 @@ public class CritiqueServiceImpl implements CritiqueService{
         return critiquesByCritiqueOwner_id;
     }
 
+    public List<Critique> findByCritiqueOwnerUsername(@NonNull String username) {
+        List<Critique> critiquesByCritiqueOwnerUsername= critiqueRepository.findAllByCritiqueOwnerUsername(username);
+        if (critiquesByCritiqueOwnerUsername.isEmpty()) {
+            throw new NotFoundException("Critique with critique owner username " + username + " does not exist");
+        }
+        return critiquesByCritiqueOwnerUsername;
+    }
+
     public int findQuantityOfCritiquesByCriticId(@NonNull Long id) {
         Optional<Integer> quantityOfCritiquesByCriticId = critiqueRepository.findQuantityOfCritiquesByCriticId(id);
         if (quantityOfCritiquesByCriticId.isEmpty()) {
@@ -154,12 +168,12 @@ public class CritiqueServiceImpl implements CritiqueService{
     }
 
     @Transactional
-    public void updateCritique(@NonNull Long critiqueId, @NonNull Critique critique) {
+    public void updateCritique(@NonNull Long critiqueId, @NonNull CritiqueDTO critiqueDTO) {
         Critique toChange = critiqueRepository.findById(critiqueId).orElseThrow(
                 () -> new NotFoundException("Critique with id " + critiqueId + " does not found")
         );
-        String text = critique.getText();
-        String title = critique.getTitle();
+        String text = critiqueDTO.getText();
+        String title = critiqueDTO.getTitle();
 
         if(title.length() > TITLE_LENGTH_MAX ||
                 title.length() < TITLE_LENGTH_MIN) {
@@ -206,9 +220,7 @@ public class CritiqueServiceImpl implements CritiqueService{
         critique.setCritiqueState(CritiqueState.CORRECTED);
     }
 
-    public void save(Critique critique){
-
-
+    public void save(@NonNull Critique critique){
         if(critique.getText().length() > TEXT_LENGTH_MAX || critique.getText().length() < TEXT_LENGTH_MIN){
             throw new ValidationException("Text length must be less than 3000 symbols and greater than 300 symbols");
         }
@@ -220,12 +232,47 @@ public class CritiqueServiceImpl implements CritiqueService{
         critiqueRepository.save(critique);
     }
 
+    public Critique save(@NonNull CritiqueDTO critiqueDTO){
+        if(!critiqueDTO.fieldsIsNotEmpty()){
+            throw new ValidationException("Please, fill all fields");
+        }
+        Film film = filmService.findById(critiqueDTO.getFilmId());
+        Critic critic = (Critic) appUserService.findByUsername(authenticationFacade.getAuthentication().getName());
+        Critique critique = new Critique(critiqueDTO.getTitle(), critiqueDTO.getText(), film, critic);
+        critiqueRepository.save(critique);
+        return critique;
+    }
+
     public void deleteById(@NonNull Long id){
         if(!critiqueRepository.existsById(id)){
             throw new NotFoundException("Can not delete critique with id "+id+" . Critique does not exist.");
         }
         critiqueRepository.deleteById(id);
 
+    }
+
+    public boolean checkOwner(@NonNull Long critiqueId, @NonNull String username){
+        return findById(critiqueId).getCritiqueOwner().getUsername().equals(username);
+    }
+
+    public String readPdf(MultipartFile multipartFile) throws IOException {
+
+        if(multipartFile.getSize() > FILE_MAX_SIZE ){
+            throw new ValidationException("File is too big. Max size "+ FILE_MAX_SIZE/1024 + "Kb");
+        }
+
+        //transfer
+        Path path = Paths.get("files/"+multipartFile.getOriginalFilename());
+        multipartFile.transferTo(path);
+
+        //open
+        File file = new File("files/"+multipartFile.getOriginalFilename());
+        if(!file.exists()){
+            throw new IOException("Invalid path to file");
+        }
+        PDDocument document = PDDocument.load(file);
+        PDFTextStripper pdfTextStripper = new PDFTextStripper();
+        return pdfTextStripper.getText(document);
     }
 }
 
