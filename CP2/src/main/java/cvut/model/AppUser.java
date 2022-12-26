@@ -19,11 +19,48 @@ import static javax.persistence.GenerationType.*;
 @NoArgsConstructor
 @ToString
 @NamedQueries({
-        @NamedQuery(name = "AppUser.findUsersWithSpecifiedCommentQuantity", query = "SELECT user FROM AppUser user where size(user.commentList)>?1"),
+        @NamedQuery(name = "AppUser.findUsersWithSpecifiedCommentQuantity", query = "SELECT user FROM AppUser user where size(user.commentList)>?1")
 })
+@SqlResultSetMapping(
+        name = "AppUserMapping",
+        classes = @ConstructorResult(
+                targetClass = AppUser.class,
+                columns = {
+                        @ColumnResult(name = "id", type = Long.class),
+                        @ColumnResult(name = "firstname", type = String.class),
+                        @ColumnResult(name = "lastname", type = String.class),
+                        @ColumnResult(name = "username", type = String.class),
+                        @ColumnResult(name = "password", type = String.class),
+                        @ColumnResult(name = "email", type = String.class)
+                }
+        )
+)
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "findUsersByLastnameNNQ",
+                query = "SELECT id, firstname, lastname, username, password, email FROM app_user WHERE lastname = :lastname",
+                resultSetMapping = "AppUserMapping"
+        ),
+        @NamedNativeQuery(
+                name = "findUsersWithSpecifiedCommentQuantityNNQ",
+                query = "SELECT id, firstname, lastname, username, password, email FROM app_user WHERE (SELECT COUNT(*) FROM comment WHERE comment.comment_owner = app_user.id) > ?1",
+                resultSetMapping = "AppUserMapping"
+        )
+})
+
+
 public class AppUser {
 
     public static final String DISCRIMINATOR_VALUE = "ROLE_USER";
+
+    public AppUser(Long id, String firstname, String lastname, String username, String password, String email) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
 
     @GeneratedValue(strategy = AUTO)
     @Id
@@ -58,6 +95,10 @@ public class AppUser {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public AppUser(Long id) {
+        this.id = id;
     }
 
     @Transient

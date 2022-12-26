@@ -1,18 +1,25 @@
 package cvut.repository;
-import com.github.javafaker.App;
+
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.AppUser;
+import cvut.model.Comment;
+import cvut.model.Critique;
+import cvut.model.CritiqueState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.*;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
@@ -20,6 +27,9 @@ public class AppUserRepositoryTest {
 
     @Autowired
     private AppUserRepository appUserRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
 
     @Test
@@ -29,7 +39,7 @@ public class AppUserRepositoryTest {
         Optional<AppUser> byId = appUserRepository.findById(appUser.getId());
 
         //Assert
-        Assertions.assertTrue(byId.isPresent());
+        assertTrue(byId.isPresent());
     }
 
     @Test
@@ -37,8 +47,8 @@ public class AppUserRepositoryTest {
         String username = "joey.reynolds";
         Optional<AppUser> appUserByUsername = appUserRepository.findAppUserByUsername(username);
         //Assert
-        Assertions.assertTrue(appUserByUsername.isPresent());
-        Assertions.assertEquals(username, appUserByUsername.get().getUsername());
+        assertTrue(appUserByUsername.isPresent());
+        assertEquals(username, appUserByUsername.get().getUsername());
     }
 
 
@@ -63,9 +73,51 @@ public class AppUserRepositoryTest {
     @Test
     void testNamedQueryFindUsersWithCSpecifiedCommentQuantity(){
         List<AppUser> appUsers = appUserRepository.findUsersWithSpecifiedCommentQuantity(1);
-        Assertions.assertNotNull(appUsers);
+        assertNotNull(appUsers);
         Assertions.assertFalse(appUsers.isEmpty());
         Assertions.assertNotEquals(appUsers.size(), 0);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Test
+    public void testFindUsersByLastname() {
+        // Arrange
+        String lastname = "Smith";
+
+        Query query = em.createNamedQuery("findUsersByLastnameNNQ");
+        query.setParameter("lastname", lastname);
+        List<AppUser> users = query.getResultList();
+
+        // Assert
+        assertNotNull(users.size());
+        for (AppUser user : users) {
+            assertEquals(lastname, user.getLastname());
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Test
+    void testFindUsersWithSpecifiedCommentQuantity() {
+        // Arrange
+        int minCommentQuantity = 0;
+        Date date = new Date();
+        AppUser appUser = Generator.generateUser();
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
+        Comment comment = new Comment("hahaha", date, appUser , critique);
+        List<Comment> commentList = new ArrayList<>();
+        commentList.add(comment);
+        appUser.setCommentList(commentList);
+
+        Query query = em.createNamedQuery("findUsersWithSpecifiedCommentQuantityNNQ");
+        query.setParameter(1, minCommentQuantity);
+        List<AppUser> users = query.getResultList();
+//        // Assert
+        assertNotNull(users.size());
+//        for (AppUser user : users) {
+//            assertTrue(user.getCommentList().size() > minCommentQuantity);   //ne mogu tak sdelat, commentList = null
+//        }
+        Assertions.assertEquals(users.size(), 50);
+
     }
 
 }

@@ -1,16 +1,17 @@
 package cvut.repository;
-import com.github.javafaker.App;
 import cvut.Application;
 import cvut.config.utils.Generator;
-import cvut.model.AppUser;
 import cvut.model.Critique;
+import cvut.model.CritiqueState;
 import cvut.model.Film;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-
+import javax.persistence.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,8 @@ public class FilmRepositoryTest {
     private FilmRepository filmRepository;
     @Autowired
     private CritiqueRepository critiqueRepository;
+    @PersistenceContext
+    private EntityManager em;
 
     @Test
     void testNamedQueryFindMovieNamesForASpecificPeriod(){
@@ -45,6 +48,30 @@ public class FilmRepositoryTest {
         Assertions.assertNotNull(film);
         Assertions.assertFalse(film.isEmpty());
         Assertions.assertNotEquals(film.size(), 0);
+    }
+
+    @Test
+    void testFindMovieNamesForASpecificPeriodNNQ() {
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
+        Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
+        Date startDate = critique.getDateOfAcceptance();
+        Date endDate = critique1.getDateOfAcceptance();
+        Query query = em.createNamedQuery("findMovieNamesForASpecificPeriodNNQ");
+        query.setParameter(1, startDate);
+        query.setParameter(2, endDate);
+        List<Film> films = query.getResultList();
+
+        Assertions.assertNotEquals(films.size(), 0);
+    }
+
+    @Test
+    void testFindMovieNamesCriticizedByAParticularCriticNNQ() {
+        long criticId = 1330L;
+        Query query = em.createNamedQuery("findMovieNamesCriticizedByAParticularCriticNNQ");
+        query.setParameter(1, criticId);
+        List<Film> films = query.getResultList();
+        Assertions.assertNotNull(films);
+        Assertions.assertNotEquals(films.size(), 0);
     }
 
 }
