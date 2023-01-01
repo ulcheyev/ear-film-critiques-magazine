@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthenticationFacade {
 
-    public Authentication getAuthentication() {
+    public static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 }

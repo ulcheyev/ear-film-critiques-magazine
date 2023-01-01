@@ -1,6 +1,7 @@
 package cvut.controllers;
 import cvut.config.utils.EarUtils;
-import cvut.model.dto.CritiqueDTO;
+import cvut.model.CritiqueState;
+import cvut.model.dto.CritiqueRequest;
 import cvut.model.Critique;
 import cvut.repository.CritiqueSearchCriteria;
 import cvut.services.CritiqueService;
@@ -10,7 +11,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,15 +33,22 @@ public class CritiqueController {
     private final CritiqueService critiqueService;
 
     @GetMapping(value = "/{critiqueId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Critique getCritiqueById(@NotStringValidator @PathVariable("critiqueId") @NonNull String critiqueId)
+    @PreAuthorize("(hasRole('ROLE_USER') " +
+            "and @critiqueServiceImpl.isAccepted(#critiqueId))" +
+            "or hasRole('ROLE_CRITIC') and @critiqueServiceImpl.isAcceptedAndInProcessed(#critiqueId) " +
+            "or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Critique> getCritiqueById(@NotStringValidator @PathVariable("critiqueId") @NonNull String critiqueId)
     {
-        return critiqueService.findById(Long.parseLong(critiqueId));
+        final HttpHeaders headers = EarUtils.createLocationHeaderFromCurrentUri("/{critiqueId}", critiqueId);
+        Critique byId = critiqueService.findById(Long.parseLong(critiqueId));
+        return ResponseEntity.ok().headers(headers).body(byId);
+
     }
 
 
-    @PostMapping(value = "/create", consumes = {   "multipart/form-data" })
+    @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, "multipart/form-data"})
     @PreAuthorize("hasAnyRole('ROLE_CRITIC')")
-    public ResponseEntity<String> addNewCritique(@RequestPart("critique") @NonNull  @Valid CritiqueDTO dto,
+    public ResponseEntity<String> addNewCritique(@RequestPart("critique") @NonNull  @Valid CritiqueRequest dto,
                                                  @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
         if(file != null && !file.isEmpty()){
@@ -51,17 +61,18 @@ public class CritiqueController {
     }
 
 
-    @PutMapping(value = "/{critiqueId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{critiqueId}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("(hasRole('ROLE_CRITIC') and @critiqueServiceImpl.checkOwner(#critiqueId, principal.username)) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> updateCritique(@PathVariable @NotStringValidator String critiqueId, @Valid @NonNull @RequestBody CritiqueDTO critiqueDto)
+    public ResponseEntity<String> updateCritique(@PathVariable @NotStringValidator String critiqueId, @Valid @NonNull @RequestBody CritiqueRequest critiqueRequest)
     {
-        critiqueService.updateCritique(Long.parseLong(critiqueId), critiqueDto);
+        critiqueService.updateCritique(Long.parseLong(critiqueId), critiqueRequest);
         return ResponseEntity.ok("Critique successfully updated");
     }
 
     @DeleteMapping(value = "/{critiqueId}")
     @PreAuthorize("(hasRole('ROLE_CRITIC') and @critiqueServiceImpl.checkOwner(#critiqueId, principal.username)) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteCritique(@Valid @NonNull @RequestBody @NotStringValidator String critiqueId){
+    public ResponseEntity<String> deleteCritique(@Valid @NonNull @PathVariable @NotStringValidator String critiqueId)
+    {
         critiqueService.deleteById(Long.parseLong(critiqueId));
         return ResponseEntity.ok("Critique successfully deleted");
     }
@@ -72,10 +83,12 @@ public class CritiqueController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostFilter("hasRole('ROLE_ADMIN') " +
+            "or (hasRole('ROLE_CRITIC') and @critiqueServiceImpl.isAcceptedAndInProcessed(filterObject)) " +
+            "or @critiqueServiceImpl.isAccepted(filterObject)")
     public List<Critique> fetchAll(){
         return critiqueService.findAll();
     }
-
 
 
 }

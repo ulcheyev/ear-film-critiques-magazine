@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService{
@@ -38,14 +39,14 @@ public class CommentServiceImpl implements CommentService{
         this.criticRepository = criticRepository;
     }
 
-    public void save(@NonNull String text, @NonNull Long appUserId, @NonNull Long critiqueId){
+    public Comment save(@NonNull String text, @NonNull String username, @NonNull Long critiqueId){
 
         if(text.length() > COMMENT_MAX_LENGTH || text.length() < COMMENT_MIN_LENGTH){
             throw new ValidationException("Comment length must be max "+COMMENT_MAX_LENGTH + " and min "+ COMMENT_MIN_LENGTH +" symbols");
         }
 
-        AppUser appUser = appUserRepository.findById(appUserId)
-                .orElseThrow(()-> new NotFoundException("User with id "+ appUserId+" does not found"));
+        AppUser appUser = appUserRepository.findAppUserByUsername(username)
+                .orElseThrow(()-> new NotFoundException("User with username "+ username+" does not found"));
 
         Critique critique = critiqueRepository.findById(critiqueId)
                 .orElseThrow(()-> new NotFoundException("Critique with id "+ critiqueId+" does not found"));
@@ -54,14 +55,18 @@ public class CommentServiceImpl implements CommentService{
 
         if(critique.getCritiqueState() == CritiqueState.IN_PROCESSED){
 
-            if(criticRepository.findById(appUserId).isPresent()){
+            if(criticRepository.findByUsername(username).isPresent()){
                 commentRepository.save(comment);
+            }
+            else{
+                throw new ValidationException("You do not have permission");
             }
         }
         else{
             commentRepository.save(comment);
         }
 
+        return comment;
     }
 
     public List<Comment> findCommentsByCritique_Id(@NonNull Long id){
@@ -96,12 +101,13 @@ public class CommentServiceImpl implements CommentService{
         return allByDateOfPublic;
     }
 
-    public void deleteComment(@NonNull Long commentId){
-        boolean ex = commentRepository.existsById(commentId);
-        if(!ex){
+    public Comment deleteComment(@NonNull Long commentId){
+        Optional<Comment> byId = commentRepository.findById(commentId);
+        if(byId.isEmpty()){
             throw new NotFoundException("Comment with specified id: "+commentId+" does not found");
         }
         commentRepository.deleteById(commentId);
+        return byId.get();
     }
 
     public Comment findById(@NonNull Long commentId) {
@@ -125,6 +131,10 @@ public class CommentServiceImpl implements CommentService{
         ){
             comment.setText(text);
         }
+    }
+
+    public boolean checkOwner(@NonNull Long commentId, @NonNull String username){
+        return findById(commentId).getAppUser().getUsername().equals(username);
     }
 
 

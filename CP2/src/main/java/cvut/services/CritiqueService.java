@@ -1,6 +1,6 @@
 package cvut.services;
 
-import cvut.model.dto.CritiqueDTO;
+import cvut.model.dto.CritiqueRequest;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
 import cvut.repository.CritiqueSearchCriteria;
@@ -24,10 +24,10 @@ public interface CritiqueService {
     List<Critique> findByDateOfAcceptance(Date date);
     List<Critique> findAllOrderByDateDesc();
     void updateCritiqueState(Long critiqueId, CritiqueState critiqueState);
-    void updateCritique(Long critiqueId, CritiqueDTO critiqueDTO);
+    void updateCritique(Long critiqueId, CritiqueRequest critiqueRequest);
     String readPdf(MultipartFile multipartFile) throws IOException;
     void correctCritiqueAfterCreateRemarks(Long critiqueId, String title, String text);
     void save(Critique critique);
-    Critique save(CritiqueDTO critique);
+    Critique save(CritiqueRequest critique);
     void deleteById(Long id);
 }

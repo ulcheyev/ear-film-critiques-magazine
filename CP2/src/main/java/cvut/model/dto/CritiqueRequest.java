@@ -3,18 +3,17 @@ package cvut.model.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Setter
 @Getter
-public class CritiqueDTO {
+public class CritiqueRequest {
 
     private String title;
     private String text;
     private Long filmId;
 
-    public boolean fieldsIsNotEmpty(){
+    public boolean fieldsAreNotEmpty(){
         return (title != null &&
                 text != null &&
                 filmId != null);

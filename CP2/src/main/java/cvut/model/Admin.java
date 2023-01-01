@@ -1,6 +1,7 @@
 package cvut.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,8 +25,12 @@ public class Admin extends AppUser {
 
     @OneToMany(mappedBy = "admin")
     @ToString.Exclude
-    @JsonBackReference
+    @JsonManagedReference
     private List<Critique> critiqueList;
+
+    @OneToMany(mappedBy = "admin")
+    @JsonManagedReference
+    private List<Remarks> remarks;
 
     public Admin(String firstname, String lastname, String username, String password, String email) {
         super(firstname, lastname, username, password, email);

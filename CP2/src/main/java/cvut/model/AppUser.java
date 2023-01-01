@@ -1,4 +1,5 @@
 package cvut.model;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,10 +44,12 @@ public class AppUser {
 
     @OneToMany(mappedBy="appUser")
     @ToString.Exclude
+    @JsonManagedReference
     private List<Comment> commentList;
 
     @OneToMany(mappedBy = "voteOwner")
     @ToString.Exclude
+    @JsonManagedReference
     private List<RatingVote> ratingVotes;
 
     @Column(name="email", nullable = false, unique = true)

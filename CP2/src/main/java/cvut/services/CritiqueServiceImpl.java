@@ -1,7 +1,7 @@
 package cvut.services;
 
 import cvut.config.security_utils.AuthenticationFacade;
-import cvut.model.dto.CritiqueDTO;
+import cvut.model.dto.CritiqueRequest;
 import cvut.exception.BadRequestException;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
@@ -168,12 +168,12 @@ public class CritiqueServiceImpl implements CritiqueService{
     }
 
     @Transactional
-    public void updateCritique(@NonNull Long critiqueId, @NonNull CritiqueDTO critiqueDTO) {
+    public void updateCritique(@NonNull Long critiqueId, @NonNull CritiqueRequest critiqueRequest) {
         Critique toChange = critiqueRepository.findById(critiqueId).orElseThrow(
                 () -> new NotFoundException("Critique with id " + critiqueId + " does not found")
         );
-        String text = critiqueDTO.getText();
-        String title = critiqueDTO.getTitle();
+        String text = critiqueRequest.getText();
+        String title = critiqueRequest.getTitle();
 
         if(title.length() > TITLE_LENGTH_MAX ||
                 title.length() < TITLE_LENGTH_MIN) {
@@ -232,13 +232,13 @@ public class CritiqueServiceImpl implements CritiqueService{
         critiqueRepository.save(critique);
     }
 
-    public Critique save(@NonNull CritiqueDTO critiqueDTO){
-        if(!critiqueDTO.fieldsIsNotEmpty()){
+    public Critique save(@NonNull CritiqueRequest critiqueRequest){
+        if(!critiqueRequest.fieldsAreNotEmpty()){
             throw new ValidationException("Please, fill all fields");
         }
-        Film film = filmService.findById(critiqueDTO.getFilmId());
+        Film film = filmService.findById(critiqueRequest.getFilmId());
         Critic critic = (Critic) appUserService.findByUsername(authenticationFacade.getAuthentication().getName());
-        Critique critique = new Critique(critiqueDTO.getTitle(), critiqueDTO.getText(), film, critic);
+        Critique critique = new Critique(critiqueRequest.getTitle(), critiqueRequest.getText(), film, critic);
         critiqueRepository.save(critique);
         return critique;
     }
@@ -273,6 +273,17 @@ public class CritiqueServiceImpl implements CritiqueService{
         PDDocument document = PDDocument.load(file);
         PDFTextStripper pdfTextStripper = new PDFTextStripper();
         return pdfTextStripper.getText(document);
+    }
+
+
+
+    public boolean isAcceptedAndInProcessed(Critique critique){
+        return critique.getCritiqueState() == CritiqueState.IN_PROCESSED
+                && critique.getCritiqueState() == CritiqueState.ACCEPTED;
+    }
+
+    public boolean isAccepted(Critique critique){
+        return critique.getCritiqueState() == CritiqueState.ACCEPTED;
     }
 }
 

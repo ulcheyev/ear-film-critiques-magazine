@@ -1,5 +1,6 @@
 package cvut.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ public class Critic extends AppUser {
     private double criticRating;
 
     @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.EAGER)
-    @JsonBackReference
+    @JsonManagedReference
     @ToString.Exclude
     private List<Critique> critiqueList;
 

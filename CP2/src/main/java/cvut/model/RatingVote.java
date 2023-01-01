@@ -1,5 +1,6 @@
 package cvut.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,7 @@ public class RatingVote {
     //TODO ubrat cascade type-postavit MERGE
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "critique", referencedColumnName = "id", nullable = false)
+    @JsonManagedReference
     private Critique critique;
 
     @Column(name = "stars", nullable = false)
@@ -40,7 +42,7 @@ public class RatingVote {
 
     //TODO ubrat cascade type
     @ManyToOne
-    @JsonManagedReference("ratingVotes")
+    @JsonBackReference
     @JoinColumn(name = "vote_owner", referencedColumnName = "id", nullable = false)
     private AppUser voteOwner;
 

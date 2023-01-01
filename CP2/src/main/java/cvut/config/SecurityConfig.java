@@ -1,5 +1,6 @@
 package cvut.config;
 
+import cvut.model.CritiqueState;
 import cvut.security.JwtAuthFilter;
 import cvut.services.AppUserService;
 import org.springframework.context.annotation.Bean;
@@ -61,7 +62,10 @@ public class SecurityConfig {
                 .httpBasic()
                 .and()
                 .logout()
+                .logoutUrl("/api/logout")
                 .logoutSuccessUrl("/api/login")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll()
                 .and()
                 .build();
@@ -111,5 +115,7 @@ public class SecurityConfig {
             }
         };
     }
+
+
 
 }

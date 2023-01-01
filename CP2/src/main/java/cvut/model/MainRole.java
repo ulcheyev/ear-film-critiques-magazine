@@ -1,5 +1,6 @@
 package cvut.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @NoArgsConstructor
 @ToString
-public class MainRole{
+public class
+MainRole{
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
@@ -32,6 +34,7 @@ public class MainRole{
     private String lastname;
 
     @ManyToMany(mappedBy = "mainRoleList")
+    @JsonManagedReference
     private List<Film> filmList;
 
 }

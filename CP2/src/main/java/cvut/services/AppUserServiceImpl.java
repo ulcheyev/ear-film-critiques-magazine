@@ -27,7 +27,7 @@ public class AppUserServiceImpl implements AppUserService{
 
     public void save(@NonNull RegistrationRequest registrationRequest) {
 
-        if(!registrationRequest.fieldsIsNotEmpty()){
+        if(!registrationRequest.fieldsAreNotEmpty()){
             throw new ValidationException("You have to fill all fields");
         }
         Optional<AppUser> appUserByUsername = appUserRepository
