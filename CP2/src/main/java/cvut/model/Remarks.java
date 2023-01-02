@@ -33,6 +33,7 @@ public class Remarks {
     @ManyToOne
     @JoinColumn(name = "critique",referencedColumnName = "id", nullable = false)
     @JsonManagedReference("critiqueRemarks")
+    @OrderBy("admin ASC")
     private Critique critique;
 
     @Basic

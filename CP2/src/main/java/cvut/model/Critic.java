@@ -23,6 +23,7 @@ public class Critic extends AppUser {
     @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.EAGER)
     @JsonBackReference
     @ToString.Exclude
+    @OrderBy("dateOfAcceptance DESC")
     private List<Critique> critiqueList;
 
     public Critic(String firstname, String lastname, String username, String password, String email) {

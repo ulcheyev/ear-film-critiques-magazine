@@ -87,29 +87,35 @@ public class Critique {
 
     @OneToMany(mappedBy = "critique")
     @JsonBackReference
+    @OrderBy("remarksMakeDay DESC")
     private List<Remarks> critiqueRemarks;
 
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonManagedReference("critiqueList")
     @JoinColumn(name = "admin", referencedColumnName = "id")
+    @OrderBy("id ASC")
     private Admin  admin;
 
     //TODO ubrat cascade type
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "critique_owner", referencedColumnName = "id", nullable = false)
+    @OrderBy("ratingVotes DESC")
     private Critic critiqueOwner;
 
     @OneToMany(mappedBy = "admin")
     @JsonBackReference
+    @OrderBy("admin")
     private List<Remarks> remarksList;
 
     @OneToMany(mappedBy = "critique")
     @JsonBackReference
+    @OrderBy("appUser ASC")
     private List<Comment> comments;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "film", referencedColumnName = "id", nullable = false)
+    @OrderBy("dateOfRelease DESC")
     private Film film;
 
     public Critique(String title, String text, Film film, Critic critiqueOwner){

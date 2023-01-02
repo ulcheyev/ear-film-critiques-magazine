@@ -80,10 +80,12 @@ public class AppUser {
 
     @OneToMany(mappedBy="appUser")
     @ToString.Exclude
+    @OrderBy("dateOfPublic DESC")
     private List<Comment> commentList;
 
     @OneToMany(mappedBy = "voteOwner")
     @ToString.Exclude
+    @OrderBy("date DESC")
     private List<RatingVote> ratingVotes;
 
     @Column(name="email", nullable = false, unique = true)

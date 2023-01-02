@@ -1,9 +1,6 @@
 package cvut.repository;
 import cvut.Application;
-import cvut.config.utils.Generator;
-import cvut.model.Critique;
-import cvut.model.CritiqueState;
-import cvut.model.Film;
+import cvut.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
@@ -32,36 +29,61 @@ public class FilmRepositoryTest {
 
     @Test
     void testNamedQueryFindMovieNamesForASpecificPeriod(){
-        Optional<Critique> critique = critiqueRepository.findById(2L);
-        Optional<Critique> critique1 = critiqueRepository.findById(5L);
+        // Set data
+
+        Query query = em.createNamedQuery("Film.findMovieNamesForASpecificPeriod");
+
+        Optional<Critique> critique = critiqueRepository.findById(6L);
+        Optional<Critique> critique1 = critiqueRepository.findById(1L);
         Date date1 = critique.get().getDateOfAcceptance();
         Date date2 = critique1.get().getDateOfAcceptance();
-        List<Film> film = filmRepository.findMovieNamesForASpecificPeriod(date1, date2);
-        Assertions.assertNotNull(film);
-        Assertions.assertFalse(film.isEmpty());
-        Assertions.assertNotEquals(film.size(), 0);
+        // Set query parameters
+        query.setParameter(1, date1);
+        query.setParameter(2, date2);
+
+        // Execute the query and get the results
+        List<Film> films = query.getResultList();
+
+        // Verify the results
+        Assertions.assertNotNull(films);
+        Assertions.assertFalse(films.isEmpty());
+        assertEquals("Principal Functionality Strategist", films.get(0).getName());
+        assertEquals(4, films.get(0).getId());
     }
 
     @Test
     void testNamedQueryFindMovieNamesCriticizedByAParticularCritic(){
-        List<Film> film = filmRepository.findMovieNamesCriticizedByAParticularCritic(512L);
-        Assertions.assertNotNull(film);
-        Assertions.assertFalse(film.isEmpty());
-        Assertions.assertNotEquals(film.size(), 0);
+        Query query = em.createNamedQuery("Film.findMovieNamesCriticizedByAParticularCritic");
+
+        Optional<Critique> critique = critiqueRepository.findById(6L);
+
+        Critic critic = critique.get().getCritiqueOwner();
+        // Set query parameters
+        query.setParameter(1, critic.getId());
+
+        // Execute the query and get the results
+        List<Film> films = query.getResultList();
+
+        Assertions.assertNotNull(films);
+        Assertions.assertFalse(films.isEmpty());
+        Assertions.assertNotEquals(films.size(), 0);
+        Assertions.assertEquals("Future Integration Assistant", films.get(0).getName());
     }
 
     @Test
     void testFindMovieNamesForASpecificPeriodNNQ() {
-        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
-        Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
-        Date startDate = critique.getDateOfAcceptance();
-        Date endDate = critique1.getDateOfAcceptance();
+        Optional<Critique> critique = critiqueRepository.findById(6L);
+        Optional<Critique> critique1 = critiqueRepository.findById(1L);
+        Date date1 = critique.get().getDateOfAcceptance();
+        Date date2 = critique1.get().getDateOfAcceptance();
         Query query = em.createNamedQuery("findMovieNamesForASpecificPeriodNNQ");
-        query.setParameter(1, startDate);
-        query.setParameter(2, endDate);
+        query.setParameter(1, date1);
+        query.setParameter(2, date2);
         List<Film> films = query.getResultList();
 
-        Assertions.assertNotEquals(films.size(), 0);
+        // Verify the results
+        Assertions.assertNotNull(films);
+        Assertions.assertFalse(films.isEmpty());
     }
 
     @Test

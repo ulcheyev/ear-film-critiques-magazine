@@ -61,6 +61,7 @@ public class Film {
 
     @OneToMany(mappedBy = "film")
     @JsonBackReference
+    @OrderBy("rating DESC")
     private List<Critique> critiques;
 
     @Column(name = "film_name", nullable = false)

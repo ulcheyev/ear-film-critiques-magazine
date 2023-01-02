@@ -31,10 +31,12 @@ public class Comment{
 
     @ManyToOne
     @JoinColumn(name = "comment_owner", referencedColumnName = "id", nullable = false)
+    @OrderBy("id ASC")
     private AppUser appUser;
 
     @ManyToOne
     @JoinColumn(name = "critique", referencedColumnName = "id", nullable = false)
+    @OrderBy("dateOfAcceptance DESC")
     private Critique critique;
 
     public Comment(String text, Date dateOfPublic, AppUser appUser, Critique critique) {

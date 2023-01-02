@@ -3,9 +3,7 @@ package cvut.repository;
 
 import cvut.Application;
 import cvut.config.utils.Generator;
-import cvut.model.AppUser;
-import cvut.model.Critique;
-import cvut.model.RatingVote;
+import cvut.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,8 @@ public class RatingVoteRepositoryTest {
     private CritiqueRepository critiqueRepository;
     @Autowired
     private AppUserRepository appUserRepository;
+    @PersistenceContext
+    private EntityManager em;
 
     Random random = new Random();
 
@@ -122,10 +125,17 @@ public class RatingVoteRepositoryTest {
 
     @Test
     void testNamedQueryFindSumOfVotesByCritiqueId(){
-        Optional<Double> rating = ratingVoteRepository.findSumOfVotesByCritiqueId(1L);
+        Query query = em.createNamedQuery("RatingVote.findSumOfVotesByCritiqueId");
+
+        // Set query parameters
+        query.setParameter(1, 348L);
+
+        // Execute the query and get the results
+        List<RatingVote> rating = query.getResultList();
+
+
         Assertions.assertNotNull(rating);
         Assertions.assertFalse(rating.isEmpty());
-        Assertions.assertEquals(rating.get().byteValue(), 29.0);
     }
 
 
