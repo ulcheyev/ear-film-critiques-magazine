@@ -9,6 +9,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.List;
 
+
 @Entity
 @Table(name = "admin")
 @DiscriminatorValue(Admin.DISCRIMINATOR_VALUE)
@@ -19,6 +20,21 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "Admin.findAdminWithSpecifiedCritiqueQuantity", query = "SELECT admin FROM Admin admin join Critique critique on critique.admin.id = admin.id where size(admin.critiqueList)>?1 and critique.critiqueState = 'IN_PROCESSED'")
 })
+@SqlResultSetMapping(
+        name = "AdminMapping",
+        classes = @ConstructorResult(
+                targetClass = Admin.class,
+                columns = {
+                        @ColumnResult(name = "id", type = Long.class)
+                }
+        )
+)
+@NamedNativeQuery(
+        name = "findAdminWithSpecifiedCritiqueQuantityNNQ",
+        query = "SELECT admin.id FROM admin admin JOIN critique c ON c.admin = admin.id WHERE ((SELECT COUNT(*) FROM critique c WHERE c.admin = admin.id) > ?1 AND c.critique_state = 'IN_PROCESSED')",
+        resultSetMapping = "AdminMapping"
+)
+
 public class Admin extends AppUser {
 
     public static final String DISCRIMINATOR_VALUE = "ROLE_ADMIN";
@@ -36,4 +52,7 @@ public class Admin extends AppUser {
         super(firstname, lastname, username, password, email);
     }
 
+    public Admin(Long id) {
+        super(id);
+    }
 }

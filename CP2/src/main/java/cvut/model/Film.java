@@ -23,6 +23,27 @@ import static javax.persistence.GenerationType.IDENTITY;
         @NamedQuery(name = "Film.findMovieNamesForASpecificPeriod", query = "select film from Film as film join Critique as critique on critique.film.id = film.id where (critique.dateOfAcceptance between ?1 and ?2) and critique.critiqueState = 'ACCEPTED'"),
         @NamedQuery(name = "Film.findMovieNamesCriticizedByAParticularCritic", query = "select film from Film as film join Critique c on film.id = c.film.id where c.critiqueOwner.id = ?1")
 })
+
+@SqlResultSetMapping(
+        name = "FilmMapping",
+        classes = @ConstructorResult(
+                targetClass = Critique.class,
+                columns = {
+                        @ColumnResult(name = "id", type = Long.class)
+                }
+        )
+)
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "findMovieNamesForASpecificPeriodNNQ",
+                query = "SELECT f.id FROM film f INNER JOIN critique c ON c.film = f.id WHERE c.date_of_acceptance BETWEEN ?1 AND ?2 AND c.critique_state = 'ACCEPTED'",
+                resultSetMapping = "FilmMapping"),
+        @NamedNativeQuery(
+                name = "findMovieNamesCriticizedByAParticularCriticNNQ",
+                query = "SELECT f.id FROM film f INNER JOIN critique c ON f.id = c.film WHERE c.critique_owner = ?1",
+                resultSetMapping = "FilmMapping"
+        )
+})
 public class Film {
 
     @GeneratedValue(strategy = IDENTITY)
