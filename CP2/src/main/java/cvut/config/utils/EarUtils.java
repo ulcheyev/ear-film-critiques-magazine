@@ -18,7 +18,6 @@ public class EarUtils {
         return Math.floor(n*sc)/sc;
     }
 
-
     public static HttpHeaders createLocationHeaderFromCurrentUri(String path, Object... uriVariableValues) {
         assert path != null;
 

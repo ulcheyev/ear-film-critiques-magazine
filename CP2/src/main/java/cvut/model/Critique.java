@@ -106,7 +106,6 @@ public class Critique {
 
     @OneToMany(mappedBy = "critique",fetch = FetchType.EAGER)
     @JsonManagedReference(value = "comment-critique")
-    @OneToMany(mappedBy = "critique")
     @OrderBy("appUser ASC")
     private List<Comment> comments;
 
