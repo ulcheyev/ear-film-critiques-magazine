@@ -67,8 +67,8 @@ public class Critique {
     @Enumerated(EnumType.STRING)
     private CritiqueState critiqueState = CritiqueState.IN_PROCESSED;
 
-    @OneToMany(mappedBy = "critique")
-    @JsonBackReference
+    @OneToMany(mappedBy = "critique", cascade = CascadeType.REMOVE)
+    @JsonBackReference(value = "rating-critique")
     private List<RatingVote> critiqueRatingVote;
 
     @Column(name = "title",columnDefinition = "TEXT", nullable = false)
@@ -86,28 +86,28 @@ public class Critique {
     private Date dateOfAcceptance;
 
     @OneToMany(mappedBy = "critique")
-    @JsonBackReference
+    @JsonBackReference(value = "remarks-critique")
     private List<Remarks> critiqueRemarks;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "admin", referencedColumnName = "id")
-    @JsonBackReference
+    @JsonBackReference(value = "admin-critique")
     private Admin  admin;
 
     //TODO ubrat cascade type
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "critique_owner", referencedColumnName = "id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference(value = "critic-critique")
     private Critic critiqueOwner;
 
 
     @OneToMany(mappedBy = "critique",fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonManagedReference(value = "comment-critique")
     private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "film", referencedColumnName = "id", nullable = false)
-    @JsonManagedReference
+    @JsonManagedReference(value = "film-critique")
     private Film film;
 
     public Critique(String title, String text, Film film, Critic critiqueOwner){

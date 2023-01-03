@@ -12,6 +12,7 @@ public interface AppUserService extends UserDetailsService {
     AppUser findByUsername(String username);
     AppUser findByEmail( String email);
     void save( RegistrationRequest appUser);
+    void save( AppUser appUser);
     void update(Long appUserId, String username, String email);
     void deleteById(Long appUserId);
     void findUsersWithSpecifiedCommentQuantity(int quantity);

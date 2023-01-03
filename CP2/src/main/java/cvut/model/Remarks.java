@@ -34,7 +34,7 @@ public class Remarks {
 
     @ManyToOne
     @JoinColumn(name = "critique",referencedColumnName = "id", nullable = false)
-    @JsonManagedReference
+    @JsonManagedReference(value = "remarks-critique")
     private Critique critique;
 
     @Basic

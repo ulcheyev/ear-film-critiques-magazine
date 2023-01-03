@@ -2,8 +2,7 @@ package cvut.controllers;
 
 import cvut.config.security_utils.AuthenticationFacade;
 import cvut.config.utils.EarUtils;
-import cvut.model.Comment;
-import cvut.model.dto.CommentAddRequest;
+import cvut.model.dto.creation.CommentCreationDTO;
 import cvut.security.validators.NotStringValidator;
 import cvut.services.CommentService;
 import lombok.NonNull;
@@ -25,13 +24,14 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping(value = "/{critiqueId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String>  addComment(
+    public ResponseEntity<String> addComment(
             @NonNull @Valid @NotStringValidator @PathVariable String critiqueId,
-            @NonNull @Valid @RequestBody CommentAddRequest comment)
+            @NonNull @Valid @RequestBody CommentCreationDTO comment)
     {
         String username = AuthenticationFacade.getAuthentication().getName();
         final HttpHeaders headers = EarUtils
                 .createLocationHeaderFromCurrentUri("/{critiqueId}", critiqueId);
+        commentService.save(comment.getContent(), username, Long.parseLong(critiqueId));
         return ResponseEntity.ok().headers(headers).body("Comment successfully created");
     }
 
@@ -50,7 +50,7 @@ public class CommentController {
     @PutMapping(value = "/{critiqueId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("@commentServiceImpl.checkOwner(#commentId, principal.username) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> updateComment(@NonNull @Valid @NotStringValidator @PathVariable String critiqueId,
-                                                @NonNull @Valid @RequestBody CommentAddRequest comment,
+                                                @NonNull @Valid @RequestBody CommentCreationDTO comment,
                                                 @RequestParam(value = "co_flagId") String commentId)
     {
         commentService.update(Long.parseLong(commentId), comment.getContent());

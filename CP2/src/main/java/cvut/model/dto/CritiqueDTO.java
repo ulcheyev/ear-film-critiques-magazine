@@ -1,13 +1,12 @@
-package cvut.repository;
+package cvut.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.lang.annotation.Annotation;
-
 @Getter
 @Setter
-public class CritiqueSearchCriteria {
+public class CritiqueDTO {
+
     private Double rating;
     private String title;
     private String film;

@@ -19,9 +19,9 @@ public class GenerateAdmin {
 
     @Test
     public void generate(){
-        for(int i = 0; i < 100; i++) {
-            Admin admin = Generator.generateAdmin();
-            adminRepository.save(admin);
-        }
+//        for(int i = 0; i < 100; i++) {
+//            Admin admin = Generator.generateAdmin();
+//            adminRepository.save(admin);
+//        }
     }
 }

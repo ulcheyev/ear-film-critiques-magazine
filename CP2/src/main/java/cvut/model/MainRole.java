@@ -1,5 +1,7 @@
 package cvut.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +19,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @NoArgsConstructor
 @ToString
-public class
-MainRole{
+public class MainRole{
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
@@ -27,6 +28,13 @@ MainRole{
     @Enumerated(EnumType.STRING)
     private FilmRole filmRole;
 
+    public MainRole(FilmRole filmRole, String firstname, String lastname, List<Film> filmList) {
+        this.filmRole = filmRole;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.filmList = filmList;
+    }
+
     @Column(name = "firstname")
     private String firstname;
 
@@ -34,7 +42,7 @@ MainRole{
     private String lastname;
 
     @ManyToMany(mappedBy = "mainRoleList")
-    @JsonManagedReference
+    @JsonBackReference(value = "film-main-roles")
     private List<Film> filmList;
 
 }

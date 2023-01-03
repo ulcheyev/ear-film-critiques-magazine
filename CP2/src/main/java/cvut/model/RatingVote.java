@@ -34,7 +34,7 @@ public class RatingVote {
     //TODO ubrat cascade type-postavit MERGE
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "critique", referencedColumnName = "id", nullable = false)
-    @JsonManagedReference
+    @JsonManagedReference(value = "rating-critique")
     private Critique critique;
 
     @Column(name = "stars", nullable = false)

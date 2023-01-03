@@ -21,18 +21,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RatingServiceImpl implements RatingService{
+public class RatingVoteVoteServiceImpl implements RatingVoteService {
 
     private final CritiqueRepository critiqueRepository;
     private final RatingVoteRepository ratingVoteRepository;
-    private final CriticRepository criticRepository;
     private final AppUserRepository appUserRepository;
 
     @Autowired
-    public RatingServiceImpl(CritiqueRepository critiqueRepository, RatingVoteRepository ratingVoteRepository, CriticRepository criticRepository, AppUserRepository appUserRepository) {
+    public RatingVoteVoteServiceImpl(CritiqueRepository critiqueRepository, RatingVoteRepository ratingVoteRepository, AppUserRepository appUserRepository) {
         this.critiqueRepository = critiqueRepository;
         this.ratingVoteRepository = ratingVoteRepository;
-        this.criticRepository = criticRepository;
         this.appUserRepository = appUserRepository;
     }
 
@@ -81,17 +79,12 @@ public class RatingServiceImpl implements RatingService{
 
     }
 
-    /**
-     * Creates new rating entity from the specified stars,
-     * updates critique rating and critic rating
-     *
-     * @param stars    stars from vote
-     * @param appUserId user id
-     * @param critiqueId critique id
-     */
+
 
     @Transactional
-    public void makeVoteAndUpdateCritiqueAndCriticRatings(@NonNull Long appUserId, @NonNull Long critiqueId, @NonNull double stars) {
+    public void makeVoteAndUpdateCritiqueAndCriticRatings(@NonNull String username,
+                                                          @NonNull Long critiqueId,
+                                                          @NonNull double stars) {
 
         if (stars < 0 || stars > 5) {
             throw new ValidationException("Stars quantity must be greater or equals than 0 and less or equals than 5");
@@ -99,12 +92,12 @@ public class RatingServiceImpl implements RatingService{
 
         Critique critique = critiqueRepository.findById(critiqueId)
                 .orElseThrow(()->new NotFoundException("Critique with id "+critiqueId+"does not found"));
-        AppUser appUser = appUserRepository.findById(appUserId)
-                .orElseThrow(()->new NotFoundException("AppUser with id "+appUserId+"does not found"));
+        AppUser appUser = appUserRepository.findAppUserByUsername(username)
+                .orElseThrow(()->new NotFoundException("AppUser with username "+username+" does not found"));
 
         RatingVote ratingVote;
          try{
-             ratingVote = findVoteByVoteOwnerIdAndCritiqueId(appUserId, critiqueId);
+             ratingVote = findVoteByVoteOwnerIdAndCritiqueId(appUser.getId(), critiqueId);
          }catch (NotFoundException e){
              ratingVote = new RatingVote(critique, stars, new Date(), appUser);
          }
@@ -114,13 +107,13 @@ public class RatingServiceImpl implements RatingService{
 
 
     @Transactional
-    public void deleteAndUpdate(@NonNull Long appUserId, @NonNull Long critiqueId) {
-        RatingVote ratingVote = findVoteByVoteOwnerIdAndCritiqueId(appUserId, critiqueId);
+    public void deleteAndUpdate(@NonNull String username, @NonNull Long critiqueId) {
+        AppUser appUser = appUserRepository.findAppUserByUsername(username)
+                .orElseThrow(()->new NotFoundException("AppUser with username "+username+" does not found"));
+        RatingVote ratingVote = findVoteByVoteOwnerIdAndCritiqueId(appUser.getId(), critiqueId);
         ratingVoteRepository.deleteById(ratingVote.getId());
         updateCritiqueAndCriticEntities(ratingVote.getCritique());
     }
-
-
 
     public void updateCritiqueAndCriticEntities(@NonNull Critique critique) {
         Critic critic = critique.getCritiqueOwner();

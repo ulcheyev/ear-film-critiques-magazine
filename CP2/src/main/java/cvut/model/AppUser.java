@@ -65,32 +65,32 @@ public class AppUser {
 
     @GeneratedValue(strategy = AUTO)
     @Id
-    private Long id;
+    protected Long id;
 
     @Column(name = "firstname")
-    private String firstname;
+    protected String firstname;
 
     @Column(name = "lastname", nullable = false)
-    private String lastname;
+    protected String lastname;
 
     @Column(name = "username", nullable = false, unique = true)
-    private String username;
+    protected String username;
 
     @Column(name = "password", nullable = false)
-    private String password;
+    protected String password;
 
     @OneToMany(mappedBy="appUser")
     @ToString.Exclude
     @JsonManagedReference
-    private List<Comment> commentList;
+    protected List<Comment> commentList;
 
     @OneToMany(mappedBy = "voteOwner")
     @ToString.Exclude
     @JsonManagedReference
-    private List<RatingVote> ratingVotes;
+    protected List<RatingVote> ratingVotes;
 
     @Column(name="email", nullable = false, unique = true)
-    private String email;
+    protected String email;
 
     public AppUser(String firstname, String lastname, String username, String password, String email) {
         this.firstname = firstname;

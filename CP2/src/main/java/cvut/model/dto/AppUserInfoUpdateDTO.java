@@ -7,7 +7,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class AppUserInfoUpdateRequest {
+public class AppUserInfoUpdateDTO {
     private String username;
     private String email;
 }

@@ -50,6 +50,13 @@ public class Film {
     @Id
     private Long id;
 
+    public Film(List<MainRole> mainRoleList, String name, Date dateOfRelease, String description) {
+        this.mainRoleList = mainRoleList;
+        this.name = name;
+        this.dateOfRelease = dateOfRelease;
+        this.description = description;
+    }
+
     @ManyToMany
     @JoinTable(
             name = "film_and_main_roles",
@@ -58,11 +65,11 @@ public class Film {
             inverseJoinColumns =
                     @JoinColumn(name = "main_role_id")
     )
-    @JsonManagedReference
+    @JsonManagedReference(value = "film-main-roles")
     private List<MainRole> mainRoleList;
 
     @OneToMany(mappedBy = "film")
-    @JsonBackReference
+    @JsonBackReference(value = "film-critique")
     private List<Critique> critiques;
 
     @Column(name = "film_name", nullable = false)

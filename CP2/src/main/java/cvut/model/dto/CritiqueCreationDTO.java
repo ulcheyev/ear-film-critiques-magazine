@@ -7,7 +7,7 @@ import lombok.Setter;
 @Data
 @Setter
 @Getter
-public class CritiqueRequest {
+public class CritiqueCreationDTO {
 
     private String title;
     private String text;

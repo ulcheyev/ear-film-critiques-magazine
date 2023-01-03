@@ -1,6 +1,8 @@
 package cvut.security;
 
+import cvut.exception.ValidationException;
 import cvut.services.AppUserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,7 +43,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         jwtToken  = authHeader.substring(7); //token
-        username = jwtUtils.extractUsername(jwtToken);
+        try {
+            username = jwtUtils.extractUsername(jwtToken);
+        }catch (ExpiredJwtException e){
+            throw new ValidationException("Token has expired");
+        }
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             final boolean isTokenValid = jwtUtils.isTokenValid(jwtToken, userDetails);

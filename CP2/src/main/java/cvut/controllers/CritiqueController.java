@@ -1,9 +1,8 @@
 package cvut.controllers;
 import cvut.config.utils.EarUtils;
-import cvut.model.CritiqueState;
-import cvut.model.dto.CritiqueRequest;
+import cvut.model.dto.CritiqueCreationDTO;
 import cvut.model.Critique;
-import cvut.repository.CritiqueSearchCriteria;
+import cvut.model.dto.CritiqueDTO;
 import cvut.services.CritiqueService;
 import cvut.security.validators.NotStringValidator;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +33,7 @@ public class CritiqueController {
     @GetMapping(value = "/{critiqueId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("(hasRole('ROLE_USER') " +
             "and @critiqueServiceImpl.isAccepted(#critiqueId))" +
-            "or hasRole('ROLE_CRITIC') and @critiqueServiceImpl.isAcceptedAndInProcessed(#critiqueId) " +
+            "or hasRole('ROLE_CRITIC') and @critiqueServiceImpl.isAcceptedOrInProcessed(#critiqueId) " +
             "or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Critique> getCritiqueById(@NotStringValidator @PathVariable("critiqueId") @NonNull String critiqueId)
     {
@@ -48,7 +46,7 @@ public class CritiqueController {
 
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, "multipart/form-data"})
     @PreAuthorize("hasAnyRole('ROLE_CRITIC')")
-    public ResponseEntity<String> addNewCritique(@RequestPart("critique") @NonNull  @Valid CritiqueRequest dto,
+    public ResponseEntity<String> addNewCritique(@RequestPart("critique") @NonNull  @Valid CritiqueCreationDTO dto,
                                                  @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
         if(file != null && !file.isEmpty()){
@@ -63,9 +61,10 @@ public class CritiqueController {
 
     @PutMapping(value = "/{critiqueId}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("(hasRole('ROLE_CRITIC') and @critiqueServiceImpl.checkOwner(#critiqueId, principal.username)) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> updateCritique(@PathVariable @NotStringValidator String critiqueId, @Valid @NonNull @RequestBody CritiqueRequest critiqueRequest)
+    public ResponseEntity<String> updateCritique(@PathVariable @NotStringValidator String critiqueId,
+                                                 @Valid @NonNull @RequestBody CritiqueCreationDTO critiqueCreationDTO)
     {
-        critiqueService.updateCritique(Long.parseLong(critiqueId), critiqueRequest);
+        critiqueService.updateCritique(Long.parseLong(critiqueId), critiqueCreationDTO);
         return ResponseEntity.ok("Critique successfully updated");
     }
 
@@ -78,17 +77,20 @@ public class CritiqueController {
     }
 
     @GetMapping(value = "search/",  consumes = MediaType.APPLICATION_JSON_VALUE,  produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Critique> searchCritiqueByFilter(@NonNull CritiqueSearchCriteria critiqueSearchCriteria){
-        return critiqueService.findByCriteria(critiqueSearchCriteria);
+    public List<Critique> searchCritiqueByFilter(@NonNull CritiqueDTO critiqueDTO){
+        return critiqueService.findByCriteria(critiqueDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PostFilter("hasRole('ROLE_ADMIN') " +
-            "or (hasRole('ROLE_CRITIC') and @critiqueServiceImpl.isAcceptedAndInProcessed(filterObject)) " +
-            "or @critiqueServiceImpl.isAccepted(filterObject)")
+            "or (hasRole('ROLE_CRITIC') and @critiqueServiceImpl.isAcceptedOrInProcessed(filterObject.id)) " +
+            "or @critiqueServiceImpl.isAccepted(filterObject.id)")
     public List<Critique> fetchAll(){
         return critiqueService.findAll();
     }
+
+
+
 
 
 }

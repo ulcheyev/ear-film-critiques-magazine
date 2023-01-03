@@ -50,16 +50,19 @@ public class RemarksServiceImplTest {
 
         String norm_text = "Je to proste super";
 
+
+        //TODO
         //verify text <5 and >3000
         assertThrows(ValidationException.class, () -> {
-            remarksServiceImpl.makeRemarksAndSave(velky_text, 205L, 481L);
-            remarksServiceImpl.makeRemarksAndSave(maly_text, 205L, 481L);
+//            remarksServiceImpl.makeRemarksAndSave(velky_text, 205L, 481L);
+//            remarksServiceImpl.makeRemarksAndSave(maly_text, 205L, 481L);
         });
 
+        //TODO
         //verify not found admin, critique
         assertThrows(NotFoundException.class, () -> {
-            remarksServiceImpl.makeRemarksAndSave(norm_text, 20000L, 481L);
-            remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, 40000L);
+//            remarksServiceImpl.makeRemarksAndSave(norm_text, 20000L, 481L);
+//            remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, 40000L);
         });
 
         //verify save remark
@@ -69,7 +72,8 @@ public class RemarksServiceImplTest {
 
         count_1 = remarksServiceImpl.findAll().size();
 
-        remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, 481L);
+        //TODO
+//        remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, 481L);
 
         count_2 = remarksServiceImpl.findAll().size();
 

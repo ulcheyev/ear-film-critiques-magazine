@@ -1,5 +1,6 @@
 package cvut.services;
 import cvut.config.utils.EarUtils;
+import cvut.config.utils.Mapper;
 import cvut.model.dto.RegistrationRequest;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
@@ -23,6 +24,7 @@ public class AppUserServiceImpl implements AppUserService{
 
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Mapper mapper;
 
 
     public void save(@NonNull RegistrationRequest registrationRequest) {
@@ -52,7 +54,7 @@ public class AppUserServiceImpl implements AppUserService{
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
 
         if(registrationRequest.getRole().equals(Critic.DISCRIMINATOR_VALUE)){
-            appUserRepository.save(EarUtils.toCritic(appUser));
+            appUserRepository.save(mapper.toCritic(appUser));
         }else{
             appUserRepository.save(appUser);
         }
@@ -73,13 +75,6 @@ public class AppUserServiceImpl implements AppUserService{
         appUserRepository.save(appUser);
     }
 
-    //TODO
-//    public void giveAdminPrivilege(@NonNull Long appUserID){
-//        AppUser appUser = findById(appUserID);
-//        AppUser newAdmin = new Admin(appUser.getFirstname(), appUser.getLastname(), appUser.getUsername(), appUser.getPassword(), appUser.getEmail());
-//        appUserRepository.deleteById(appUserID);
-//        appUserRepository.save(newAdmin);
-//    }
 
     public AppUser findById(@NonNull Long appUserId) {
         AppUser appUser = appUserRepository.findById(appUserId)

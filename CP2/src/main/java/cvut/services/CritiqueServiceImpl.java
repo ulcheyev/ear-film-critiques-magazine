@@ -1,12 +1,12 @@
 package cvut.services;
 
 import cvut.config.security_utils.AuthenticationFacade;
-import cvut.model.dto.CritiqueRequest;
+import cvut.model.dto.CritiqueCreationDTO;
 import cvut.exception.BadRequestException;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.*;
-import cvut.repository.CritiqueSearchCriteria;
+import cvut.model.dto.CritiqueDTO;
 import cvut.repository.CritiqueCriteriaRepository;
 import cvut.repository.CritiqueRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -57,11 +58,11 @@ public class CritiqueServiceImpl implements CritiqueService{
         return all;
     }
 
-    public List<Critique> findByCriteria(@NonNull CritiqueSearchCriteria critiqueSearchCriteria) {
-        if(critiqueSearchCriteria.requestIsEmpty()){
+    public List<Critique> findByCriteria(@NonNull CritiqueDTO critiqueDTO) {
+        if(critiqueDTO.requestIsEmpty()){
             throw new BadRequestException("Critique does not have specified parameters");
         }
-        List<Critique> all = critiqueCriteriaRepository.findAllByFilters(critiqueSearchCriteria);
+        List<Critique> all = critiqueCriteriaRepository.findAllByFilters(critiqueDTO);
         if(all.isEmpty()){
             throw new ValidationException("Critiques with specified parameters does not exist");
         }
@@ -168,12 +169,12 @@ public class CritiqueServiceImpl implements CritiqueService{
     }
 
     @Transactional
-    public void updateCritique(@NonNull Long critiqueId, @NonNull CritiqueRequest critiqueRequest) {
+    public void updateCritique(@NonNull Long critiqueId, @NonNull CritiqueCreationDTO critiqueCreationDTO) {
         Critique toChange = critiqueRepository.findById(critiqueId).orElseThrow(
                 () -> new NotFoundException("Critique with id " + critiqueId + " does not found")
         );
-        String text = critiqueRequest.getText();
-        String title = critiqueRequest.getTitle();
+        String text = critiqueCreationDTO.getText();
+        String title = critiqueCreationDTO.getTitle();
 
         if(title.length() > TITLE_LENGTH_MAX ||
                 title.length() < TITLE_LENGTH_MIN) {
@@ -220,6 +221,15 @@ public class CritiqueServiceImpl implements CritiqueService{
         critique.setCritiqueState(CritiqueState.CORRECTED);
     }
 
+
+    public List<Critique> findAllToProcess(){
+        List<Critique> res = findAllByCritiqueState(CritiqueState.IN_PROCESSED);
+        Comparator<Critique> cmp = (obj1,obj2)->Double.compare(obj1.getCritiqueOwner().getCriticRating(),
+                obj2.getCritiqueOwner().getCriticRating());
+        res.sort(cmp);
+        return res;
+    }
+
     public void save(@NonNull Critique critique){
         if(critique.getText().length() > TEXT_LENGTH_MAX || critique.getText().length() < TEXT_LENGTH_MIN){
             throw new ValidationException("Text length must be less than 3000 symbols and greater than 300 symbols");
@@ -232,13 +242,13 @@ public class CritiqueServiceImpl implements CritiqueService{
         critiqueRepository.save(critique);
     }
 
-    public Critique save(@NonNull CritiqueRequest critiqueRequest){
-        if(!critiqueRequest.fieldsAreNotEmpty()){
+    public Critique save(@NonNull CritiqueCreationDTO critiqueCreationDTO){
+        if(!critiqueCreationDTO.fieldsAreNotEmpty()){
             throw new ValidationException("Please, fill all fields");
         }
-        Film film = filmService.findById(critiqueRequest.getFilmId());
+        Film film = filmService.findById(critiqueCreationDTO.getFilmId());
         Critic critic = (Critic) appUserService.findByUsername(authenticationFacade.getAuthentication().getName());
-        Critique critique = new Critique(critiqueRequest.getTitle(), critiqueRequest.getText(), film, critic);
+        Critique critique = new Critique(critiqueCreationDTO.getTitle(), critiqueCreationDTO.getText(), film, critic);
         critiqueRepository.save(critique);
         return critique;
     }
@@ -277,12 +287,14 @@ public class CritiqueServiceImpl implements CritiqueService{
 
 
 
-    public boolean isAcceptedAndInProcessed(Critique critique){
-        return critique.getCritiqueState() == CritiqueState.IN_PROCESSED
-                && critique.getCritiqueState() == CritiqueState.ACCEPTED;
+    public boolean isAcceptedOrInProcessed(Long critiqueId){
+        Critique critique = findById(critiqueId);
+        return critique.getCritiqueState() == CritiqueState.IN_PROCESSED ||
+                critique.getCritiqueState() == CritiqueState.ACCEPTED;
     }
 
-    public boolean isAccepted(Critique critique){
+    public boolean isAccepted(Long critiqueId){
+        Critique critique = findById(critiqueId);
         return critique.getCritiqueState() == CritiqueState.ACCEPTED;
     }
 }

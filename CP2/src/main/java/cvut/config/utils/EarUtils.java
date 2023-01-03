@@ -1,20 +1,15 @@
 package cvut.config.utils;
 
-import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
-import cvut.exception.ValidationException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.databind.util.Converter;
 import cvut.model.AppUser;
 import cvut.model.Critic;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
+import cvut.model.CritiqueState;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class EarUtils {
 
@@ -23,13 +18,6 @@ public class EarUtils {
         return Math.floor(n*sc)/sc;
     }
 
-    public static Critic toCritic(AppUser appUser){
-        return new Critic(appUser.getFirstname(),
-                appUser.getLastname(),
-                appUser.getUsername(),
-                appUser.getPassword(),
-                appUser.toString());
-    }
 
     public static HttpHeaders createLocationHeaderFromCurrentUri(String path, Object... uriVariableValues) {
         assert path != null;
@@ -40,6 +28,33 @@ public class EarUtils {
         headers.set(HttpHeaders.LOCATION, location.toASCIIString());
         return headers;
     }
+
+    public static class EnumConverter<T extends Enum<T>>
+    {
+
+        Class<T> type;
+
+        public EnumConverter(Class<T> type)
+        {
+            this.type = type;
+        }
+
+        public Enum<T> convert(String text)
+        {
+            for (Enum<T> candidate : type.getEnumConstants()) {
+                if (candidate.name().equalsIgnoreCase(text)) {
+                    return candidate;
+                }
+            }
+
+            return null;
+        }
+    }
+
+
+
+
+
 
 
 }

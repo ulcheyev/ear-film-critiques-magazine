@@ -17,4 +17,6 @@ public class AdminController {
 
     private final CritiqueService critiqueService;
 
+
+
 }

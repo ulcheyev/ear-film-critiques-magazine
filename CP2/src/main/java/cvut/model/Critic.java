@@ -22,7 +22,7 @@ public class Critic extends AppUser {
     private double criticRating;
 
     @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonManagedReference(value = "critic-critique")
     @ToString.Exclude
     private List<Critique> critiqueList;
 

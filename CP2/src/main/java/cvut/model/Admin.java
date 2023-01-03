@@ -41,7 +41,7 @@ public class Admin extends AppUser {
 
     @OneToMany(mappedBy = "admin")
     @ToString.Exclude
-    @JsonManagedReference
+    @JsonManagedReference(value = "admin-critique")
     private List<Critique> critiqueList;
 
     @OneToMany(mappedBy = "admin")

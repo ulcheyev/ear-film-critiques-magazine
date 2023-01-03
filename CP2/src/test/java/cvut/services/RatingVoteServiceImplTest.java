@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
-public class RatingServiceImplTest {
+public class RatingVoteServiceImplTest {
 
     @Autowired
-    private RatingServiceImpl ratingServiceImpl;
+    private RatingVoteVoteServiceImpl ratingVoteServiceImpl;
 
     @Autowired
     private AppUserServiceImpl appUserServiceImpl;
@@ -37,10 +37,10 @@ public class RatingServiceImplTest {
         Critic critic = critique.getCritiqueOwner();
 
         AppUser appUser = appUserServiceImpl.findById(300L);
-        ratingServiceImpl.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getId(), critique.getId(), stars);
+        ratingVoteServiceImpl.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getUsername(), critique.getId(), stars);
 
-        double expectedForCritique = ratingServiceImpl.findSumOfVotesByCritiqueId(critique.getId())/
-                ratingServiceImpl.findQuantityOfVotesByCritiqueId(critique.getId());
+        double expectedForCritique = ratingVoteServiceImpl.findSumOfVotesByCritiqueId(critique.getId())/
+                ratingVoteServiceImpl.findQuantityOfVotesByCritiqueId(critique.getId());
         double expectedForCritic = critiqueServiceImpl.findSumOfCritiquesByCriticId(critic.getId())
                 / critic.getCritiqueList().size();
 
@@ -59,13 +59,13 @@ public class RatingServiceImplTest {
         AppUser appUser = appUserServiceImpl.findById(300L);
 
         //Create
-        ratingServiceImpl.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getId(), critique.getId(), 5);
+        ratingVoteServiceImpl.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getUsername(), critique.getId(), 5);
 
 
-        ratingServiceImpl.deleteAndUpdate(appUser.getId(),critique.getId());
+        ratingVoteServiceImpl.deleteAndUpdate(appUser.getUsername(),critique.getId());
 
-        double expectedForCritique = ratingServiceImpl.findSumOfVotesByCritiqueId(critique.getId())/
-                ratingServiceImpl.findQuantityOfVotesByCritiqueId(critique.getId());
+        double expectedForCritique = ratingVoteServiceImpl.findSumOfVotesByCritiqueId(critique.getId())/
+                ratingVoteServiceImpl.findQuantityOfVotesByCritiqueId(critique.getId());
         double expectedForCritic = critiqueServiceImpl.findSumOfCritiquesByCriticId(critic.getId())
                 / critic.getCritiqueList().size();
 

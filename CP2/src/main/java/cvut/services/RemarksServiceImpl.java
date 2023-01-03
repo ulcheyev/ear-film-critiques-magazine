@@ -32,12 +32,11 @@ public class RemarksServiceImpl implements RemarksService{
     }
 
 
-    @Transactional
-    public void makeRemarksAndSave(@NonNull String text, @NonNull Long critiqueId, @NonNull Long adminId){
+    public void makeRemarksAndSave(@NonNull String text, @NonNull Long critiqueId, @NonNull String adminUsername){
 
         if(text.length() > REMARKS_MAX_TEXT_LENGTH || text.length() < REMARKS_MIN_TEXT_LENGTH){
             throw new ValidationException("Invalid remarks text length. Max "
-                    +REMARKS_MAX_TEXT_LENGTH+ " Min "+REMARKS_MIN_TEXT_LENGTH+
+                    + REMARKS_MAX_TEXT_LENGTH + " Min " + REMARKS_MIN_TEXT_LENGTH +
                     " but was " + text.length());
         }
 
@@ -45,8 +44,8 @@ public class RemarksServiceImpl implements RemarksService{
                 ()->new NotFoundException("Critique with id " + critiqueId + " does not found" )
         );
 
-        Admin admin = adminRepository.findById(adminId).orElseThrow(
-                ()->new NotFoundException("Admin with id " + adminId + " does not found")
+        Admin admin = adminRepository.findByUsername(adminUsername).orElseThrow(
+                ()->new NotFoundException("Admin with username " + adminUsername + " does not found")
         );
 
         Remarks remarks = new Remarks(admin, text, critique, new Date());
@@ -101,5 +100,9 @@ public class RemarksServiceImpl implements RemarksService{
 
     public List<Remarks> findAll() {
         return remarksRepository.findAll();
+    }
+
+    public boolean checkOwner(@NonNull Long id, @NonNull String adminUsername){
+        return findById(id).getAdmin().getUsername().equals(adminUsername);
     }
 }

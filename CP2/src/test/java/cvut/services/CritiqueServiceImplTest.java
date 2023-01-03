@@ -6,7 +6,7 @@ import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
-import cvut.model.dto.CritiqueRequest;
+import cvut.model.dto.CritiqueCreationDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +102,7 @@ public class CritiqueServiceImplTest {
         Long id = 40L;
         Critique critique = critiqueServiceImpl.findById(id);
 
-        CritiqueRequest critique1 = new CritiqueRequest();
+        CritiqueCreationDTO critique1 = new CritiqueCreationDTO();
         critique1.setText(Generator.generateString("d",342));
         critique1.setTitle(Generator.generateString("f",100));
         critique1.setFilmId(1L);

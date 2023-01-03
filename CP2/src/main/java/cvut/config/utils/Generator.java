@@ -9,8 +9,8 @@ import java.util.Random;
 
 public class Generator {
 
-    private static Faker faker = new Faker();
-    private static Random random = new Random();
+    public static Faker faker = new Faker();
+    public static Random random = new Random();
 
 
     //Generatory v1
@@ -40,14 +40,6 @@ public class Generator {
         return new Critic(firstname,lastname,username,password, email);
     }
 
-    public static Admin generateAdmin(){
-        String firstname = faker.name().firstName();
-        String lastname = faker.name().lastName();
-        String password = faker.phoneNumber().phoneNumber();
-        String username = faker.name().username();
-        String email = firstname + lastname +"@gmail.com";
-        return new Admin(firstname,lastname,username,password, email);
-    }
 
     public static Film generateFilm(){
         Film film = new Film();
@@ -64,9 +56,9 @@ public class Generator {
         Date dateOfAccept = faker.date().birthday();
         String title = faker.book().title();
         String text = StringUtils.repeat("B", textLength);
-        Admin admin = generateAdmin();
+//        Admin admin = generateAdmin();
         Critic owner = generateCritic();
-        critique.setAdmin(admin);
+//        critique.setAdmin(admin);
         critique.setCritiqueOwner(owner);
         critique.setDateOfAcceptance(dateOfAccept);
         critique.setText(text);
@@ -123,9 +115,9 @@ public class Generator {
         Date dateOfAccept = faker.date().birthday();
         String title = faker.book().title();
         String text = StringUtils.repeat("B", textLength);
-        Admin admin = generateAdmin();
+//        Admin admin = generateAdmin();
         Critic owner = generateCritic();
-        critique.setAdmin(admin);
+//        critique.setAdmin(admin);
         critique.setCritiqueOwner(owner);
         critique.setDateOfAcceptance(dateOfAccept);
         critique.setText(text);

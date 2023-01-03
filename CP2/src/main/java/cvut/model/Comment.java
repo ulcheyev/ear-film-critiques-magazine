@@ -38,7 +38,7 @@ public class Comment{
 
     @ManyToOne
     @JoinColumn(name = "critique", referencedColumnName = "id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference(value = "comment-critique")
     private Critique critique;
 
     public Comment(String text, Date dateOfPublic, AppUser appUser, Critique critique) {

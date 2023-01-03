@@ -3,7 +3,7 @@ package cvut.controllers;
 
 import cvut.config.utils.EarUtils;
 import cvut.exception.BadCredentialException;
-import cvut.model.dto.AppUserInfoUpdateRequest;
+import cvut.model.dto.AppUserInfoUpdateDTO;
 import cvut.model.dto.AuthenticationRequest;
 import cvut.model.dto.RegistrationRequest;
 import cvut.security.JwtUtils;
@@ -12,7 +12,6 @@ import cvut.services.AppUserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,7 +48,6 @@ public class AppUserController {
     @PostMapping(value = "api/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody @NonNull RegistrationRequest request) {
         final HttpHeaders headers = EarUtils.createLocationHeaderFromCurrentUri("/api/login");
-
         appUserService.save(request);
         return ResponseEntity.ok().headers(headers).body("Successfully register");
     }
@@ -66,11 +64,14 @@ public class AppUserController {
     @PutMapping(value = "api/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_USER') and @appUserServiceImpl.findById(#userId).username.equals(principal.username)")
     public ResponseEntity<String> updateUser(@NotStringValidator @NonNull @PathVariable("userId") String userId,
-                                             @RequestBody @NonNull AppUserInfoUpdateRequest request) {
+                                             @RequestBody @NonNull AppUserInfoUpdateDTO request) {
         final HttpHeaders headers = EarUtils.createLocationHeaderFromCurrentUri("/api/critiques");
         appUserService.update(Long.parseLong(userId), request.getUsername(), request.getEmail());
         return ResponseEntity.ok().headers(headers).body("User Successfully deleted");
     }
+
+
+
 
 
 
