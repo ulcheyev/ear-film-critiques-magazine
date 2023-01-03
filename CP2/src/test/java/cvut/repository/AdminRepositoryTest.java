@@ -28,11 +28,24 @@ public class AdminRepositoryTest {
     private EntityManager em;
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindAdminWithSpecifiedCritiqueQuantity(){
-        List<Admin> admins = adminRepository.findAdminWithSpecifiedCritiqueQuantity(1);
+        // Set data
+
+        Query query = em.createNamedQuery("Admin.findAdminWithSpecifiedCritiqueQuantity");
+
+        // Set query parameters
+        query.setParameter(1, 3);
+
+        // Execute the query and get the results
+        List<Admin> admins = query.getResultList();
+
+        // Verify the results
         Assertions.assertNotNull(admins);
         Assertions.assertFalse(admins.isEmpty());
-        Assertions.assertEquals(admins.size(), 2);
+        assertEquals(4, admins.size());
+        assertEquals("onie.lakin", admins.get(0).getUsername());
+        assertEquals(1599, admins.get(0).getId());
     }
 
     @Test

@@ -142,7 +142,7 @@ public class CritiqueRepositoryTest {
         assertFalse(critiques.isEmpty());
         for (Critique critique : critiques) {
             assertTrue(critique.getRating() > rating);
-//            assertEquals(filmId, critique.getFilm().getId()); //nefunguje, protože .getFilm() = null
+            assertEquals(filmId, critique.getFilm().getId()); //nefunguje, protože .getFilm() = null
             assertEquals(CritiqueState.IN_PROCESSED, critique.getCritiqueState());
         }
     }

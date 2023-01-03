@@ -14,7 +14,9 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping />
+        <datasource-mapping>
+          <factory-entry name="demo" />
+        </datasource-mapping>
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -144,5 +146,7 @@
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:5.7.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:5.7.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:5.7.3" level="project" />
+    <orderEntry type="library" name="Maven: moe.pine:nonnull:0.1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
   </component>
 </module>

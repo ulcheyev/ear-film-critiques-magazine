@@ -41,6 +41,8 @@ public class Admin extends AppUser {
 
     @OneToMany(mappedBy = "admin")
     @ToString.Exclude
+    @JsonBackReference
+    @OrderBy("rating DESC")
     @JsonManagedReference(value = "admin-critique")
     private List<Critique> critiqueList;
 

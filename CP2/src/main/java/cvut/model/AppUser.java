@@ -1,5 +1,4 @@
 package cvut.model;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -65,32 +64,32 @@ public class AppUser {
 
     @GeneratedValue(strategy = AUTO)
     @Id
-    protected Long id;
+    private Long id;
 
     @Column(name = "firstname")
-    protected String firstname;
+    private String firstname;
 
     @Column(name = "lastname", nullable = false)
-    protected String lastname;
+    private String lastname;
 
     @Column(name = "username", nullable = false, unique = true)
-    protected String username;
+    private String username;
 
     @Column(name = "password", nullable = false)
-    protected String password;
+    private String password;
 
     @OneToMany(mappedBy="appUser")
     @ToString.Exclude
-    @JsonManagedReference
-    protected List<Comment> commentList;
+    @OrderBy("dateOfPublic DESC")
+    private List<Comment> commentList;
 
     @OneToMany(mappedBy = "voteOwner")
     @ToString.Exclude
-    @JsonManagedReference
-    protected List<RatingVote> ratingVotes;
+    @OrderBy("date DESC")
+    private List<RatingVote> ratingVotes;
 
     @Column(name="email", nullable = false, unique = true)
-    protected String email;
+    private String email;
 
     public AppUser(String firstname, String lastname, String username, String password, String email) {
         this.firstname = firstname;

@@ -87,10 +87,12 @@ public class Critique {
 
     @OneToMany(mappedBy = "critique")
     @JsonBackReference(value = "remarks-critique")
+    @OrderBy("remarksMakeDay DESC")
     private List<Remarks> critiqueRemarks;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "admin", referencedColumnName = "id")
+    @OrderBy("id ASC")
     @JsonBackReference(value = "admin-critique")
     private Admin  admin;
 
@@ -98,15 +100,19 @@ public class Critique {
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "critique_owner", referencedColumnName = "id", nullable = false)
     @JsonBackReference(value = "critic-critique")
+    @OrderBy("ratingVotes DESC")
     private Critic critiqueOwner;
 
 
     @OneToMany(mappedBy = "critique",fetch = FetchType.EAGER)
     @JsonManagedReference(value = "comment-critique")
+    @OneToMany(mappedBy = "critique")
+    @OrderBy("appUser ASC")
     private List<Comment> comments;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "film", referencedColumnName = "id", nullable = false)
+    @OrderBy("dateOfRelease DESC")
     @JsonManagedReference(value = "film-critique")
     private Film film;
 

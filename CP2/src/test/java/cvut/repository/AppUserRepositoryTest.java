@@ -2,10 +2,7 @@ package cvut.repository;
 
 import cvut.Application;
 import cvut.config.utils.Generator;
-import cvut.model.AppUser;
-import cvut.model.Comment;
-import cvut.model.Critique;
-import cvut.model.CritiqueState;
+import cvut.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +40,11 @@ public class AppUserRepositoryTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void findByUsername(){
-        String username = "joey.reynolds";
+        AppUser appUser = Generator.generateUser();
+        appUserRepository.save(appUser);
+        String  username = appUser.getUsername();
         Optional<AppUser> appUserByUsername = appUserRepository.findAppUserByUsername(username);
         //Assert
         assertTrue(appUserByUsername.isPresent());
@@ -72,7 +72,16 @@ public class AppUserRepositoryTest {
 
     @Test
     void testNamedQueryFindUsersWithCSpecifiedCommentQuantity(){
-        List<AppUser> appUsers = appUserRepository.findUsersWithSpecifiedCommentQuantity(1);
+        // Set data
+
+        Query query = em.createNamedQuery("AppUser.findUsersWithSpecifiedCommentQuantity");
+
+        // Set query parameters
+        query.setParameter(1, 1);
+
+        // Execute the query and get the results
+        List<AppUser> appUsers = query.getResultList();
+
         assertNotNull(appUsers);
         Assertions.assertFalse(appUsers.isEmpty());
         Assertions.assertNotEquals(appUsers.size(), 0);
