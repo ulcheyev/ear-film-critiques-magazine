@@ -87,18 +87,18 @@ public class RemarksController {
         return remarksService.findById(Long.parseLong(remarksId));
     }
 
-    @GetMapping(value = "/remarks", produces = MediaType.APPLICATION_JSON_VALUE, params = "crq")
+    @GetMapping(value = "/remarks/{critiqueId}", produces = MediaType.APPLICATION_JSON_VALUE, params = "crq")
     public List<Remarks> findByCritiqueId(@RequestParam(value = "crq") Long critiqueId){
         return remarksService.findAllByCritiqueId(critiqueId);
     }
 
     @GetMapping(value = "/critiques/{critiqueId}", params = "state")
     public ResponseEntity<String> changeCritiqueState(@PathVariable String critiqueId,
-                                                        @RequestParam("state") String state)
+                                                      @RequestParam("state") String state)
     {
         CritiqueState convert =
                 (CritiqueState)
-                new EarUtils.EnumConverter<>(CritiqueState.class).convert(state);
+                        new EarUtils.EnumConverter<>(CritiqueState.class).convert(state);
 
         critiqueService.updateCritiqueState(Long.valueOf(critiqueId), convert);
         return ResponseEntity.ok().body("Successfully changed to " + convert.name());

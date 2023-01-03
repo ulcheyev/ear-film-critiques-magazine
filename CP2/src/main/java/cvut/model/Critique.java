@@ -41,21 +41,21 @@ import static javax.persistence.GenerationType.IDENTITY;
         )
 )
 @NamedNativeQueries({
-    @NamedNativeQuery(
-            name = "findByFilmIdAndRatingNNQ",
-            query = "SELECT c.id FROM critique c INNER JOIN film f ON c.film = f.id WHERE c.rating > ?1 AND f.id = ?2 AND c.critique_state = 'IN_PROCESSED'",
-            resultSetMapping = "CritiqueMapping"),
-    @NamedNativeQuery(
-            name = "findAllByCritiqueStateNNQ",
-            query = "SELECT c.id FROM critique c WHERE c.critique_state = ?1",
-            resultSetMapping = "CritiqueMapping"
-    ),
-    @NamedNativeQuery(
-            name = "findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLikeNNQ",
-            query = "SELECT c.id FROM critique c INNER JOIN app_user u ON c.critique_owner= u.id "
-                    + "WHERE c.critique_state = 'ACCEPTED' AND u.lastname LIKE ?1 AND u.firstname LIKE ?2",
-            resultSetMapping = "CritiqueMapping"
-    )
+        @NamedNativeQuery(
+                name = "findByFilmIdAndRatingNNQ",
+                query = "SELECT c.id FROM critique c INNER JOIN film f ON c.film = f.id WHERE c.rating > ?1 AND f.id = ?2 AND c.critique_state = 'IN_PROCESSED'",
+                resultSetMapping = "CritiqueMapping"),
+        @NamedNativeQuery(
+                name = "findAllByCritiqueStateNNQ",
+                query = "SELECT c.id FROM critique c WHERE c.critique_state = ?1",
+                resultSetMapping = "CritiqueMapping"
+        ),
+        @NamedNativeQuery(
+                name = "findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLikeNNQ",
+                query = "SELECT c.id FROM critique c INNER JOIN app_user u ON c.critique_owner= u.id "
+                        + "WHERE c.critique_state = 'ACCEPTED' AND u.lastname LIKE ?1 AND u.firstname LIKE ?2",
+                resultSetMapping = "CritiqueMapping"
+        )
 
 })
 public class Critique {

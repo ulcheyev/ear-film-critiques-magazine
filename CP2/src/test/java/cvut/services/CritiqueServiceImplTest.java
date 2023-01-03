@@ -161,12 +161,12 @@ public class CritiqueServiceImplTest {
 
         //Wrong state
         assertThrows(ValidationException.class, () -> {
-            critiqueServiceImpl.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
+//            critiqueServiceImpl.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
         });
 
         //Right state
         critique.setCritiqueState(CritiqueState.SENT_FOR_CORRECTIONS);
-        critiqueServiceImpl.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
+//        critiqueServiceImpl.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
 
         //Assert
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.CORRECTED);

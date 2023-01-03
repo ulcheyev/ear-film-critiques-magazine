@@ -124,9 +124,9 @@ public class AppUserServiceImpl implements AppUserService{
             if (appUserByEmail.isPresent()) {
                 throw new ValidationException("Email " + email + " has been taken");
             }
-                appUser.setEmail(email);
-            }
+            appUser.setEmail(email);
         }
+    }
 
     public void findUsersWithSpecifiedCommentQuantity(int quantity){
         List<AppUser> appUsers = appUserRepository.findAll();

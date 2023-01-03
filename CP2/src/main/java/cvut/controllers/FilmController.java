@@ -47,7 +47,7 @@ public class FilmController {
 
     @PutMapping(value = "/{filmId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String>  updateFilm(@NonNull @RequestBody FilmCreationDTO filmCreationDTO,
-                           @PathVariable Long filmId){
+                                              @PathVariable Long filmId){
         filmService.update(filmId, filmCreationDTO);
         final HttpHeaders headers = EarUtils
                 .createLocationHeaderFromCurrentUri("/{critiqueId}", filmId);
@@ -72,7 +72,7 @@ public class FilmController {
 
     @PostMapping(value = "/main_roles/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addMainRole(@NonNull @RequestBody
-                                                          MainRoleCreationDTO mainRoleCreationDTO) {
+                                                      MainRoleCreationDTO mainRoleCreationDTO) {
         MainRole mainRole = mapper.toMainRole(mainRoleCreationDTO);
         mainRoleService.save(mainRole);
         return ResponseEntity.ok().body("Main role successfully added");

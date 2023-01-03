@@ -65,7 +65,7 @@ public class ApiExceptionHandler {
     public final ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
         HttpStatus accessDenied = HttpStatus.PRECONDITION_FAILED;
         ValidationExceptionPayload foo = new ValidationExceptionPayload(
-               "Access is denied",
+                "Access is denied",
                 accessDenied,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );

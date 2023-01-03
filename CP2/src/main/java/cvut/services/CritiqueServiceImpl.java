@@ -173,6 +173,15 @@ public class CritiqueServiceImpl implements CritiqueService{
         Critique toChange = critiqueRepository.findById(critiqueId).orElseThrow(
                 () -> new NotFoundException("Critique with id " + critiqueId + " does not found")
         );
+
+        CritiqueState critiqueState = toChange.getCritiqueState();
+
+        if(!(critiqueState.equals(CritiqueState.SENT_FOR_CORRECTIONS)||
+                critiqueState.equals(CritiqueState.IN_PROCESSED)))
+        {
+            throw new ValidationException("Critique does not have status" + CritiqueState.SENT_FOR_CORRECTIONS.name());
+        }
+
         String text = critiqueCreationDTO.getText();
         String title = critiqueCreationDTO.getTitle();
 
@@ -197,37 +206,22 @@ public class CritiqueServiceImpl implements CritiqueService{
         }
 
         if(!toChange.getTitle().equals(title)
-            && title.length() > TITLE_LENGTH_MIN
-            && title.length() < TITLE_LENGTH_MAX)
+                && title.length() > TITLE_LENGTH_MIN
+                && title.length() < TITLE_LENGTH_MAX)
         {
             toChange.setTitle(title);
         }
     }
 
-    public void correctCritiqueAfterCreateRemarks(@NonNull Long critiqueId, String title, String text) {
-        Critique critique = critiqueRepository.findById(critiqueId).orElseThrow(
-                ()-> new NotFoundException("Critique with id "+critiqueId+" does not found")
-        );
-        if(critique.getCritiqueState() != CritiqueState.SENT_FOR_CORRECTIONS){
-            throw new ValidationException("Critique does not have status" + CritiqueState.SENT_FOR_CORRECTIONS.name());
-        }
-        if(text != null && !critique.getText().equals(text)){
-            critique.setText(text);
-        }
-        if(title != null && !critique.getTitle().equals(text)){
-            critique.setTitle(title);
-        }
-        save(critique);
-        critique.setCritiqueState(CritiqueState.CORRECTED);
-    }
-
 
     public List<Critique> findAllToProcess(){
-        List<Critique> res = findAllByCritiqueState(CritiqueState.IN_PROCESSED);
-        Comparator<Critique> cmp = (obj1,obj2)->Double.compare(obj1.getCritiqueOwner().getCriticRating(),
-                obj2.getCritiqueOwner().getCriticRating());
-        res.sort(cmp);
-        return res;
+        List<Critique> resInPr = findAllByCritiqueState(CritiqueState.IN_PROCESSED);
+        List<Critique> resCor = findAllByCritiqueState(CritiqueState.CORRECTED);
+        Comparator<Critique> cmp = Comparator.comparingDouble(obj -> obj.getCritiqueOwner().getCriticRating());
+        resInPr.sort(cmp);
+        resCor.sort(cmp);
+        resCor.addAll(resInPr);
+        return resCor;
     }
 
     public void save(@NonNull Critique critique){

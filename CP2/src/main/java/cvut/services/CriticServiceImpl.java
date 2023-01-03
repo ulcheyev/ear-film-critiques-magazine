@@ -35,12 +35,12 @@ public class CriticServiceImpl implements CriticService {
         return all;
     }
 
-   public List<Critic> findAllByLastnameAndFirstnameLike(@NonNull String lastname, @NonNull String firstname){
-       List<Critic> allByLastnameAndFirstnameLike = findAllByLastnameAndFirstnameLike(lastname, firstname);
-       if(allByLastnameAndFirstnameLike.isEmpty()){
-           throw new NotFoundException("Critics were not found");
-       }
-       return allByLastnameAndFirstnameLike;
+    public List<Critic> findAllByLastnameAndFirstnameLike(@NonNull String lastname, @NonNull String firstname){
+        List<Critic> allByLastnameAndFirstnameLike = findAllByLastnameAndFirstnameLike(lastname, firstname);
+        if(allByLastnameAndFirstnameLike.isEmpty()){
+            throw new NotFoundException("Critics were not found");
+        }
+        return allByLastnameAndFirstnameLike;
 
     }
 

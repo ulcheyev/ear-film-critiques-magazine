@@ -65,19 +65,19 @@ public class FilmServiceImpl implements FilmService{
 
         String filmName = filmDto.getFilmName();
         if(filmName != null &&
-           !film.getName().equals(filmName)
+                !film.getName().equals(filmName)
         ){
             film.setName(filmName);
         }
         String desc = filmDto.getFilmDescription();
         if(desc != null &&
-        !film.getDescription().equals(desc)){
+                !film.getDescription().equals(desc)){
             film.setDescription(desc);
         }
 
         List<MainRoleDTO> mainRoles = filmDto.getMainRoles();
         if(mainRoles != null &&
-         !film.getMainRoleList().equals(mainRoles)){
+                !film.getMainRoleList().equals(mainRoles)){
             film.setMainRoleList(mapper.toMainRoles(filmDto.getMainRoles()));
         }
 

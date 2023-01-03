@@ -27,19 +27,19 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void loadAdmin() {
-            try{
-                service.findByUsername(username);
-            }
-            catch (NotFoundException e){
-                Admin admin = new Admin(
-                        "admin",
-                        "admin",
-                        username,
-                        pass,
-                        "admin@gmail.com"
-                );
-                service.save(admin);
-            }
+        try{
+            service.findByUsername(username);
+        }
+        catch (NotFoundException e){
+            Admin admin = new Admin(
+                    "admin",
+                    "admin",
+                    username,
+                    pass,
+                    "admin@gmail.com"
+            );
+            service.save(admin);
+        }
     }
 
 

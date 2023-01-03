@@ -61,9 +61,9 @@ public class Film {
     @JoinTable(
             name = "film_and_main_roles",
             joinColumns =
-                    @JoinColumn(name = "film_id"),
+            @JoinColumn(name = "film_id"),
             inverseJoinColumns =
-                    @JoinColumn(name = "main_role_id")
+            @JoinColumn(name = "main_role_id")
     )
     @JsonManagedReference(value = "film-main-roles")
     private List<MainRole> mainRoleList;

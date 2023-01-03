@@ -80,7 +80,7 @@ public class MainRoleServiceImpl implements MainRoleService{
         }if(!mainRole.getFilmRole().equals(filmRole)){
             mainRole.setFilmRole(filmRole);
         }if(filmList != null &&
-        !mainRole.getFilmList().equals(filmList)){
+                !mainRole.getFilmList().equals(filmList)){
             mainRole.setFilmList(filmList);
         }
     }

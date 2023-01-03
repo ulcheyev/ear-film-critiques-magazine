@@ -96,13 +96,13 @@ public class RatingVoteVoteServiceImpl implements RatingVoteService {
                 .orElseThrow(()->new NotFoundException("AppUser with username "+username+" does not found"));
 
         RatingVote ratingVote;
-         try{
-             ratingVote = findVoteByVoteOwnerIdAndCritiqueId(appUser.getId(), critiqueId);
-         }catch (NotFoundException e){
-             ratingVote = new RatingVote(critique, stars, new Date(), appUser);
-         }
-         ratingVoteRepository.save(ratingVote);
-         updateCritiqueAndCriticEntities(critique);
+        try{
+            ratingVote = findVoteByVoteOwnerIdAndCritiqueId(appUser.getId(), critiqueId);
+        }catch (NotFoundException e){
+            ratingVote = new RatingVote(critique, stars, new Date(), appUser);
+        }
+        ratingVoteRepository.save(ratingVote);
+        updateCritiqueAndCriticEntities(critique);
     }
 
 

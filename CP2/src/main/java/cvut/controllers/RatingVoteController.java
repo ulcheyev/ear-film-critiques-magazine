@@ -18,7 +18,6 @@ public class RatingVoteController {
 
     private final RatingVoteService ratingVoteService;
 
-
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = "unvote")
     public ResponseEntity<String> deleteVote(@RequestParam(value = "unvote") Long critiqueId) {
         ratingVoteService.deleteAndUpdate(

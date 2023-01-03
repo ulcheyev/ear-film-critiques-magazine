@@ -43,7 +43,6 @@ public class CritiqueController {
 
     }
 
-
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, "multipart/form-data"})
     @PreAuthorize("hasAnyRole('ROLE_CRITIC')")
     public ResponseEntity<String> addNewCritique(@RequestPart("critique") @NonNull  @Valid CritiqueCreationDTO dto,
@@ -88,6 +87,9 @@ public class CritiqueController {
     public List<Critique> fetchAll(){
         return critiqueService.findAll();
     }
+
+
+
 
 
 

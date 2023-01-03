@@ -39,7 +39,7 @@ public class CommentController {
     @DeleteMapping(value = "/{critiqueId}", produces = MediaType.APPLICATION_JSON_VALUE, params = "co_flagId")
     @PreAuthorize("@commentServiceImpl.checkOwner(#commentId, principal.username) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteComment(@NonNull @Valid @NotStringValidator @PathVariable String critiqueId,
-                                        @RequestParam(value = "co_flagId") String commentId)
+                                                @RequestParam(value = "co_flagId") String commentId)
     {
         commentService.deleteComment(Long.parseLong(commentId));
         final HttpHeaders headers = EarUtils

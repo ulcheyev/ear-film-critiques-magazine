@@ -26,7 +26,6 @@ public interface CritiqueService {
     void updateCritiqueState(Long critiqueId, CritiqueState critiqueState);
     void updateCritique(Long critiqueId, CritiqueCreationDTO critiqueCreationDTO);
     String readPdf(MultipartFile multipartFile) throws IOException;
-    void correctCritiqueAfterCreateRemarks(Long critiqueId, String title, String text);
     void save(Critique critique);
     Critique save(CritiqueCreationDTO critique);
     void deleteById(Long id);
