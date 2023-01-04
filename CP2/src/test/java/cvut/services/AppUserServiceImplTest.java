@@ -28,9 +28,12 @@ public class AppUserServiceImplTest {
 
     @Test
     public void verifyThatUserDoesNotHaveUniqueUsernameAndEmail(){
-
-        AppUser appUser1 = new AppUser("Natalie", "Portman", "blablahe", "232323fsv", "DomenicoJast@gmail.com");
-        AppUser appUser2 = new AppUser("Konstantin", "Moravsky", "tina.runte", "1232ddfs", "kostechka@gmail.com");
+        AppUser appUserWithValidData1 = Generator.generateUser();
+        AppUser appUserWithValidData2 = Generator.generateUser();
+        appUserServiceImpl.save(appUserWithValidData1);
+        appUserServiceImpl.save(appUserWithValidData2);
+        AppUser appUser1 = new AppUser("Natalie", "Portman", "sfjnewe", "232323fsv", appUserWithValidData1.getEmail());
+        AppUser appUser2 = new AppUser("Konstantin", "Moravsky", appUserWithValidData2.getUsername(), "1232ddfs", "kostechka@gmail.com");
 
         //verify email
         assertThrows(ValidationException.class, () -> {
@@ -39,7 +42,7 @@ public class AppUserServiceImplTest {
 
         //check that a user with non-unique mail has not been added to the table
         assertThrows(NotFoundException.class, () -> {
-            appUserServiceImpl.findByUsername("blablahe");
+            appUserServiceImpl.findByUsername("sfjnewe");
         });
 
         //verify username
@@ -81,7 +84,9 @@ public class AppUserServiceImplTest {
     @Test
     public void updateEmailUser(){
 
-        AppUser appUser = appUserServiceImpl.findById(300L);
+        AppUser user = Generator.generateUser();
+        appUserServiceImpl.save(user);
+        AppUser appUser = appUserServiceImpl.findById(user.getId());
         AppUser appUser1 = Generator.generateUser();
 
         appUserServiceImpl.save(appUser1);

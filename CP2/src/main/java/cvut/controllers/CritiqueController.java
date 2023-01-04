@@ -43,38 +43,6 @@ public class CritiqueController {
 
     }
 
-    @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, "multipart/form-data"})
-    @PreAuthorize("hasAnyRole('ROLE_CRITIC')")
-    public ResponseEntity<String> addNewCritique(@RequestPart("critique") @NonNull  @Valid CritiqueCreationDTO dto,
-                                                 @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
-
-        if(file != null && !file.isEmpty()){
-            dto.setText(critiqueService.readPdf(file));
-        }
-
-        Critique critique = critiqueService.save(dto);
-        final HttpHeaders headers = EarUtils.createLocationHeaderFromCurrentUri("/{critiqueId}", critique.getId());
-        return ResponseEntity.ok().headers(headers).body("Critique successfully created");
-    }
-
-
-    @PutMapping(value = "/{critiqueId}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("(hasRole('ROLE_CRITIC') and @critiqueServiceImpl.checkOwner(#critiqueId, principal.username)) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> updateCritique(@PathVariable @NotStringValidator String critiqueId,
-                                                 @Valid @NonNull @RequestBody CritiqueCreationDTO critiqueCreationDTO)
-    {
-        critiqueService.updateCritique(Long.parseLong(critiqueId), critiqueCreationDTO);
-        return ResponseEntity.ok("Critique successfully updated");
-    }
-
-    @DeleteMapping(value = "/{critiqueId}")
-    @PreAuthorize("(hasRole('ROLE_CRITIC') and @critiqueServiceImpl.checkOwner(#critiqueId, principal.username)) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteCritique(@Valid @NonNull @PathVariable @NotStringValidator String critiqueId)
-    {
-        critiqueService.deleteById(Long.parseLong(critiqueId));
-        return ResponseEntity.ok("Critique successfully deleted");
-    }
-
     @GetMapping(value = "search/",  consumes = MediaType.APPLICATION_JSON_VALUE,  produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Critique> searchCritiqueByFilter(@NonNull CritiqueDTO critiqueDTO){
         return critiqueService.findByCriteria(critiqueDTO);
@@ -88,7 +56,13 @@ public class CritiqueController {
         return critiqueService.findAll();
     }
 
-
+    @DeleteMapping(value = "/{critiqueId}")
+    @PreAuthorize("(hasRole('ROLE_CRITIC') and @critiqueServiceImpl.checkOwner(#critiqueId, principal.username)) or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> deleteCritique(@Valid @NonNull @PathVariable @NotStringValidator String critiqueId)
+    {
+        critiqueService.deleteById(Long.parseLong(critiqueId));
+        return ResponseEntity.ok("Critique successfully deleted");
+    }
 
 
 

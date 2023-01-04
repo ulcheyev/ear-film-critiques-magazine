@@ -2,6 +2,7 @@ package cvut.services;
 
 import cvut.Application;
 import cvut.config.utils.EarUtils;
+import cvut.config.utils.Generator;
 import cvut.model.AppUser;
 import cvut.model.Critic;
 import cvut.model.Critique;
@@ -31,13 +32,12 @@ public class RatingVoteServiceImplTest {
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addRatingToCritiqueAndCritic(){
-        double stars = 4;
         Critique critique = critiqueServiceImpl.findById(1L);
         critique.setCritiqueState(CritiqueState.ACCEPTED);
         Critic critic = critique.getCritiqueOwner();
-
-        AppUser appUser = appUserServiceImpl.findById(300L);
-        ratingVoteServiceImpl.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getUsername(), critique.getId(), stars);
+        AppUser appUser = Generator.generateUser();
+        appUserServiceImpl.save(appUser);
+        ratingVoteServiceImpl.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getUsername(), critique.getId(), 4);
 
         double expectedForCritique = ratingVoteServiceImpl.findSumOfVotesByCritiqueId(critique.getId())/
                 ratingVoteServiceImpl.findQuantityOfVotesByCritiqueId(critique.getId());
@@ -56,7 +56,8 @@ public class RatingVoteServiceImplTest {
         Critique critique = critiqueServiceImpl.findById(1L);
         critique.setCritiqueState(CritiqueState.ACCEPTED);
         Critic critic = critique.getCritiqueOwner();
-        AppUser appUser = appUserServiceImpl.findById(300L);
+        AppUser appUser = Generator.generateUser();
+        appUserServiceImpl.save(appUser);
 
         //Create
         ratingVoteServiceImpl.makeVoteAndUpdateCritiqueAndCriticRatings(appUser.getUsername(), critique.getId(), 5);
@@ -64,13 +65,10 @@ public class RatingVoteServiceImplTest {
 
         ratingVoteServiceImpl.deleteAndUpdate(appUser.getUsername(),critique.getId());
 
-        double expectedForCritique = ratingVoteServiceImpl.findSumOfVotesByCritiqueId(critique.getId())/
-                ratingVoteServiceImpl.findQuantityOfVotesByCritiqueId(critique.getId());
         double expectedForCritic = critiqueServiceImpl.findSumOfCritiquesByCriticId(critic.getId())
                 / critic.getCritiqueList().size();
 
-
-        Assertions.assertEquals(EarUtils.floorNumber(1, expectedForCritique), critique.getRating());
+        Assertions.assertEquals(0, critique.getRating());
         Assertions.assertEquals(EarUtils.floorNumber(1,expectedForCritic), critic.getCriticRating());
     }
 }

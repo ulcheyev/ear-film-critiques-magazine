@@ -42,7 +42,7 @@ import static javax.persistence.GenerationType.*;
                 resultSetMapping = "AppUserMapping"
         ),
         @NamedNativeQuery(
-                name = "findUsersWithSpecifiedCommentQuantityNNQ",
+                name = "AppUser.findUsersWithSpecifiedCommentQuantityNNQ",
                 query = "SELECT id, firstname, lastname, username, password, email FROM app_user WHERE (SELECT COUNT(*) FROM comment WHERE comment.comment_owner = app_user.id) > ?1",
                 resultSetMapping = "AppUserMapping"
         )

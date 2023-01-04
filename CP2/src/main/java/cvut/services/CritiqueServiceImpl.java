@@ -1,5 +1,4 @@
 package cvut.services;
-
 import cvut.config.security_utils.AuthenticationFacade;
 import cvut.model.dto.CritiqueCreationDTO;
 import cvut.exception.BadRequestException;
@@ -104,7 +103,7 @@ public class CritiqueServiceImpl implements CritiqueService{
     }
 
     public List<Critique> findByCritiqueOwnerUsername(@NonNull String username) {
-        List<Critique> critiquesByCritiqueOwnerUsername= critiqueRepository.findAllByCritiqueOwnerUsername(username);
+        List<Critique> critiquesByCritiqueOwnerUsername = critiqueRepository.findAllByCritiqueOwnerUsername(username);
         if (critiquesByCritiqueOwnerUsername.isEmpty()) {
             throw new NotFoundException("Critique with critique owner username " + username + " does not exist");
         }

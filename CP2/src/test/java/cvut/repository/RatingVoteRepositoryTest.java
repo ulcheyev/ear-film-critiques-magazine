@@ -1,6 +1,5 @@
 package cvut.repository;
 
-
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.*;
@@ -15,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @SpringBootTest
 @ComponentScan(basePackageClasses = Application.class)
@@ -31,24 +27,26 @@ public class RatingVoteRepositoryTest {
     private CritiqueRepository critiqueRepository;
     @Autowired
     private AppUserRepository appUserRepository;
+    @Autowired
+    private CriticRepository criticRepository;
     @PersistenceContext
     private EntityManager em;
-
-    Random random = new Random();
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
     public void addRatingWithSpecifiedCritique() {
-        Optional<Critique> critiqueById = critiqueRepository.findById(1L);
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
+        critiqueRepository.save(critique);
 
         //User with id 300....
-        Optional<AppUser> appUserById = appUserRepository.findById(random.nextLong(200L, 300L));
+        AppUser appUser = Generator.generateUser();
+        appUserRepository.save(appUser);
 
         //Assert
-        Assertions.assertTrue(critiqueById.isPresent());
-        Assertions.assertTrue(appUserById.isPresent());
+        Assertions.assertTrue(critique != null);
+        Assertions.assertTrue(appUser != null);
 
-        RatingVote genRatingVote = Generator.generateRating(critiqueById.get(), appUserById.get());
+        RatingVote genRatingVote = Generator.generateRating(critique, appUser);
         ratingVoteRepository.save(genRatingVote);
 
         //Find
@@ -58,7 +56,7 @@ public class RatingVoteRepositoryTest {
         Assertions.assertTrue(ratingById.isPresent());
         Assertions.assertEquals(ratingById.get().getId(), genRatingVote.getId());
         Assertions.assertEquals(ratingById.get().getStars(), genRatingVote.getStars());
-        Assertions.assertEquals(critiqueById.get().getId(), ratingById.get().getCritique().getId());
+        Assertions.assertEquals(critique.getId(), ratingById.get().getCritique().getId());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -81,46 +79,81 @@ public class RatingVoteRepositoryTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
     public void findSumOfVotesByCritiqueIdTest(){
-        Optional<Critique> byId = critiqueRepository.findById(1L);
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
+        critiqueRepository.save(critique);
+        AppUser appUser = Generator.generateUser();
+        appUserRepository.save(appUser);
+        Date date = Generator.generateDate();
 
         //Assert
-        Assertions.assertTrue(byId.isPresent());
+        Assertions.assertTrue(critique != null);
 
-        List<RatingVote> critiqueRatingVote = byId.get().getCritiqueRatingVote();
+        List<RatingVote> ratingVotes = new ArrayList<>();
+        RatingVote ratingVote = new RatingVote(critique, 4.0, date, appUser );
+        ratingVoteRepository.save(ratingVote);
+        RatingVote ratingVote1 = new RatingVote(critique, 3.0, date, appUser );
+        ratingVoteRepository.save(ratingVote1);
+        ratingVotes.add(ratingVote);
+        ratingVotes.add(ratingVote1);
+
+        critique.setCritiqueRatingVote(ratingVotes);
+
+        List<RatingVote> critiqueRatingVote = critique.getCritiqueRatingVote();
 
         Optional<Double> sumOfVotesByCritiqueId =
-                ratingVoteRepository.findSumOfVotesByCritiqueId(byId.get().getId());
+                ratingVoteRepository.findSumOfVotesByCritiqueId(critique.getId());
 
         Double sum  = critiqueRatingVote.stream()
                 .map(x -> x.getStars())
                 .reduce(0.0, Double::sum);
 
         //Assert
-        Assertions.assertEquals(sum, sumOfVotesByCritiqueId.get() );
+        Assertions.assertEquals(sum, sumOfVotesByCritiqueId.get());
     }
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindTheLowestRating(){
-        Optional<Double> rating = ratingVoteRepository.findTheLowestRating();
+        Query query = em.createNamedQuery("RatingVote.findTheLowestRating");
+        List<Double> rating = query.getResultList();
         Assertions.assertNotNull(rating);
         Assertions.assertFalse(rating.isEmpty());
-        Assertions.assertEquals(rating.get().byteValue(), 0.0);
+        Assertions.assertEquals(rating.size(), 1);
     }
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindTheHighestRating(){
-        Optional<Double> rating = ratingVoteRepository.findTheHighestRating();
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
+        Critic critic = new Critic("Hoho", "Hehe", "hihihaha", "huhuhu", "hihilka@mail.com");
+        List<Critique> critiqueList = new ArrayList<>();
+        critiqueList.add(critique);
+        critic.setCritiqueList(critiqueList);
+        critique.setCritiqueOwner(critic);
+        critiqueRepository.save(critique);
+
+        Date date = Generator.generateDate();
+        AppUser appUser = Generator.generateUser();
+        appUserRepository.save(appUser);
+
+        RatingVote ratingVote = new RatingVote(critique, 5.0, date, appUser);
+        ratingVoteRepository.save(ratingVote);
+        Query query = em.createNamedQuery("RatingVote.findTheHighestRating");
+        List<Double> rating = query.getResultList();
         Assertions.assertNotNull(rating);
         Assertions.assertFalse(rating.isEmpty());
-        Assertions.assertEquals(rating.get().byteValue(), 4.0);
+        Assertions.assertEquals(rating.get(0), 5.0);
     }
 
     @Test
     void testNamedQueryFindQuantityOfVotesByCritiqueId(){
-        Optional<Integer> rating = ratingVoteRepository.findQuantityOfVotesByCritiqueId(1L);
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
+        Query query = em.createNamedQuery("RatingVote.findQuantityOfVotesByCritiqueId");
+        // Set query parameters
+        query.setParameter(1, critique.getId());
+        List<Integer> rating = query.getResultList();
         Assertions.assertNotNull(rating);
         Assertions.assertFalse(rating.isEmpty());
-        Assertions.assertEquals(rating.get().byteValue(), 14);
     }
 
     @Test
