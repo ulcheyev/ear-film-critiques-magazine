@@ -6,7 +6,6 @@ import cvut.model.Critique;
 import cvut.model.dto.creation.CommentCreationDTO;
 import cvut.services.CommentServiceImpl;
 import cvut.services.CritiqueServiceImpl;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.Test;
 
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CommentAddingTest extends TestHelper{
+public class CommentControllerTest extends TestHelper{
 
     @Autowired
     private CommentController controller;
