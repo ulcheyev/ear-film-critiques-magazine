@@ -68,7 +68,7 @@ public class Critique {
     private CritiqueState critiqueState = CritiqueState.IN_PROCESSED;
 
     @OneToMany(mappedBy = "critique", cascade = CascadeType.REMOVE)
-    @JsonBackReference(value = "rating-critique")
+    @JsonManagedReference(value = "rating-critique")
     private List<RatingVote> critiqueRatingVote;
 
     @Column(name = "title",columnDefinition = "TEXT", nullable = false)
@@ -86,7 +86,7 @@ public class Critique {
     private Date dateOfAcceptance;
 
     @OneToMany(mappedBy = "critique")
-    @JsonBackReference(value = "remarks-critique")
+    @JsonManagedReference(value = "remarks-critique")
     @OrderBy("remarksMakeDay DESC")
     private List<Remarks> critiqueRemarks;
 
@@ -112,7 +112,7 @@ public class Critique {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "film", referencedColumnName = "id", nullable = false)
     @OrderBy("dateOfRelease DESC")
-    @JsonManagedReference(value = "film-critique")
+    @JsonBackReference(value = "film-critique")
     private Film film;
 
     public Critique(String title, String text, Film film, Critic critiqueOwner){

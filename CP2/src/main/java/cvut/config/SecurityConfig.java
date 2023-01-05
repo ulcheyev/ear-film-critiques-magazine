@@ -2,6 +2,7 @@ package cvut.config;
 
 import cvut.model.CritiqueState;
 import cvut.security.JwtAuthFilter;
+
 import cvut.services.AppUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -96,7 +97,11 @@ public class SecurityConfig {
         String hierarchy = "ROLE_ADMIN > ROLE_CRITIC \n ROLE_CRITIC > ROLE_USER";
         roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;
+
     }
+
+
+
 
 
     @Bean

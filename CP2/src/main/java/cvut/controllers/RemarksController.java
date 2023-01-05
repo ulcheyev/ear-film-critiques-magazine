@@ -1,17 +1,17 @@
 package cvut.controllers;
 
 
-import cvut.config.security_utils.AuthenticationFacade;
 import cvut.config.utils.EarUtils;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
 import cvut.model.Remarks;
 import cvut.model.dto.creation.RemarksCreationDTO;
+import cvut.security.SecurityUtils;
 import cvut.security.validators.NotStringValidator;
 import cvut.services.CritiqueService;
 import cvut.services.RemarksService;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +24,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/system")
-@Validated
-@RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 public class RemarksController {
 
     private final CritiqueService critiqueService;
     private final RemarksService remarksService;
+
+    @Autowired
+    public RemarksController(CritiqueService critiqueService, RemarksService remarksService) {
+        this.critiqueService = critiqueService;
+        this.remarksService = remarksService;
+    }
 
     @PostMapping(value = "/critiques/{critiqueId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createRemarks(@PathVariable @NonNull Long critiqueId,
@@ -38,7 +42,7 @@ public class RemarksController {
         remarksService.makeRemarksAndSave(
                 request.getContent(),
                 critiqueId,
-                AuthenticationFacade.getAuthentication().getName()
+                SecurityUtils.getAuthentication().getName()
         );
         final HttpHeaders headers = EarUtils
                 .createLocationHeaderFromCurrentUri("/remarks");

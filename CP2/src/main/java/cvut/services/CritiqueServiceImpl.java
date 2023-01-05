@@ -1,6 +1,5 @@
 package cvut.services;
 
-import cvut.config.security_utils.AuthenticationFacade;
 import cvut.model.dto.CritiqueCreationDTO;
 import cvut.exception.BadRequestException;
 import cvut.exception.NotFoundException;
@@ -9,6 +8,7 @@ import cvut.model.*;
 import cvut.model.dto.CritiqueDTO;
 import cvut.repository.CritiqueCriteriaRepository;
 import cvut.repository.CritiqueRepository;
+import cvut.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -34,7 +34,6 @@ public class CritiqueServiceImpl implements CritiqueService{
     private final CritiqueCriteriaRepository critiqueCriteriaRepository;
     private final FilmService filmService;
     private final AppUserService appUserService;
-    private final AuthenticationFacade authenticationFacade;
 
     private static final int TEXT_LENGTH_MAX = 3000;
     private static final int TEXT_LENGTH_MIN = 300;
@@ -241,7 +240,7 @@ public class CritiqueServiceImpl implements CritiqueService{
             throw new ValidationException("Please, fill all fields");
         }
         Film film = filmService.findById(critiqueCreationDTO.getFilmId());
-        Critic critic = (Critic) appUserService.findByUsername(authenticationFacade.getAuthentication().getName());
+        Critic critic = (Critic) appUserService.findByUsername(SecurityUtils.getAuthentication().getName());
         Critique critique = new Critique(critiqueCreationDTO.getTitle(), critiqueCreationDTO.getText(), film, critic);
         critiqueRepository.save(critique);
         return critique;
@@ -290,6 +289,10 @@ public class CritiqueServiceImpl implements CritiqueService{
     public boolean isAccepted(Long critiqueId){
         Critique critique = findById(critiqueId);
         return critique.getCritiqueState() == CritiqueState.ACCEPTED;
+    }
+
+    public boolean checkExistence(Long id){
+        return critiqueRepository.existsById(id);
     }
 }
 

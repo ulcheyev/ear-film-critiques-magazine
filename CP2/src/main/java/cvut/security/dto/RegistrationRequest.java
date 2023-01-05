@@ -1,14 +1,12 @@
-package cvut.model.dto;
+package cvut.security.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
 @Data
-public
-class RegistrationRequest {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class RegistrationRequest {
     private String firstname;
     private String lastname;
     private String email;

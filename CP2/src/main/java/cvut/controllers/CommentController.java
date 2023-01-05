@@ -1,8 +1,8 @@
 package cvut.controllers;
 
-import cvut.config.security_utils.AuthenticationFacade;
 import cvut.config.utils.EarUtils;
 import cvut.model.dto.creation.CommentCreationDTO;
+import cvut.security.SecurityUtils;
 import cvut.security.validators.NotStringValidator;
 import cvut.services.CommentService;
 import lombok.NonNull;
@@ -28,7 +28,7 @@ public class CommentController {
             @NonNull @Valid @NotStringValidator @PathVariable String critiqueId,
             @NonNull @Valid @RequestBody CommentCreationDTO comment)
     {
-        String username = AuthenticationFacade.getAuthentication().getName();
+        String username = SecurityUtils.getAuthentication().getName();
         final HttpHeaders headers = EarUtils
                 .createLocationHeaderFromCurrentUri("/{critiqueId}", critiqueId);
         commentService.save(comment.getContent(), username, Long.parseLong(critiqueId));

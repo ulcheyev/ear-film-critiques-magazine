@@ -2,6 +2,7 @@ package cvut.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -65,12 +66,12 @@ public class Film {
             inverseJoinColumns =
             @JoinColumn(name = "main_role_id")
     )
-    @JsonManagedReference(value = "film-main-roles")
+    @JsonIgnoreProperties("filmList")
     private List<MainRole> mainRoleList;
 
     @OneToMany(mappedBy = "film")
     @OrderBy("rating DESC")
-    @JsonBackReference(value = "film-critique")
+    @JsonManagedReference(value = "film-critique")
     private List<Critique> critiques;
 
     @Column(name = "film_name", nullable = false)

@@ -1,13 +1,11 @@
-package cvut.model.dto;
+package cvut.security.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Data
-@Getter
-@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthenticationRequest {
 
     private String username;

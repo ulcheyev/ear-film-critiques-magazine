@@ -1,7 +1,8 @@
 package cvut.services;
-import cvut.config.utils.EarUtils;
 import cvut.config.utils.Mapper;
-import cvut.model.dto.RegistrationRequest;
+import cvut.model.Admin;
+import cvut.security.CustomUserDetail;
+import cvut.security.dto.RegistrationRequest;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.AppUser;
@@ -29,6 +30,12 @@ public class AppUserServiceImpl implements AppUserService{
 
     public void save(@NonNull RegistrationRequest registrationRequest) {
 
+        if(registrationRequest.getRole() != null &&
+            registrationRequest.getRole().equals(Admin.DISCRIMINATOR_VALUE))
+        {
+            throw new ValidationException("You do not have permission");
+        }
+
         if(!registrationRequest.fieldsAreNotEmpty()){
             throw new ValidationException("You have to fill all fields");
         }
@@ -52,11 +59,13 @@ public class AppUserServiceImpl implements AppUserService{
         );
 
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-
-        if(registrationRequest.getRole().equals(Critic.DISCRIMINATOR_VALUE)){
-            appUserRepository.save(mapper.toCritic(appUser));
-        }else{
-            appUserRepository.save(appUser);
+        String role = registrationRequest.getRole();
+        if (role != null) {
+            if (registrationRequest.getRole().equals(Critic.DISCRIMINATOR_VALUE)) {
+                appUserRepository.save(mapper.toCritic(appUser));
+            } else {
+                appUserRepository.save(appUser);
+            }
         }
     }
 
@@ -139,11 +148,18 @@ public class AppUserServiceImpl implements AppUserService{
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CustomUserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
+
         AppUser appUser = findByUsername(username);
         Collection<SimpleGrantedAuthority> simpleGrantedAuthorityCollection = new ArrayList<>();
         simpleGrantedAuthorityCollection.add(new SimpleGrantedAuthority(appUser.getRole()));
-        return new org.springframework.security.core.userdetails.User(appUser.getUsername(), appUser.getPassword(), simpleGrantedAuthorityCollection);
+        CustomUserDetail detail = new CustomUserDetail();
+        detail.setUser(new org.springframework.security.core.userdetails.User(appUser.getUsername(), appUser.getPassword(), simpleGrantedAuthorityCollection));
+        return detail;
+    }
+
+    public boolean checkUserExisting(String username){
+        return appUserRepository.findAppUserByUsername(username).isPresent();
     }
 
 

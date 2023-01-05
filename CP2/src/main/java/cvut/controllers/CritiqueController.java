@@ -43,10 +43,11 @@ public class CritiqueController {
 
     }
 
-    @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, "multipart/form-data"})
+    @PostMapping(value = "/creation/critique", consumes = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasAnyRole('ROLE_CRITIC')")
-    public ResponseEntity<String> addNewCritique(@RequestPart("critique") @NonNull  @Valid CritiqueCreationDTO dto,
-                                                 @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<String> addNewCritique(@RequestBody @NonNull  @Valid CritiqueCreationDTO dto,
+                                                 @RequestPart(value = "file", required = false) MultipartFile file) throws IOException
+    {
 
         if(file != null && !file.isEmpty()){
             dto.setText(critiqueService.readPdf(file));
@@ -75,7 +76,9 @@ public class CritiqueController {
         return ResponseEntity.ok("Critique successfully deleted");
     }
 
-    @GetMapping(value = "search/",  consumes = MediaType.APPLICATION_JSON_VALUE,  produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search/",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Critique> searchCritiqueByFilter(@NonNull CritiqueDTO critiqueDTO){
         return critiqueService.findByCriteria(critiqueDTO);
     }

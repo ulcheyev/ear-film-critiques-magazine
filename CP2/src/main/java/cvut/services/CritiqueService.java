@@ -4,6 +4,7 @@ import cvut.model.dto.CritiqueCreationDTO;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
 import cvut.model.dto.CritiqueDTO;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

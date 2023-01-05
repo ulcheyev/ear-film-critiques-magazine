@@ -58,7 +58,6 @@ public class CommentServiceImplTest {
         appUserServiceImpl.save(appUser);
         critiqueServiceImpl.save(critique);
 
-
         String normal_text = "Its my first comment";
 
 
