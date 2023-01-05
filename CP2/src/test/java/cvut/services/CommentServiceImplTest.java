@@ -5,7 +5,10 @@ import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.AppUser;
+import cvut.model.Critic;
 import cvut.model.Critique;
+import cvut.model.CritiqueState;
+import cvut.repository.CriticRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,8 +35,11 @@ public class CommentServiceImplTest {
     @Autowired
     private CritiqueServiceImpl critiqueServiceImpl;
 
+    @Autowired
+    private CriticRepository criticRepository;
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveCommentTest(){
 
         String text_200 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris rutrum, lorem nec fringilla " +
@@ -50,11 +58,10 @@ public class CommentServiceImplTest {
                 "ipsum est, rhoncus eu ligula eu, semper tristique nisl. Donec luctus leo arcu. Duis in justo id turpis.";
 
         AppUser appUser = Generator.generateUser();
-        AppUser appUser_notCritic = appUserServiceImpl.findById(1080L);
-        Critique critique = critiqueServiceImpl.findById(205L);
-        Critique critique_in_proc = critiqueServiceImpl.findById(6L);
-        Critique critique_neex = Generator.generateCritique(300);
-        AppUser appUser_neex = Generator.generateUser();
+        AppUser appUser1 = Generator.generateUser();
+        Critic critic = new Critic("Lola", "Lolova", "lololo", "flfplfpafd", "mdqfoq@gmail.com");
+        criticRepository.save(critic);
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 305);
         appUserServiceImpl.save(appUser);
         critiqueServiceImpl.save(critique);
 
@@ -67,24 +74,23 @@ public class CommentServiceImplTest {
         });
 
         //verify not found appUser
-//        assertThrows(NotFoundException.class, () -> {
-//            commentServiceImpl.save(normal_text, 2000000000L, critique.getId());
-//        });
+        assertThrows(NotFoundException.class, () -> {
+            commentServiceImpl.save(normal_text, appUser1.getUsername(), critique.getId());
+        });
 
         //checking that when a critic is in the "IN_PROCESSED" state, only the critic can comment on it
 
         int count_before_save_comment = commentServiceImpl.findAll().size();
 
-//        commentServiceImpl.save(normal_text, 1080L, 6L);
+        commentServiceImpl.save(normal_text, appUser.getUsername(), 6L);
 
         int count_after_save = commentServiceImpl.findAll().size();
 
-        assertEquals(count_before_save_comment, count_after_save);
-
+        assertEquals(count_before_save_comment + 1, count_after_save);
 
         //verify not found critique
         assertThrows(NotFoundException.class, () -> {
-//            commentServiceImpl.save(normal_text, appUser.getId(), 200000000000L);
+            commentServiceImpl.save(normal_text,  critic.getUsername(), 200000000000L);
         });
 
 
@@ -94,7 +100,7 @@ public class CommentServiceImplTest {
 
         count1 = commentServiceImpl.findAll().size();
 
-//        commentServiceImpl.save(normal_text, appUser.getId(), critique.getId());
+        commentServiceImpl.save(normal_text, appUser.getUsername(), critique.getId());
 
         count2 = commentServiceImpl.findAll().size();
 

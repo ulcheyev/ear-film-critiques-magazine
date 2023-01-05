@@ -22,11 +22,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @ComponentScan(basePackageClasses = Application.class)
 public class AppUserRepositoryTest {
 
-    @Autowired
-    private AppUserRepository appUserRepository;
+    private final AppUserRepository appUserRepository;
+    private final CommentRepository commentRepository;
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    public AppUserRepositoryTest(AppUserRepository appUserRepository, CommentRepository commentRepository) {
+        this.appUserRepository = appUserRepository;
+        this.commentRepository = commentRepository;
+    }
 
 
     @Test
@@ -117,14 +123,16 @@ public class AppUserRepositoryTest {
         commentList.add(comment);
         appUser.setCommentList(commentList);
 
-        Query query = em.createNamedQuery("findUsersWithSpecifiedCommentQuantityNNQ");
+        Query query = em.createNamedQuery("AppUser.findUsersWithSpecifiedCommentQuantityNNQ");
         query.setParameter(1, minCommentQuantity);
         List<AppUser> users = query.getResultList();
+        List<Comment> comments;
 //        // Assert
         assertNotNull(users.size());
-//        for (AppUser user : users) {
-//            assertTrue(user.getCommentList().size() > minCommentQuantity);   //ne mogu tak sdelat, commentList = null
-//        }
+        for (int i = 0; i < users.size(); i++) {
+            comments = commentRepository.findAllByAppUser_Id(users.get(i).getId());
+            assertTrue(comments.size() > minCommentQuantity);
+        }
         Assertions.assertEquals(users.size(), 50);
 
     }

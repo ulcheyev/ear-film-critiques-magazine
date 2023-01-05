@@ -4,9 +4,12 @@ import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
+import cvut.model.Critic;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
+import cvut.model.Film;
 import cvut.model.dto.CritiqueCreationDTO;
+import cvut.repository.CriticRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,8 @@ public class CritiqueServiceImplTest {
 
     @Autowired
     private CritiqueServiceImpl critiqueServiceImpl;
+    @Autowired
+    private CriticRepository criticRepository;
 
     @Test
     public void findAllByCritiqueStateTest(){
@@ -47,11 +52,14 @@ public class CritiqueServiceImplTest {
 
     @Test
     public void findAllByFilmTest(){
-        String filmName = "National Optimization";
-        List<Critique> critiques = critiqueServiceImpl.findByFilmName(filmName);
+        Film film = Generator.generateFilm();
+        Critic critic = new Critic("Lola", "Lolova", "lololo", "flfplfpafd", "mdqfoq@gmail.com");
+        criticRepository.save(critic);
+        Critique critique1 = Generator.generateCritique(film, critic, 100);
+        List<Critique> critiques = critiqueServiceImpl.findByFilmName(film.getName());
 
         for(Critique critique: critiques){
-            assertThat(critique.getFilm().getName()).contains(filmName);
+            assertThat(critique.getFilm().getName()).contains(film.getName());
         }
     }
 
@@ -171,11 +179,5 @@ public class CritiqueServiceImplTest {
         //Assert
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.CORRECTED);
     }
-
-
-
-
-
-
 
 }

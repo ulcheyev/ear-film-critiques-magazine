@@ -32,7 +32,7 @@ public class RatingVote {
     private Long id;
 
     //TODO ubrat cascade type-postavit MERGE
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "critique", referencedColumnName = "id", nullable = false)
     @JsonBackReference(value = "rating-critique")
     @OrderBy("rating DESC")

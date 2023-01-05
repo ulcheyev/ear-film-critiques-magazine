@@ -21,7 +21,7 @@ public class Critic extends AppUser {
     @Column(name = "critic_rating", nullable = false)
     private double criticRating;
 
-    @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference(value = "critic-critique")
     @ToString.Exclude
     @OrderBy("dateOfAcceptance DESC")

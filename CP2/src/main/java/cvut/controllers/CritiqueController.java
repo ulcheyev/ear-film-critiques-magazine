@@ -43,6 +43,7 @@ public class CritiqueController {
 
     }
 
+    @GetMapping(value = "search/",  consumes = MediaType.APPLICATION_JSON_VALUE,  produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping(value = "/creation/critique", consumes = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasAnyRole('ROLE_CRITIC')")
     public ResponseEntity<String> addNewCritique(@RequestBody @NonNull  @Valid CritiqueCreationDTO dto,
@@ -91,7 +92,13 @@ public class CritiqueController {
         return critiqueService.findAll();
     }
 
-
+    @DeleteMapping(value = "/{critiqueId}")
+    @PreAuthorize("(hasRole('ROLE_CRITIC') and @critiqueServiceImpl.checkOwner(#critiqueId, principal.username)) or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> deleteCritique(@Valid @NonNull @PathVariable @NotStringValidator String critiqueId)
+    {
+        critiqueService.deleteById(Long.parseLong(critiqueId));
+        return ResponseEntity.ok("Critique successfully deleted");
+    }
 
 
 

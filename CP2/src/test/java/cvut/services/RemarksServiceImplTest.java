@@ -3,6 +3,10 @@ import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
+import cvut.model.Admin;
+import cvut.model.Critique;
+import cvut.model.CritiqueState;
+import cvut.repository.AdminRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +31,11 @@ public class RemarksServiceImplTest {
     @Autowired
     private CritiqueServiceImpl critiqueServiceImpl;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void makeAndSaveRemark(){
 
         String velky_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu cursus massa, sit amet " +
@@ -50,19 +58,23 @@ public class RemarksServiceImplTest {
 
         String norm_text = "Je to proste super";
 
+        Admin admin = new Admin("vllwplw", "wfpwpfpqfl", "woekfpwfkpwf", "wfoijwfif", "efowjfoiwjf");
+        adminRepository.save(admin);
+        Critique critique = Generator.generateCritique(CritiqueState.IN_PROCESSED, 400);
+        critique.setId(4000L);
 
         //TODO
         //verify text <5 and >3000
         assertThrows(ValidationException.class, () -> {
-//            remarksServiceImpl.makeRemarksAndSave(velky_text, 205L, 481L);
-//            remarksServiceImpl.makeRemarksAndSave(maly_text, 205L, 481L);
+            remarksServiceImpl.makeRemarksAndSave(velky_text, critique.getId(), admin.getUsername());
+            remarksServiceImpl.makeRemarksAndSave(maly_text, 205L, admin.getUsername());
         });
 
         //TODO
         //verify not found admin, critique
         assertThrows(NotFoundException.class, () -> {
-//            remarksServiceImpl.makeRemarksAndSave(norm_text, 20000L, 481L);
-//            remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, 40000L);
+            remarksServiceImpl.makeRemarksAndSave(norm_text, 20000L, admin.getUsername());
+            remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, admin.getUsername());
         });
 
         //verify save remark
@@ -73,7 +85,7 @@ public class RemarksServiceImplTest {
         count_1 = remarksServiceImpl.findAll().size();
 
         //TODO
-//        remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, 481L);
+        remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, admin.getUsername());
 
         count_2 = remarksServiceImpl.findAll().size();
 

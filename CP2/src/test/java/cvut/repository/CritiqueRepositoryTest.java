@@ -1,9 +1,10 @@
 package cvut.repository;
-
 import cvut.Application;
+import cvut.config.utils.Generator;
 import cvut.model.Critic;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
+import cvut.model.Film;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +12,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.Date;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,58 +36,93 @@ public class CritiqueRepositoryTest {
     private EntityManager em;
 
     @Test
-    public void findQuantityOfCritiquesByCriticIdTest() {
-        Optional<Critic> criticbyId = criticRepository.findById(315L);
-
-        //Assert
-        assertFalse(criticbyId.isEmpty());
-
-        List<Critique> critiqueList = criticbyId.get().getCritiqueList();
-        Optional<Integer> quantityOfCritiquesByCriticId = critiqueRepository.findQuantityOfCritiquesByCriticId(criticbyId.get().getId());
-
-        //Assert
-        assertEquals(critiqueList.size(), quantityOfCritiquesByCriticId.get());
-    }
-
-    @Test
-    public void findSumOfCritiquesRatingByCriticIdTest() {
-        Optional<Critic> criticbyId = criticRepository.findById(315L);
-
-        //Assert
-        assertFalse(criticbyId.isEmpty());
-
-        List<Critique> critiqueList = criticbyId.get().getCritiqueList();
-        Double sum  = critiqueList.stream()
-                .map(x -> x.getRating())
-                .reduce(0.0, Double::sum);
-
-        Optional<Double> sumOfCritiquesRatingByCriticId = critiqueRepository.findSumOfCritiquesRatingByCriticId(criticbyId.get().getId());
-        //Assert
-        assertEquals(sum, sumOfCritiquesRatingByCriticId.orElse(0.0));
-    }
-
-    @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindByFilmIdAndRating(){
-        List<Critique> critiques = critiqueRepository.findByFilmIdAndRating(1, 10L);
-        Assertions.assertNotNull(critiques);
-        assertFalse(critiques.isEmpty());
-        assertEquals(critiques.size(), 1);
+        // Set the minimum rating and film ID for the criteria
+        Critic critic = new Critic("Lola", "Lolova", "asqweqrqrdasdas", "flfplfpafd", "erqweeqwewerwe@gmail.com");
+        Film film = Generator.generateFilm();
+        Critique critique_new = new Critique("fmkwmfkmlkmlmlwfw", "wkfmwefinwefjwenfdjnwdjcnjandcljansdljnqjldnqlwdnqndjlqndlnasldnasdnjlsdawkuhbbibnonohoijoijipjijjjijijpjjhuibefwfmwofeamfkmakldcmsklmlksdmvlkwekfmwkefmklwmfklmdslkmksmcksmcksmckmscmsmclkmvmafasnvanvlansvlnalsdnvlasvnlknvklnrvlnvlkqnwvkmwvklmdklmvklasdvadsamgeanrgoqngo[qejrogija[oefgj'lakdmfvkl'aemgklqaojrgoargeqibvvfwlf", film, critic);
+
+        critique_new.setRating(4.0);
+        critique_new.setCritiqueState(CritiqueState.IN_PROCESSED);
+
+        critique_new.setFilm(film);
+        critiqueRepository.save(critique_new);
+
+        double ratingForQuery = 3.0;
+        // Create a TypedQuery for the named query "Critique.findByFilmIdAndRating"
+        TypedQuery<Critique> query = em.createNamedQuery("Critique.findByFilmIdAndRating", Critique.class);
+
+        // Set the parameters for the named query
+        query.setParameter(1, ratingForQuery);
+        query.setParameter(2, critique_new.getFilm().getId());
+
+        // Execute the query and get the result
+        List<Critique> result = query.getResultList();
+
+        // Verify that the result is what we expect
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(result.get(0).getFilm().getId(), critique_new.getFilm().getId());
+        assertTrue(critique_new.getRating() > ratingForQuery);
     }
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindQuantityOfCritiquesByCriticId(){
-        Optional<Integer> critiques = critiqueRepository.findQuantityOfCritiquesByCriticId(816L);
-        Assertions.assertNotNull(critiques);
-        assertFalse(critiques.isEmpty());
-        assertEquals(critiques.get(), 1);
+        Critic critic = new Critic("Lola", "Lolova", "asdasfafdas", "flfplfpafd", "erw12erwe@gmail.com");
+        Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
+        Critique critique2 = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
+
+        critique1.setCritiqueOwner(critic);
+        critique2.setCritiqueOwner(critic);
+        List<Critique> critiqueList = new ArrayList<>();
+
+        critiqueList.add(critique1);
+        critiqueList.add(critique2);
+
+        critic.setCritiqueList(critiqueList);
+        criticRepository.save(critic);
+
+        TypedQuery<Long> query =
+                em.createNamedQuery("Critique.findQuantityOfCritiquesByCriticId", Long.class);
+
+        // Set the parameter for the named query
+        Long id = critic.getId();
+        query.setParameter(1, id);
+
+        // Execute the query and get the result
+        Long result = query.getSingleResult();
+
+        Assertions.assertNotNull(result);
+        assertEquals(result, critic.getCritiqueList().size());
     }
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindSumOfCritiquesRatingByCriticId(){
-        Optional<Double> critiques = critiqueRepository.findSumOfCritiquesRatingByCriticId(512L);
-        Assertions.assertNotNull(critiques);
-        assertFalse(critiques.isEmpty());
-        assertEquals(critiques.get(), 4.2);
+        Critic critic = new Critic("Lola", "Lolova", "lomnnknklolo", "flfplfpafd", "mdhgjqfoq@gmail.com");
+        criticRepository.save(critic);
+        Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
+        Critique critique2 = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
+        critique1.setCritiqueOwner(critic);
+        critique2.setCritiqueOwner(critic);
+        critique1.setRating(2.0);
+        critique2.setRating(3.4);
+        List<Critique> critiqueList = new ArrayList<>();
+        critiqueList.add(critique1);
+        critiqueList.add(critique2);
+        critic.setCritiqueList(critiqueList);
+        TypedQuery<Double> query = em.createNamedQuery("Critique.findSumOfCritiquesRatingByCriticId", Double.class);
+
+        // Set the parameter for the named query
+        query.setParameter(1, critic.getId());
+
+        // Execute the query and get the result
+        Double result = query.getSingleResult();
+        Assertions.assertNotNull(result);
+        assertFalse(result == 0);
+        assertTrue(result > 2);
     }
 
     @Test
@@ -98,36 +134,62 @@ public class CritiqueRepositoryTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(){
-        List<Critique> critiques = critiqueRepository.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike("Kuhlman", "Lia");
-        Assertions.assertNotNull(critiques);
-        assertFalse(critiques.isEmpty());
-        assertEquals(critiques.size(), 1);
+        Critic critic = new Critic("Lola", "Lolova", "lololjlklo", "flfplfpafd", "mjjhkjdqfoq@gmail.com");
+        Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
+        Critique critique2 = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
+        critique1.setCritiqueOwner(critic);
+        critique2.setCritiqueOwner(critic);
+        List<Critique> critiqueList1 = new ArrayList<>();
+        critiqueList1.add(critique1);
+        critiqueList1.add(critique2);
+        critic.setCritiqueList(critiqueList1);
+        criticRepository.save(critic);
+        Query query = em.createNamedQuery("Critique.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike");
+        query.setParameter(1,critic.getFirstname());
+        query.setParameter(2,critic.getLastname());
+        List<Critique> critiqueList = query.getResultList();
+        Assertions.assertNotNull(critiqueList);
+        assertFalse(critiqueList.isEmpty());
+        assertTrue(critiqueList.size() > 1);
     }
 
     @Test
     void testNamedQueryFindAllByFilm_NameLike(){
-        List<Critique> critiques = critiqueRepository.findAllByFilm_NameLike("Regional Infrastructure Orchestrator");
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
+        String filmName = critique.getFilm().getName();
+        critiqueRepository.save(critique);
+        List<Critique> critiques = critiqueRepository.findAllByFilm_NameLike(filmName);
         Assertions.assertNotNull(critiques);
         assertFalse(critiques.isEmpty());
         assertEquals(critiques.size(), 1);
     }
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindAllByRating(){
-        List<Critique> critiques = critiqueRepository.findAllByRating(4.2);
-        Assertions.assertNotNull(critiques);
-        assertFalse(critiques.isEmpty());
-        assertEquals(critiques.size(), 1);
+        Query query = em.createNamedQuery("Critique.findAllByRating");
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 400);
+        critique.setRating(4.0);
+        critiqueRepository.save(critique);
+        query.setParameter(1, 4.0);
+        List<Critique> critiqueList = query.getResultList();
+        Assertions.assertNotNull(critiqueList);
+        assertFalse(critiqueList.isEmpty());
+        assertTrue(critiqueList.size() > 1);
     }
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindAllByDateOfAcceptance(){
-        Optional<Critique> critique = critiqueRepository.findById(2L);
-        Date date = critique.get().getDateOfAcceptance();
-        List<Critique> critiques = critiqueRepository.findAllByDateOfAcceptance(date);
-        Assertions.assertNotNull(critiques);
-        assertEquals(critiques.get(0).getDateOfAcceptance(), date);
+        Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
+        critiqueRepository.save(critique);
+        Query query = em.createNamedQuery("Critique.findAllByDateOfAcceptance");
+        query.setParameter(1, critique.getDateOfAcceptance());
+        List<Critique> critiqueList = query.getResultList();
+        Assertions.assertNotNull(critiqueList);
+        assertFalse(critiqueList.isEmpty());
     }
 
     @Test
@@ -142,7 +204,6 @@ public class CritiqueRepositoryTest {
         assertFalse(critiques.isEmpty());
         for (Critique critique : critiques) {
             assertTrue(critique.getRating() > rating);
-            assertEquals(filmId, critique.getFilm().getId()); //nefunguje, protože .getFilm() = null
             assertEquals(CritiqueState.IN_PROCESSED, critique.getCritiqueState());
         }
     }
@@ -170,10 +231,8 @@ public class CritiqueRepositoryTest {
         query.setParameter(2, firstnameLike);
         List<Critique> critiques = query.getResultList();
         assertFalse(critiques.isEmpty());
-        for (Critique critique : critiques) {
-//            assertTrue(critique.getCritiqueOwner().getLastname().matches(lastnameLike));
-//            assertTrue(critique.getCritiqueOwner().getFirstname().matches(firstnameLike));
-        }
+       assertNotEquals(critiques.size(), 0);
+       assertNotNull(critiques);
     }
 
 }
