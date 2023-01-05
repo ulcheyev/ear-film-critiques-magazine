@@ -59,11 +59,12 @@ public class CommentServiceImplTest {
 
         AppUser appUser = Generator.generateUser();
         AppUser appUser1 = Generator.generateUser();
-        Critic critic = new Critic("Lola", "Lolova", "lololo", "flfplfpafd", "mdqfoq@gmail.com");
+        Critic critic = new Critic("Lola", "Lolova", "lolosfaflo", "flfplfpafd", "mdqefqffoq@gmail.com");
         criticRepository.save(critic);
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 305);
         appUserServiceImpl.save(appUser);
         critiqueServiceImpl.save(critique);
+
 
         String normal_text = "Its my first comment";
 
@@ -118,8 +119,6 @@ public class CommentServiceImplTest {
         appUserServiceImpl.save(appUser);
         critiqueServiceImpl.save(critique);
 
-
-        String normal_text = "Its my first comment";
 
         //verify delete comment, ktery neexistuje v tabulce
         assertThrows(NotFoundException.class, () -> {

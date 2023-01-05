@@ -6,6 +6,7 @@ import cvut.exception.ValidationException;
 import cvut.model.Admin;
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
+import cvut.model.Remarks;
 import cvut.repository.AdminRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,9 +28,6 @@ public class RemarksServiceImplTest {
 
     @Autowired
     private RemarksServiceImpl remarksServiceImpl;
-
-    @Autowired
-    private AppUserServiceImpl appUserServiceImpl;
 
     @Autowired
     private CritiqueServiceImpl critiqueServiceImpl;
@@ -58,10 +59,9 @@ public class RemarksServiceImplTest {
 
         String norm_text = "Je to proste super";
 
-        Admin admin = new Admin("vllwplw", "wfpwpfpqfl", "woekfpwfkpwf", "wfoijwfif", "efowjfoiwjf");
+        Admin admin = new Admin("vllwplw", "wfpwpfpqfl", "woqeqefekfpwfkpwf", "wfoijwfif", "efowjfofwfiwjf@gmail.com");
         adminRepository.save(admin);
-        Critique critique = Generator.generateCritique(CritiqueState.IN_PROCESSED, 400);
-        critique.setId(4000L);
+        Critique critique = critiqueServiceImpl.findById(182L);
 
         //TODO
         //verify text <5 and >3000
@@ -78,13 +78,11 @@ public class RemarksServiceImplTest {
         });
 
         //verify save remark
-
-        int count_1 = 0;
-        int count_2 = 0;
+        int count_1;
+        int count_2;
 
         count_1 = remarksServiceImpl.findAll().size();
 
-        //TODO
         remarksServiceImpl.makeRemarksAndSave(norm_text, 205L, admin.getUsername());
 
         count_2 = remarksServiceImpl.findAll().size();
@@ -116,6 +114,7 @@ public class RemarksServiceImplTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateRemark(){
 
         String velky_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu cursus massa, sit amet " +
@@ -137,7 +136,7 @@ public class RemarksServiceImplTest {
         String maly_text = "Norm";
 
         String norm_text = "Je to proste super puper vuper";
-
+        Remarks remarks = remarksServiceImpl.findById(4L);
         //verify not found remark
         assertThrows(NotFoundException.class, () -> {
             remarksServiceImpl.update( norm_text, 52L);
@@ -151,11 +150,11 @@ public class RemarksServiceImplTest {
 
         //verify update
 
-        String text = Generator.generateString();
+        String text = "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmaaaaaaasaaaallsamkamkamamamamdkamdkamdkamdkamkdmdkm;mamamdam;dm";
 
-        remarksServiceImpl.update(text, 1L);
+        remarksServiceImpl.update(text, remarks.getId());
 
-        Assertions.assertEquals(text, remarksServiceImpl.findById(1L).getText());
+        Assertions.assertEquals(text, remarks.getText());
     }
 
 

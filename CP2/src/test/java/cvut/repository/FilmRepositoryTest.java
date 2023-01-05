@@ -22,8 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class FilmRepositoryTest {
 
     @Autowired
-    private FilmRepository filmRepository;
-    @Autowired
     private CritiqueRepository critiqueRepository;
     @PersistenceContext
     private EntityManager em;

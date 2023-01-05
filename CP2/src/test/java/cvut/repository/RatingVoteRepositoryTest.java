@@ -27,8 +27,7 @@ public class RatingVoteRepositoryTest {
     private CritiqueRepository critiqueRepository;
     @Autowired
     private AppUserRepository appUserRepository;
-    @Autowired
-    private CriticRepository criticRepository;
+
     @PersistenceContext
     private EntityManager em;
 

@@ -28,7 +28,7 @@ public class CritiqueRepositoryTest {
 
     @Autowired
     private CritiqueRepository critiqueRepository;
-    
+
     @Autowired
     private CriticRepository criticRepository;
 
@@ -231,8 +231,8 @@ public class CritiqueRepositoryTest {
         query.setParameter(2, firstnameLike);
         List<Critique> critiques = query.getResultList();
         assertFalse(critiques.isEmpty());
-       assertNotEquals(critiques.size(), 0);
-       assertNotNull(critiques);
+        assertNotEquals(critiques.size(), 0);
+        assertNotNull(critiques);
     }
 
 }
