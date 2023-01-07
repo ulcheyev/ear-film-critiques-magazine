@@ -4,10 +4,7 @@ import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
-import cvut.model.AppUser;
-import cvut.model.Critic;
-import cvut.model.Critique;
-import cvut.model.CritiqueState;
+import cvut.model.*;
 import cvut.repository.CriticRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,6 +35,15 @@ public class CommentServiceImplTest {
 
     @Autowired
     private CriticRepository criticRepository;
+
+    @Autowired
+    private AppUserService appUserService;
+
+    @Autowired
+    private FilmService filmService;
+
+    @Autowired
+    private MainRoleService mainRoleService;
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -63,6 +70,13 @@ public class CommentServiceImplTest {
         criticRepository.save(critic);
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 305);
         appUserServiceImpl.save(appUser);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueServiceImpl.save(critique);
 
 

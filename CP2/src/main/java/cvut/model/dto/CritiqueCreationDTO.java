@@ -1,5 +1,6 @@
 package cvut.model.dto;
 
+import cvut.model.CritiqueState;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

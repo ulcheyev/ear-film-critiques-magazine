@@ -4,10 +4,7 @@ import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
-import cvut.model.Critic;
-import cvut.model.Critique;
-import cvut.model.CritiqueState;
-import cvut.model.Film;
+import cvut.model.*;
 import cvut.model.dto.CritiqueCreationDTO;
 import cvut.repository.CriticRepository;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +32,11 @@ public class CritiqueServiceImplTest {
     private CriticRepository criticRepository;
     @Autowired
     private FilmServiceImpl filmService;
+    @Autowired
+    private MainRoleService mainRoleService;
+    @Autowired
+    private AppUserService appUserService;
+
     @Test
     public void findAllByCritiqueStateTest(){
 
@@ -60,6 +63,13 @@ public class CritiqueServiceImplTest {
         criticRepository.save(critic);
         Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 400);
         critique1.setFilm(film);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique1.setFilm(film);
+        appUserService.save(critique1.getCritiqueOwner());
         critiqueServiceImpl.save(critique1);
         List<Critique> critiques = critiqueServiceImpl.findByFilmName(critique1.getFilm().getName());
 
@@ -82,29 +92,29 @@ public class CritiqueServiceImplTest {
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void findAllByLastnameAndFirstnameLikeTest(){
-//        Critic critic = new Critic("Lola", "Lolovaqde", "lolowefewwefwflo", "flfplfpafd", "mdqwewefweffwefoq@gmail.com");
-//        Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 400);
-//        List<Critique> critiqueList = new ArrayList<>();
-//        critiqueList.add(critique1);
-//        critic.setCritiqueList(critiqueList);
-//        critique1.setCritiqueOwner(critic);
-//        critiqueServiceImpl.save(critique1);
-//        criticRepository.save(critic);
-//        Optional<Critic> critic = criticRepository.findById(2680L);
-//        List<Critique> critiques = critiqueServiceImpl.findByCritiqueOwnerId(critic.get().getId());
-//
-//        Assertions.assertFalse(critiques.isEmpty());
-//        Assertions.assertTrue(critiques.size() > 1);
-//
-//        String firstname = critiques.get(0).getCritiqueOwner().getFirstname();
-//        String lastname = critiques.get(0).getCritiqueOwner().getLastname();
-//
-//        List<Critique> critiques1 = critiqueServiceImpl.findByCriticsLastnameAndFirstname(firstname, lastname);
-//
-//        for(Critique critique: critiques1){
-//            Assertions.assertEquals(firstname, critique.getCritiqueOwner().getFirstname());
-//            Assertions.assertEquals(lastname, critique.getCritiqueOwner().getLastname());
-//        }
+        Critic critic = new Critic("Lola", "Lolovaqde", "lolowefewwefwflo", "flfplfpafd", "mdqwewefweffwefoq@gmail.com");
+        Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 400);
+        List<Critique> critiqueList = new ArrayList<>();
+        critiqueList.add(critique1);
+        critic.setCritiqueList(critiqueList);
+        critique1.setCritiqueOwner(critic);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+        Film film = critique1.getFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(critique1.getFilm());
+        appUserService.save(critique1.getCritiqueOwner());
+        critiqueServiceImpl.save(critique1);
+
+        String firstname = critic.getFirstname();
+        String lastname = critic.getLastname();
+
+        List<Critique> critiques1 = critiqueServiceImpl.findByCriticsLastnameAndFirstname(firstname, lastname);
+
+        for(Critique critique: critiques1){
+            Assertions.assertEquals(firstname, critique.getCritiqueOwner().getFirstname());
+            Assertions.assertEquals(lastname, critique.getCritiqueOwner().getLastname());
+        }
     }
 
     @Test
@@ -120,79 +130,61 @@ public class CritiqueServiceImplTest {
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateCritiqueTest(){
-//        Long id = 40L;
-//        Critique critique = critiqueServiceImpl.findById(id);
-//
-////        CritiqueCreationDTO critique1 = new CritiqueCreationDTO();
-//        Critique critique1 = Generator.generateCritique(CritiqueState.SENT_FOR_CORRECTIONS, 400);
-//        critique1.setText(Generator.generateString("d",342));
-//        critique1.setTitle(Generator.generateString("f",100));
-//        Film film = filmService.findById(1L);
-//        critique1.setFilm(film);
-//
-//        Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.ACCEPTED);
-//
-//        //Change
-//        critiqueServiceImpl.updateCritique(id, critique1);
-//
-//        Assertions.assertEquals(critique1.getText(), critique.getText());
-//        Assertions.assertEquals(critique1.getTitle(), critique.getTitle());
-//
-//        //Try to update with min text length
-//        String textToChange_min = Generator.generateString("Test", 50);
-//        critique1.setText(textToChange_min);
-//        //Change
-//        assertThrows(ValidationException.class, () -> {
-//            critiqueServiceImpl.updateCritique(id, critique1);
-//        });
-//
-//        //Try to update with min title length
-//        String titleToChange_min = Generator.generateString("Test", 3);
-//        critique1.setTitle(titleToChange_min);
-//        //Change
-//        assertThrows(ValidationException.class, () -> {
-//            critiqueServiceImpl.updateCritique(id, critique1);
-//        });
-//
-//        //Try to update with max text length
-//        String textToChange_max = Generator.generateString("Test", 5000);
-//        critique1.setText(textToChange_max);
-//        //Change
-//        assertThrows(ValidationException.class, () -> {
-//            critiqueServiceImpl.updateCritique(id, critique1);
-//        });
-//
-//        //Try to update with max title length
-//        String titleToChange_max = Generator.generateString("Test", 1500);
-//        critique1.setTitle(titleToChange_max);
-//        //Change
-//        assertThrows(ValidationException.class, () -> {
-//            critiqueServiceImpl.updateCritique(id, critique1);
-//        });
-    }
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
 
-    @Test
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void correctCritiqueAfterCreateRemarksTest() {
-//        Long id = 12L;
-//
-//        Critique critique = critiqueServiceImpl.findById(id);
-//        Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.ACCEPTED);
-//
-//        String textToChange = Generator.generateString("ef3w", 100);
-//        String titleToChange = Generator.generateString("523f", 10);
-//
-//        //Wrong state
-//        assertThrows(ValidationException.class, () -> {
-//            critiqueServiceImpl.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
-//        });
-//
-//        //Right state
-//        critique.setCritiqueState(CritiqueState.SENT_FOR_CORRECTIONS);
-//        critiqueServiceImpl.correctCritiqueAfterCreateRemarks(id, titleToChange, textToChange);
-//
-//        //Assert
-//        Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.CORRECTED);
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+
+        Critique critique1 = Generator.generateCritique(CritiqueState.IN_PROCESSED, 400);
+        critique1.setFilm(film);
+        appUserService.save(critique1.getCritiqueOwner());
+        critiqueServiceImpl.save(critique1);
+
+        CritiqueCreationDTO critiqueDTO = new CritiqueCreationDTO();
+        critiqueDTO.setText(Generator.generateString("d",342));
+        critiqueDTO.setTitle(Generator.generateString("f",100));
+
+        critiqueDTO.setFilmId(film.getId());
+
+        //Change
+        critiqueServiceImpl.updateCritique(critique1.getId(), critiqueDTO);
+
+        Assertions.assertEquals(critique1.getText(), critiqueDTO.getText());
+        Assertions.assertEquals(critique1.getTitle(), critiqueDTO.getTitle());
+
+        //Try to update with min text length
+        String textToChange_min = Generator.generateString("Test", 50);
+        critiqueDTO.setText(textToChange_min);
+        //Change
+        assertThrows(ValidationException.class, () -> {
+            critiqueServiceImpl.updateCritique(critique1.getId(), critiqueDTO);
+        });
+
+        //Try to update with min title length
+        String titleToChange_min = Generator.generateString("Test", 3);
+        critiqueDTO.setTitle(titleToChange_min);
+        //Change
+        assertThrows(ValidationException.class, () -> {
+            critiqueServiceImpl.updateCritique(critique1.getId(), critiqueDTO);
+        });
+
+        //Try to update with max text length
+        String textToChange_max = Generator.generateString("Test", 5000);
+        critiqueDTO.setText(textToChange_max);
+        //Change
+        assertThrows(ValidationException.class, () -> {
+            critiqueServiceImpl.updateCritique(critique1.getId(), critiqueDTO);
+        });
+
+        //Try to update with max title length
+        String titleToChange_max = Generator.generateString("Test", 1500);
+        critiqueDTO.setTitle(titleToChange_max);
+        //Change
+        assertThrows(ValidationException.class, () -> {
+            critiqueServiceImpl.updateCritique(critique1.getId(), critiqueDTO);
+        });
     }
 
     }

@@ -3,10 +3,11 @@ package cvut.controllers;
 import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
 import cvut.model.Critique;
+import cvut.model.Film;
+import cvut.model.MainRole;
 import cvut.model.Remarks;
 import cvut.model.dto.creation.RemarksCreationDTO;
-import cvut.services.CritiqueServiceImpl;
-import cvut.services.RemarksServiceImpl;
+import cvut.services.*;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -31,6 +32,18 @@ public class RemarksControllerTest extends TestHelper{
     @Autowired
     private CritiqueServiceImpl critiqueService;
 
+    @Autowired
+    private AppUserService appUserService;
+
+    @Autowired
+    private FilmService filmService;
+
+    @Autowired
+    private MainRoleService mainRoleService;
+
+
+
+
     @Test
     public void roleUserHasNotAccess() throws Exception {
         mockMvc.perform(get("/api/system/remarks")
@@ -42,6 +55,14 @@ public class RemarksControllerTest extends TestHelper{
 
         Critique critique = Generator.generateCritique(1500);
         critique.setTitle(Generator.generateString("Lol", 10));
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueService.save(critique);
 
         RemarksCreationDTO remarksCreationDTO = new RemarksCreationDTO();
@@ -61,6 +82,14 @@ public class RemarksControllerTest extends TestHelper{
     public void removeRemarks() throws Exception {
         Critique critique = Generator.generateCritique(1500);
         critique.setTitle(Generator.generateString("Lol", 10));
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueService.save(critique);
 
         RemarksCreationDTO remarksCreationDTO = new RemarksCreationDTO();

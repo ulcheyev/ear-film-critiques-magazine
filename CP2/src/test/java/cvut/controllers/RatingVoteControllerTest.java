@@ -2,13 +2,16 @@ package cvut.controllers;
 
 import cvut.config.utils.Generator;
 import cvut.model.Critique;
-import cvut.services.CritiqueServiceImpl;
-import cvut.services.RatingVoteVoteServiceImpl;
+import cvut.model.Film;
+import cvut.model.MainRole;
+import cvut.services.*;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,6 +26,14 @@ public class RatingVoteControllerTest extends TestHelper{
     @Autowired
     private CritiqueController critiqueController;
 
+    @Autowired
+    private FilmService filmService;
+
+    @Autowired
+    private MainRoleService mainRoleService;
+
+    @Autowired
+    private AppUserService appUserService;
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -30,6 +41,14 @@ public class RatingVoteControllerTest extends TestHelper{
 
         Critique critique = Generator.generateCritique(1500);
         critique.setTitle(Generator.generateString("Lol", 10));
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueService.save(critique);
 
         Assertions.assertEquals(ratingVoteVoteService.findQuantityOfVotesByCritiqueId(critique.getId()), 0);
@@ -50,6 +69,14 @@ public class RatingVoteControllerTest extends TestHelper{
 
         Critique critique = Generator.generateCritique(1500);
         critique.setTitle(Generator.generateString("Lol", 10));
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueService.save(critique);
 
         Assertions.assertEquals(ratingVoteVoteService.findQuantityOfVotesByCritiqueId(critique.getId()), 0);

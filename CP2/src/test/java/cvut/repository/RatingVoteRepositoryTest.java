@@ -3,6 +3,9 @@ package cvut.repository;
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.*;
+import cvut.services.AppUserService;
+import cvut.services.FilmService;
+import cvut.services.MainRoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,12 @@ public class RatingVoteRepositoryTest {
     private CritiqueRepository critiqueRepository;
     @Autowired
     private AppUserRepository appUserRepository;
+    @Autowired
+    private FilmService filmService;
+    @Autowired
+    private MainRoleService mainRoleService;
+    @Autowired
+    private AppUserService appUserService;
 
     @PersistenceContext
     private EntityManager em;
@@ -35,6 +44,14 @@ public class RatingVoteRepositoryTest {
     @Test
     public void addRatingWithSpecifiedCritique() {
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueRepository.save(critique);
 
         //User with id 300....
@@ -79,6 +96,14 @@ public class RatingVoteRepositoryTest {
     @Test
     public void findSumOfVotesByCritiqueIdTest(){
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueRepository.save(critique);
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
@@ -129,6 +154,14 @@ public class RatingVoteRepositoryTest {
         critiqueList.add(critique);
         critic.setCritiqueList(critiqueList);
         critique.setCritiqueOwner(critic);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueRepository.save(critique);
 
         Date date = Generator.generateDate();

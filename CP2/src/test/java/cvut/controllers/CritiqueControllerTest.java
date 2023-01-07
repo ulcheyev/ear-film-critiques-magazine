@@ -4,32 +4,24 @@ import cvut.config.utils.Generator;
 import cvut.model.Critic;
 import cvut.model.Critique;
 import cvut.model.dto.CritiqueCreationDTO;
-import cvut.model.dto.CritiqueDTO;
-import cvut.security.SecurityUtils;
+import cvut.repository.FilmRepository;
 import cvut.services.AppUserService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import cvut.services.CritiqueService;
+import cvut.services.CriticService;
 import cvut.services.CritiqueServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.junit.Test;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,6 +37,12 @@ public class CritiqueControllerTest extends TestHelper{
 
     @Autowired
     private CritiqueController critiqueController;
+
+    @Autowired
+    private CriticService criticService;
+
+    @Autowired
+    private FilmRepository filmRepository;
 
     @Test
     @WithAnonymousUser
@@ -68,6 +66,8 @@ public class CritiqueControllerTest extends TestHelper{
 
         Critique critique = Generator.generateCritique(1500);
         critique.setTitle(Generator.generateString("Lol", 10));
+        appUserService.save(critique.getCritiqueOwner());
+        filmRepository.save(critique.getFilm());
         critiqueService.save(critique);
 
         final MvcResult mvcResult = mockMvc
@@ -85,6 +85,8 @@ public class CritiqueControllerTest extends TestHelper{
 
         Critique critique = Generator.generateCritique(1500);
         critique.setTitle(Generator.generateString("Lol", 10));
+        appUserService.save(critique.getCritiqueOwner());
+        filmRepository.save(critique.getFilm());
         critiqueService.save(critique);
         mockMvc.perform(get("/api/critiques/"+critique.getId()).with(pepaUser()))
                 .andExpect(status().isPreconditionFailed());
@@ -100,6 +102,8 @@ public class CritiqueControllerTest extends TestHelper{
 
         Critique critique = Generator.generateCritique(1500);
         critique.setTitle(Generator.generateString("Lol", 10));
+        appUserService.save(critique.getCritiqueOwner());
+        filmRepository.save(critique.getFilm());
         critiqueService.save(critique);
 
         mockMvc.perform(delete("/api/critiques/"+critique.getId()).with(pepaUser()))
@@ -163,6 +167,8 @@ public class CritiqueControllerTest extends TestHelper{
 //
 //        Critique critique = Generator.generateCritique(1500);
 //        critique.setTitle(Generator.generateString("Lol", 10));
+//        appUserService.save(critique.getCritiqueOwner());
+//        filmRepository.save(critique.getFilm());
 //        critiqueService.save(critique);
 //
 //        CritiqueDTO dto = new CritiqueDTO();

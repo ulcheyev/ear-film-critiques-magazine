@@ -1,5 +1,4 @@
 package cvut.model;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -21,7 +20,7 @@ public class Critic extends AppUser {
     @Column(name = "critic_rating", nullable = false)
     private double criticRating;
 
-    @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "critiqueOwner", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JsonManagedReference(value = "critic-critique")
     @ToString.Exclude
     @OrderBy("dateOfAcceptance DESC")

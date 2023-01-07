@@ -128,7 +128,7 @@ public class CritiqueServiceImpl implements CritiqueService{
 
     public List<Critique> findByCriticsLastnameAndFirstname(@NonNull String firstname, @NonNull String lastname){
         List<Critique> allByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike
-                = critiqueRepository.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(lastname, firstname);
+                = critiqueRepository.findAllByCritiqueOwner_LastnameAndCritiqueOwner_Firstname(lastname, firstname);
         if(allByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike.isEmpty()){
             throw  new NotFoundException("Critiques with specified critic not found ");
         }

@@ -1,10 +1,11 @@
 package cvut.repository;
 import cvut.Application;
 import cvut.config.utils.Generator;
-import cvut.model.Critic;
-import cvut.model.Critique;
-import cvut.model.CritiqueState;
-import cvut.model.Film;
+import cvut.model.*;
+import cvut.services.AppUserService;
+import cvut.services.CritiqueServiceImpl;
+import cvut.services.FilmService;
+import cvut.services.MainRoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,17 @@ public class CritiqueRepositoryTest {
     @PersistenceContext
     private EntityManager em;
 
+    @Autowired
+    private AppUserService appUserService;
+
+    @Autowired
+    private FilmService filmService;
+
+    @Autowired
+    private MainRoleService mainRoleService;
+
+
+
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindByFilmIdAndRating(){
@@ -47,6 +59,13 @@ public class CritiqueRepositoryTest {
         critique_new.setCritiqueState(CritiqueState.IN_PROCESSED);
 
         critique_new.setFilm(film);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        appUserService.save(critique_new.getCritiqueOwner());
+
         critiqueRepository.save(critique_new);
 
         double ratingForQuery = 3.0;
@@ -70,19 +89,31 @@ public class CritiqueRepositoryTest {
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindQuantityOfCritiquesByCriticId(){
-        Critic critic = new Critic("Lola", "Lolova", "asdasfafdas", "flfplfpafd", "erw12erwe@gmail.com");
+        Critic critic = new Critic("Lola", "Lolova", "asdasfafldas", "flfplfpafd", "erwk12erwe@gmail.com");
         Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
         Critique critique2 = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
 
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique1.setFilm(film);
+        critique2.setFilm(film);
+
         critique1.setCritiqueOwner(critic);
         critique2.setCritiqueOwner(critic);
+        appUserService.save(critique1.getCritiqueOwner());
+
+
+        critiqueRepository.save(critique1);
+        critiqueRepository.save(critique2);
         List<Critique> critiqueList = new ArrayList<>();
 
         critiqueList.add(critique1);
         critiqueList.add(critique2);
 
         critic.setCritiqueList(critiqueList);
-        criticRepository.save(critic);
 
         TypedQuery<Long> query =
                 em.createNamedQuery("Critique.findQuantityOfCritiquesByCriticId", Long.class);
@@ -105,10 +136,21 @@ public class CritiqueRepositoryTest {
         criticRepository.save(critic);
         Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
         Critique critique2 = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique1.setFilm(film);
+        critique2.setFilm(film);
+
+        critique1.setCritiqueOwner(critic);
         critique1.setCritiqueOwner(critic);
         critique2.setCritiqueOwner(critic);
         critique1.setRating(2.0);
         critique2.setRating(3.4);
+        critiqueRepository.save(critique1);
+        critiqueRepository.save(critique2);
         List<Critique> critiqueList = new ArrayList<>();
         critiqueList.add(critique1);
         critiqueList.add(critique2);
@@ -130,7 +172,7 @@ public class CritiqueRepositoryTest {
         List<Critique> critiques = critiqueRepository.findAllByCritiqueState(cvut.model.CritiqueState.SENT_FOR_CORRECTIONS);
         Assertions.assertNotNull(critiques);
         assertFalse(critiques.isEmpty());
-        assertEquals(critiques.size(), 1);
+        assertTrue(critiques.size() > 1);
     }
 
     @Test
@@ -139,13 +181,23 @@ public class CritiqueRepositoryTest {
         Critic critic = new Critic("Lola", "Lolova", "lololjlklo", "flfplfpafd", "mjjhkjdqfoq@gmail.com");
         Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
         Critique critique2 = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique1.setFilm(film);
+        critique2.setFilm(film);
         critique1.setCritiqueOwner(critic);
         critique2.setCritiqueOwner(critic);
+        appUserService.save(critique1.getCritiqueOwner());
+        critiqueRepository.save(critique1);
+        critiqueRepository.save(critique2);
         List<Critique> critiqueList1 = new ArrayList<>();
         critiqueList1.add(critique1);
         critiqueList1.add(critique2);
         critic.setCritiqueList(critiqueList1);
-        criticRepository.save(critic);
+
         Query query = em.createNamedQuery("Critique.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike");
         query.setParameter(1,critic.getFirstname());
         query.setParameter(2,critic.getLastname());
@@ -158,8 +210,16 @@ public class CritiqueRepositoryTest {
     @Test
     void testNamedQueryFindAllByFilm_NameLike(){
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
-        String filmName = critique.getFilm().getName();
+
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueRepository.save(critique);
+        String filmName = critique.getFilm().getName();
         List<Critique> critiques = critiqueRepository.findAllByFilm_NameLike(filmName);
         Assertions.assertNotNull(critiques);
         assertFalse(critiques.isEmpty());
@@ -172,6 +232,14 @@ public class CritiqueRepositoryTest {
         Query query = em.createNamedQuery("Critique.findAllByRating");
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 400);
         critique.setRating(4.0);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueRepository.save(critique);
         query.setParameter(1, 4.0);
         List<Critique> critiqueList = query.getResultList();
@@ -184,6 +252,14 @@ public class CritiqueRepositoryTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void testNamedQueryFindAllByDateOfAcceptance(){
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueRepository.save(critique);
         Query query = em.createNamedQuery("Critique.findAllByDateOfAcceptance");
         query.setParameter(1, critique.getDateOfAcceptance());

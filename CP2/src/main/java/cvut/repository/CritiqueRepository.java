@@ -24,7 +24,7 @@ public interface CritiqueRepository extends JpaRepository<Critique, Long> {
 
     List<Critique> findAllByCritiqueState(CritiqueState state);
 
-    List<Critique> findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(String lastname, String firstname);
+    List<Critique> findAllByCritiqueOwner_LastnameAndCritiqueOwner_Firstname(String lastname, String firstname);
 
     List<Critique> findAllByFilm_NameLike(String name);
 

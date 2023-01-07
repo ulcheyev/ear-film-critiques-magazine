@@ -4,8 +4,10 @@ import com.github.javafaker.Faker;
 import cvut.model.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+import java.util.List;
 
 public class Generator {
 
@@ -47,9 +49,24 @@ public class Generator {
         film.setDateOfRelease(faker.date().birthday());
         film.setDescription(faker.address().lastName());
         film.setName(faker.name().title());
+//        List<Film> filmList = List.of(film);
+//        List<MainRole> mainRoleList = new ArrayList<>();
+//        for(int i = 0; i < 3; i++){
+//            MainRole mainRole = Generator.generateMainRole();
+//            mainRole.setFilmList(filmList);
+//            mainRoleList.add(mainRole);
+//        }
+//        film.setMainRoleList(mainRoleList);
         return film;
     }
 
+    public static MainRole generateMainRole(){
+        MainRole mainRole = new MainRole();
+        mainRole.setFilmRole(FilmRole.values()[faker.random().nextInt(FilmRole.values().length)]);
+        mainRole.setFirstname(faker.name().firstName());
+        mainRole.setLastname(faker.name().lastName());
+        return mainRole;
+    }
 
     public static Critique generateCritique(Integer textLength){
         Critique critique = new Critique();

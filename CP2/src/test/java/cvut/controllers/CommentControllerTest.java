@@ -3,9 +3,10 @@ package cvut.controllers;
 import cvut.config.utils.Generator;
 import cvut.model.Comment;
 import cvut.model.Critique;
+import cvut.model.Film;
+import cvut.model.MainRole;
 import cvut.model.dto.creation.CommentCreationDTO;
-import cvut.services.CommentServiceImpl;
-import cvut.services.CritiqueServiceImpl;
+import cvut.services.*;
 import org.junit.Test;
 
 import org.junit.jupiter.api.Assertions;
@@ -27,13 +28,32 @@ public class CommentControllerTest extends TestHelper{
     private CommentServiceImpl commentService;
 
     @Autowired
+    private AppUserService appUserService;
+
+    @Autowired
     private CritiqueServiceImpl critiqueService;
+
+    @Autowired
+    private FilmService filmService;
+
+    @Autowired
+    private MainRoleService mainRoleService;
+
 
     @Test
     public void addCommentByUser_commentAdded() throws Exception {
 
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+
         Critique critique = Generator.generateCritique(1500);
         critique.setTitle(Generator.generateString("Lol", 10));
+        appUserService.save(critique.getCritiqueOwner());
+        critique.setFilm(film);
         critiqueService.save(critique);
 
         CommentCreationDTO commentCreationDTO = new CommentCreationDTO();
@@ -54,6 +74,14 @@ public class CommentControllerTest extends TestHelper{
 
         Critique critique = Generator.generateCritique(1500);
         critique.setTitle(Generator.generateString("Lol", 10));
+        MainRole mainRole = Generator.generateMainRole();
+        mainRoleService.save(mainRole);
+
+        Film film = Generator.generateFilm();
+        film.setMainRoleList(List.of(mainRole));
+        filmService.save(film);
+        critique.setFilm(film);
+        appUserService.save(critique.getCritiqueOwner());
         critiqueService.save(critique);
 
         CommentCreationDTO commentCreationDTO = new CommentCreationDTO();

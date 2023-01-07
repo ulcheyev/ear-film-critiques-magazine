@@ -90,14 +90,13 @@ public class Critique {
     @OrderBy("remarksMakeDay DESC")
     private List<Remarks> critiqueRemarks;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "admin", referencedColumnName = "id")
     @OrderBy("id ASC")
     @JsonBackReference(value = "admin-critique")
     private Admin  admin;
 
-    //TODO ubrat cascade type
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "critique_owner", referencedColumnName = "id", nullable = false)
     @JsonBackReference(value = "critic-critique")
     @OrderBy("ratingVotes DESC")
@@ -109,7 +108,7 @@ public class Critique {
     @OrderBy("appUser ASC")
     private List<Comment> comments;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "film", referencedColumnName = "id", nullable = false)
     @OrderBy("dateOfRelease DESC")
     @JsonBackReference(value = "film-critique")

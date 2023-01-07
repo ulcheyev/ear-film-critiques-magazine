@@ -58,7 +58,7 @@ public class Film {
         this.description = description;
     }
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "film_and_main_roles",
             joinColumns =

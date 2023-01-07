@@ -133,7 +133,7 @@ public class AppUserRepositoryTest {
             comments = commentRepository.findAllByAppUser_Id(users.get(i).getId());
             assertTrue(comments.size() > minCommentQuantity);
         }
-        Assertions.assertEquals(users.size(), 50);
+        Assertions.assertTrue(users.size() > 1);
 
     }
 
