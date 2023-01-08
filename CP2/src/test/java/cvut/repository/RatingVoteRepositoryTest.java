@@ -77,7 +77,7 @@ public class RatingVoteRepositoryTest {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
-    public void findQuantityOfVotesByCritiqueIdTest(){
+    public void findQuantityOfVotesByCritiqueIdTest() {
         Optional<Critique> byId = critiqueRepository.findById(1L);
 
         //Assert
@@ -94,7 +94,7 @@ public class RatingVoteRepositoryTest {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
-    public void findSumOfVotesByCritiqueIdTest(){
+    public void findSumOfVotesByCritiqueIdTest() {
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
         MainRole mainRole = Generator.generateMainRole();
         mainRoleService.save(mainRole);
@@ -113,9 +113,9 @@ public class RatingVoteRepositoryTest {
         Assertions.assertTrue(critique != null);
 
         List<RatingVote> ratingVotes = new ArrayList<>();
-        RatingVote ratingVote = new RatingVote(critique, 4.0, date, appUser );
+        RatingVote ratingVote = new RatingVote(critique, 4.0, date, appUser);
         ratingVoteRepository.save(ratingVote);
-        RatingVote ratingVote1 = new RatingVote(critique, 3.0, date, appUser );
+        RatingVote ratingVote1 = new RatingVote(critique, 3.0, date, appUser);
         ratingVoteRepository.save(ratingVote1);
         ratingVotes.add(ratingVote);
         ratingVotes.add(ratingVote1);
@@ -127,7 +127,7 @@ public class RatingVoteRepositoryTest {
         Optional<Double> sumOfVotesByCritiqueId =
                 ratingVoteRepository.findSumOfVotesByCritiqueId(critique.getId());
 
-        Double sum  = critiqueRatingVote.stream()
+        Double sum = critiqueRatingVote.stream()
                 .map(x -> x.getStars())
                 .reduce(0.0, Double::sum);
 
@@ -137,7 +137,7 @@ public class RatingVoteRepositoryTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void testNamedQueryFindTheLowestRating(){
+    void testNamedQueryFindTheLowestRating() {
         Query query = em.createNamedQuery("RatingVote.findTheLowestRating");
         List<Double> rating = query.getResultList();
         Assertions.assertNotNull(rating);
@@ -147,7 +147,7 @@ public class RatingVoteRepositoryTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void testNamedQueryFindTheHighestRating(){
+    void testNamedQueryFindTheHighestRating() {
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
         Critic critic = new Critic("Hoho", "Hehe", "hihihaha", "huhuhu", "hihilka@mail.com");
         List<Critique> critiqueList = new ArrayList<>();
@@ -178,7 +178,7 @@ public class RatingVoteRepositoryTest {
     }
 
     @Test
-    void testNamedQueryFindQuantityOfVotesByCritiqueId(){
+    void testNamedQueryFindQuantityOfVotesByCritiqueId() {
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
         Query query = em.createNamedQuery("RatingVote.findQuantityOfVotesByCritiqueId");
         // Set query parameters
@@ -189,7 +189,7 @@ public class RatingVoteRepositoryTest {
     }
 
     @Test
-    void testNamedQueryFindSumOfVotesByCritiqueId(){
+    void testNamedQueryFindSumOfVotesByCritiqueId() {
         Query query = em.createNamedQuery("RatingVote.findSumOfVotesByCritiqueId");
 
         // Set query parameters

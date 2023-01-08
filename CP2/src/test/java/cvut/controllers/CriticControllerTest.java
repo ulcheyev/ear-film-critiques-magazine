@@ -25,19 +25,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class CriticControllerTest extends TestHelper{
+public class CriticControllerTest extends TestHelper {
 
     @Autowired
     private CritiqueServiceImpl critiqueService;
 
     @Autowired
     private AppUserService appUserService;
-
-    @Autowired
-    private CritiqueController critiqueController;
-
-    @Autowired
-    private CriticService criticService;
 
     @Autowired
     private FilmRepository filmRepository;
@@ -58,10 +52,10 @@ public class CriticControllerTest extends TestHelper{
         filmRepository.save(critique.getFilm());
         critiqueService.save(critique);
 
-        mockMvc.perform(delete("/api/profile/"+critique.getId() + "/deleteMyCritique").with(pepaUser()))
+        mockMvc.perform(delete("/api/profile/" + critique.getId()).with(pepaUser()))
                 .andExpect(status().isPreconditionFailed());
 
-        mockMvc.perform(delete("/api/critiques/"+critique.getId())
+        mockMvc.perform(delete("/api/profile/" + critique.getId())
                         .with(pepaCriticWithUsername(critique.getCritiqueOwner().getUsername())))
                 .andExpect(status().isOk());
 
@@ -86,8 +80,7 @@ public class CriticControllerTest extends TestHelper{
 
 
         mockMvc.perform(
-                        post("/api/profile/createNewCritique")
-                                .content(toJson(dto))
+                        post("/api/profile/creation").content(toJson(dto))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .with(pepaUser()))
                 .andExpect(status().isPreconditionFailed());
@@ -113,7 +106,7 @@ public class CriticControllerTest extends TestHelper{
         dto.setFilmId(film.getId());
 
         mockMvc.perform(
-                        post("/api/profile/createNewCritique")
+                        post("/api/profile/creation")
                                 .content(toJson(dto))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .with(pepaCriticWithUsername(critic.getUsername())))

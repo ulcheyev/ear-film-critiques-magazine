@@ -26,7 +26,7 @@ public class AppUserCriteriaRepository {
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
-    public List<AppUser> getMostCommentedPosts(int page, int postsPerPage){
+    public List<AppUser> getMostCommentedPosts(int page, int postsPerPage) {
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<AppUser> cq = cb.createQuery(AppUser.class);

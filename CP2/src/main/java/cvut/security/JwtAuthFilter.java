@@ -32,26 +32,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException
-    {
+                                    FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader(AUTHORIZATION);
         final String username;
         final String jwtToken;
 
-        if(authHeader == null || !authHeader.startsWith("Bearer")){ //auth token
+        if (authHeader == null || !authHeader.startsWith("Bearer")) { //auth token
             filterChain.doFilter(request, response);
             return;
         }
-        jwtToken  = authHeader.substring(7); //token
+        jwtToken = authHeader.substring(7); //token
         try {
             username = jwtUtils.extractUsername(jwtToken);
-        }catch (ExpiredJwtException e){
+        } catch (ExpiredJwtException e) {
             throw new ValidationException("Token has expired");
         }
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             final boolean isTokenValid = jwtUtils.isTokenValid(jwtToken, userDetails);
-            if(isTokenValid){
+            if (isTokenValid) {
 
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());

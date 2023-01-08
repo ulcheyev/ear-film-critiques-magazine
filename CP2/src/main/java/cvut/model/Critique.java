@@ -1,7 +1,6 @@
 package cvut.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -71,7 +70,7 @@ public class Critique {
     @JsonManagedReference(value = "rating-critique")
     private List<RatingVote> critiqueRatingVote;
 
-    @Column(name = "title",columnDefinition = "TEXT", nullable = false)
+    @Column(name = "title", columnDefinition = "TEXT", nullable = false)
     private String title;
 
     @Column(name = "critique_text", nullable = false, columnDefinition = "TEXT")
@@ -94,7 +93,7 @@ public class Critique {
     @JoinColumn(name = "admin", referencedColumnName = "id")
     @OrderBy("id ASC")
     @JsonBackReference(value = "admin-critique")
-    private Admin  admin;
+    private Admin admin;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "critique_owner", referencedColumnName = "id", nullable = false)
@@ -103,7 +102,7 @@ public class Critique {
     private Critic critiqueOwner;
 
 
-    @OneToMany(mappedBy = "critique",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "critique", fetch = FetchType.EAGER)
     @JsonManagedReference(value = "comment-critique")
     @OrderBy("appUser ASC")
     private List<Comment> comments;
@@ -114,7 +113,7 @@ public class Critique {
     @JsonBackReference(value = "film-critique")
     private Film film;
 
-    public Critique(String title, String text, Film film, Critic critiqueOwner){
+    public Critique(String title, String text, Film film, Critic critiqueOwner) {
         this.title = title;
         this.text = text;
         this.film = film;

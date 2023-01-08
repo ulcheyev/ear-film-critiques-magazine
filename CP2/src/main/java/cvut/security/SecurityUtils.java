@@ -6,13 +6,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class SecurityUtils {
 
     public static void setCurrentUser(Authentication authentication) {
-        if(contextIsNull()) {
+        if (contextIsNull()) {
             final SecurityContext context = new SecurityContextImpl();
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);
@@ -35,7 +34,6 @@ public class SecurityUtils {
     public static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
-
 
 
 }

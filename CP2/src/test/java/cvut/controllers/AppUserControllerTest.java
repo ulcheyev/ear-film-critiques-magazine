@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.ArgumentMatchers.any;
 
 
-public class AppUserControllerTest extends TestHelper{
+public class AppUserControllerTest extends TestHelper {
 
     @Autowired
     private AppUserController controller;
@@ -50,9 +50,9 @@ public class AppUserControllerTest extends TestHelper{
     public void registerSupportsAnonymousAccess() throws Exception {
         final AppUser toRegister = Generator.generateUser();
         mockMvc.perform(
-                post("/api/register")
-                        .content(toJson(toRegister))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        post("/api/register")
+                                .content(toJson(toRegister))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
 
         Assertions.assertTrue(service.checkUserExisting(toRegister.getUsername()));
@@ -61,7 +61,7 @@ public class AppUserControllerTest extends TestHelper{
     @WithAnonymousUser
     @Test
     public void registrationWithEmptyFields() throws Exception {
-        RegistrationRequest request =  RegistrationRequest.builder()
+        RegistrationRequest request = RegistrationRequest.builder()
                 .build();
         mockMvc.perform(
                         post("/api/register")
@@ -76,24 +76,23 @@ public class AppUserControllerTest extends TestHelper{
     @Test
     public void registerAdminDoesNotRegister() throws Exception {
         final AppUser toRegister = Generator.generateUser();
-        RegistrationRequest request =  RegistrationRequest.builder()
-                        .username(toRegister.getUsername())
-                        .password(toRegister.getPassword())
-                        .email(toRegister.getEmail())
-                        .firstname(toRegister.getFirstname())
-                        .lastname(toRegister.getLastname())
-                        .role("ROLE_ADMIN")
-                        .build();
+        RegistrationRequest request = RegistrationRequest.builder()
+                .username(toRegister.getUsername())
+                .password(toRegister.getPassword())
+                .email(toRegister.getEmail())
+                .firstname(toRegister.getFirstname())
+                .lastname(toRegister.getLastname())
+                .role("ROLE_ADMIN")
+                .build();
 
         mockMvc.perform(post("/api/register")
-                                .content(toJson(request))
+                        .content(toJson(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().is4xxClientError());
 
         Assertions.assertFalse(service.checkUserExisting(request.getUsername()));
 
     }
-
 
 
     @Test
@@ -167,12 +166,12 @@ public class AppUserControllerTest extends TestHelper{
         toUpdate = service.findById(toUpdate.getId());
 
         AppUserInfoUpdateDTO dto = new AppUserInfoUpdateDTO();
-        dto.setEmail(Generator.generateString()+"@gmail.com");
+        dto.setEmail(Generator.generateString() + "@gmail.com");
 
-        mockMvc.perform(put("/api/profile/"+toUpdate.getId())
-                                .with(pepaAdmin())
-                                .content(toJson(dto))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(put("/api/profile/" + toUpdate.getUsername() + "/update")
+                        .with(pepaAdmin())
+                        .content(toJson(dto))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
 
         assertEquals(toUpdate.getEmail(), dto.getEmail());
@@ -189,10 +188,10 @@ public class AppUserControllerTest extends TestHelper{
         toUpdate = service.findById(toUpdate.getId());
 
         AppUserInfoUpdateDTO dto = new AppUserInfoUpdateDTO();
-        dto.setEmail(Generator.generateString()+"@gmail.com");
+        dto.setEmail(Generator.generateString() + "@gmail.com");
 
 
-        mockMvc.perform(put("/api/profile/"+toUpdate.getId())
+        mockMvc.perform(put("/api/profile/" + toUpdate.getUsername() + "/update")
                         .with(pepaUserWithUsername(toUpdate.getUsername()))
                         .content(toJson(dto))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -210,8 +209,8 @@ public class AppUserControllerTest extends TestHelper{
 
         toDelete = service.findById(toDelete.getId());
 
-        mockMvc.perform(delete("/api/system/users/"+toDelete.getId())
-                        .with(pepaUserWithUsername(toDelete.getUsername()))).andExpect(status().isPreconditionFailed());
+        mockMvc.perform(delete("/api/system/users/" + toDelete.getId())
+                .with(pepaUserWithUsername(toDelete.getUsername()))).andExpect(status().isPreconditionFailed());
 
         assertTrue(service.checkUserExisting(toDelete.getUsername()));
     }
@@ -226,22 +225,14 @@ public class AppUserControllerTest extends TestHelper{
         toDelete = service.findById(toDelete.getId());
 
         //TRY WITH ROLE USER
-        mockMvc.perform(delete("/api/system/users/"+toDelete.getId())
+        mockMvc.perform(delete("/api/system/users/" + toDelete.getId())
                 .with(pepaUser())).andExpect(status().isPreconditionFailed());
 
-        mockMvc.perform(delete("/api/system/users/"+toDelete.getId())
+        mockMvc.perform(delete("/api/system/users/" + toDelete.getId())
                 .with(pepaAdmin())).andExpect(status().isOk());
 
         assertFalse(service.checkUserExisting(toDelete.getUsername()));
     }
-
-
-
-
-
-
-
-
 
 
 }

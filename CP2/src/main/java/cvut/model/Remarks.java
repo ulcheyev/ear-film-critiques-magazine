@@ -1,7 +1,6 @@
 package cvut.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,7 +32,7 @@ public class Remarks {
     private String text;
 
     @ManyToOne
-    @JoinColumn(name = "critique",referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "critique", referencedColumnName = "id", nullable = false)
     @OrderBy("admin ASC")
     @JsonBackReference(value = "remarks-critique")
     private Critique critique;

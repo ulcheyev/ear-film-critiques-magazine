@@ -19,8 +19,8 @@ public class GenerateCritic {
     private CriticRepository criticRepository;
 
     @Test
-    public void generate(){
-        for(int i = 0; i < 100; i++) {
+    public void generate() {
+        for (int i = 0; i < 100; i++) {
             Critic critic = Generator.generateCritic();
             criticRepository.save(critic);
         }

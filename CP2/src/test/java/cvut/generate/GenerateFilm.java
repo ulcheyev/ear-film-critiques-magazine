@@ -19,8 +19,8 @@ public class GenerateFilm {
     private FilmRepository filmRepository;
 
     @Test
-    public void generate(){
-        for(int i = 0; i < 100; i++) {
+    public void generate() {
+        for (int i = 0; i < 100; i++) {
             Film film = Generator.generateFilm();
             filmRepository.save(film);
         }

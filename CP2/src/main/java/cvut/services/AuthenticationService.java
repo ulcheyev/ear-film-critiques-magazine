@@ -11,7 +11,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,11 +34,11 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(@RequestBody @NonNull AuthenticationRequest request){
+    public AuthenticationResponse authenticate(@RequestBody @NonNull AuthenticationRequest request) {
 
         final CustomUserDetail userDetails = (CustomUserDetail) service.loadUserByUsername(request.getUsername());
 
-        if(!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())){
+        if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
             throw new BadCredentialException("Invalid password or username");
         }
 

@@ -19,8 +19,8 @@ public class GenerateAppUser {
     private AppUserRepository appUserRepository;
 
     @Test
-    public void generate(){
-        for(int i = 0; i < 100; i++) {
+    public void generate() {
+        for (int i = 0; i < 100; i++) {
             AppUser appUser = Generator.generateUser();
             appUserRepository.save(appUser);
         }

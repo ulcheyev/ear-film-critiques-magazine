@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CommentControllerTest extends TestHelper{
+public class CommentControllerTest extends TestHelper {
 
     @Autowired
     private CommentController controller;
@@ -60,7 +60,7 @@ public class CommentControllerTest extends TestHelper{
         commentCreationDTO.setContent("earearearearear");
 
         mockMvc.perform(
-                        post("/api/critiques/"+critique.getId())
+                        post("/api/critiques/" + critique.getId())
                                 .content(toJson(commentCreationDTO))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .with(pepaCriticWithUsername(critique.getCritiqueOwner().getUsername())))
@@ -88,7 +88,7 @@ public class CommentControllerTest extends TestHelper{
         commentCreationDTO.setContent("earearearearear");
 
         mockMvc.perform(
-                        post("/api/critiques/"+critique.getId())
+                        post("/api/critiques/" + critique.getId())
                                 .content(toJson(commentCreationDTO))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .with(pepaCriticWithUsername(critique.getCritiqueOwner().getUsername())))
@@ -99,7 +99,7 @@ public class CommentControllerTest extends TestHelper{
         List<Comment> comments = critiqueService.findById(critique.getId()).getComments();
 
         mockMvc.perform(
-                        delete("/api/critiques/"+critique.getId())
+                        delete("/api/critiques/" + critique.getId())
                                 .content(toJson(commentCreationDTO))
                                 .param("co_flagId", String.valueOf(comments.get(0).getId()))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)

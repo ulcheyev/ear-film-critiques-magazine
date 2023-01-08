@@ -23,32 +23,32 @@ public class CriticServiceImpl implements CriticService {
     }
 
 
-    public Critic findById(@NonNull Long id){
+    public Critic findById(@NonNull Long id) {
         return criticRepository.findById(id).orElseThrow(
-                ()-> new NotFoundException("Critic with id "+id+" does not exist")
+                () -> new NotFoundException("Critic with id " + id + " does not exist")
         );
     }
 
-    public List<Critic> findAll(){
+    public List<Critic> findAll() {
         List<Critic> all = criticRepository.findAll();
-        if(all.isEmpty()){
+        if (all.isEmpty()) {
             throw new NotFoundException("There are no critics");
         }
         return all;
     }
 
-    public List<Critic> findAllByLastnameAndFirstnameLike(@NonNull String lastname, @NonNull String firstname){
+    public List<Critic> findAllByLastnameAndFirstnameLike(@NonNull String lastname, @NonNull String firstname) {
         List<Critic> allByLastnameAndFirstnameLike = findAllByLastnameAndFirstnameLike(lastname, firstname);
-        if(allByLastnameAndFirstnameLike.isEmpty()){
+        if (allByLastnameAndFirstnameLike.isEmpty()) {
             throw new NotFoundException("Critics were not found");
         }
         return allByLastnameAndFirstnameLike;
 
     }
 
-    public List<Critic> findByOrderByCriticRatingDesc(){
+    public List<Critic> findByOrderByCriticRatingDesc() {
         List<Critic> byOrderByCriticRatingDesc = criticRepository.findByOrderByCriticRatingDesc();
-        if(byOrderByCriticRatingDesc.isEmpty()){
+        if (byOrderByCriticRatingDesc.isEmpty()) {
             throw new NotFoundException(
                     "Critics not found"
             );
@@ -56,55 +56,57 @@ public class CriticServiceImpl implements CriticService {
         return byOrderByCriticRatingDesc;
     }
 
-    public List<Critic> findByOrderByCriticRatingAsc(){
+    public List<Critic> findByOrderByCriticRatingAsc() {
         List<Critic> byOrderByCriticRatingAsc = criticRepository.findByOrderByCriticRatingAsc();
-        if(byOrderByCriticRatingAsc.isEmpty()){
+        if (byOrderByCriticRatingAsc.isEmpty()) {
             throw new NotFoundException(
                     "Critics not found"
             );
         }
         return byOrderByCriticRatingAsc;
-    };
+    }
+
+    ;
 
 
-    public List<Critic> findAllByCriticRating(@NonNull double rating){
-        if(rating < 0 || rating > 5){
+    public List<Critic> findAllByCriticRating(@NonNull double rating) {
+        if (rating < 0 || rating > 5) {
             throw new ValidationException("Stars must be greater or equals than 0 and less or equals than 5, but was: " + rating);
         }
         List<Critic> allByCriticRating = criticRepository.findAllByCriticRating(rating);
-        if(allByCriticRating.isEmpty()){
+        if (allByCriticRating.isEmpty()) {
             throw new NotFoundException("Critics not found");
         }
         return allByCriticRating;
     }
 
     @Transactional
-    public void update(@NonNull Long criticId, String username, String email){
+    public void update(@NonNull Long criticId, String username, String email) {
         Critic critic = findById(criticId);
 
-        if(username != null && username.length()>0 && !critic.getUsername().equals(username)){
+        if (username != null && username.length() > 0 && !critic.getUsername().equals(username)) {
             Optional<Critic> criticUsername = criticRepository
                     .findByUsername(username);
-            if(criticUsername.isPresent()){
-                throw new ValidationException("Username " + username +" has been taken");
+            if (criticUsername.isPresent()) {
+                throw new ValidationException("Username " + username + " has been taken");
             }
             critic.setUsername(username);
         }
-        if(email != null && email.length()>0 && !critic.getEmail().equals(email)){
+        if (email != null && email.length() > 0 && !critic.getEmail().equals(email)) {
             Optional<Critic> appUserByEmail = criticRepository
                     .findByEmail(email);
-            if(appUserByEmail.isPresent()){
-                throw new ValidationException("Email " + email +" has been taken");
+            if (appUserByEmail.isPresent()) {
+                throw new ValidationException("Email " + email + " has been taken");
             }
             critic.setEmail(email);
         }
     }
 
 
-    public void deleteById(@NonNull Long criticId){
+    public void deleteById(@NonNull Long criticId) {
         boolean exists = criticRepository.existsById(criticId);
-        if(!exists){
-            throw new NotFoundException("Can not delete critic with id "+criticId+". Critic does not exist");
+        if (!exists) {
+            throw new NotFoundException("Can not delete critic with id " + criticId + ". Critic does not exist");
         }
         criticRepository.deleteById(criticId);
     }

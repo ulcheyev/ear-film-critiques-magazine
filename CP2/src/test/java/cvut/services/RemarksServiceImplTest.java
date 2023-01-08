@@ -1,4 +1,5 @@
 package cvut.services;
+
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.exception.NotFoundException;
@@ -37,7 +38,7 @@ public class RemarksServiceImplTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void makeAndSaveRemark(){
+    public void makeAndSaveRemark() {
 
         String velky_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu cursus massa, sit amet " +
                 "sagittis sem. Vivamus eget vehicula massa, at tristique turpis. Aliquam eros ligula, sagittis ut interdum " +
@@ -93,7 +94,7 @@ public class RemarksServiceImplTest {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
-    public void deleteRemark(){
+    public void deleteRemark() {
 
         String norm_text = "Je to proste super";
 
@@ -115,7 +116,7 @@ public class RemarksServiceImplTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateRemark(){
+    public void updateRemark() {
 
         String velky_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu cursus massa, sit amet " +
                 "sagittis sem. Vivamus eget vehicula massa, at tristique turpis. Aliquam eros ligula, sagittis ut interdum " +
@@ -139,7 +140,7 @@ public class RemarksServiceImplTest {
         Remarks remarks = remarksServiceImpl.findById(4L);
         //verify not found remark
         assertThrows(NotFoundException.class, () -> {
-            remarksServiceImpl.update( norm_text, 52L);
+            remarksServiceImpl.update(norm_text, 52L);
         });
 
         //verify update na text, ktery <5 and >3000

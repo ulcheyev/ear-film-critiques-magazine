@@ -2,13 +2,10 @@ package cvut.controllers;
 
 
 import cvut.config.utils.EarUtils;
-import cvut.security.SecurityUtils;
-import cvut.exception.BadCredentialException;
 import cvut.model.dto.AppUserInfoUpdateDTO;
 import cvut.security.dto.AuthenticationRequest;
 import cvut.security.dto.AuthenticationResponse;
 import cvut.security.dto.RegistrationRequest;
-import cvut.security.JwtUtils;
 import cvut.security.validators.NotStringValidator;
 import cvut.services.AppUserService;
 import cvut.services.AuthenticationService;
@@ -18,11 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,7 +26,7 @@ public class AppUserController {
 
 
     @PostMapping(value = "api/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody @NonNull AuthenticationRequest request){
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody @NonNull AuthenticationRequest request) {
         final HttpHeaders headers = EarUtils.createLocationHeaderFromCurrentUri("/api/critiques");
         return ResponseEntity.ok().headers(headers).body(authenticationService.authenticate(request));
     }
@@ -46,7 +38,6 @@ public class AppUserController {
     }
 
 
-
     @DeleteMapping(value = "api/system/users/{userId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteUserById(@NotStringValidator @NonNull @PathVariable("userId") String userId) {
@@ -56,22 +47,15 @@ public class AppUserController {
         return ResponseEntity.ok().headers(headers).body("User Successfully deleted");
     }
 
-    @PutMapping(value = "api/profile/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('ROLE_USER') and @appUserServiceImpl.findById(#userId).username.equals(principal.username)" +
+    @PutMapping(value = "api/profile/{userName}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_USER') and @appUserServiceImpl.findByUsername(#userName).username.equals(principal.username)" +
             "or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> updateUser(@NotStringValidator @NonNull @PathVariable("userId") String userId,
+    public ResponseEntity<String> updateUser(@NonNull @PathVariable("userName") String userName,
                                              @RequestBody @NonNull AppUserInfoUpdateDTO request) {
         final HttpHeaders headers = EarUtils.createLocationHeaderFromCurrentUri("/api/critiques");
-        appUserService.update(Long.parseLong(userId), request.getUsername(), request.getEmail());
+        appUserService.update(appUserService.findByUsername(userName).getId(), request.getUsername(), request.getEmail());
         return ResponseEntity.ok().headers(headers).body("User Successfully deleted");
     }
-
-
-
-
-
-
-
 
 
 }

@@ -23,8 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
-public class RemarksControllerTest extends TestHelper{
+public class RemarksControllerTest extends TestHelper {
 
     @Autowired
     private RemarksServiceImpl remarksService;
@@ -42,12 +41,10 @@ public class RemarksControllerTest extends TestHelper{
     private MainRoleService mainRoleService;
 
 
-
-
     @Test
     public void roleUserHasNotAccess() throws Exception {
         mockMvc.perform(get("/api/system/remarks")
-                        .with(pepaUser())).andExpect(status().isPreconditionFailed());
+                .with(pepaUser())).andExpect(status().isPreconditionFailed());
     }
 
     @Test
@@ -68,10 +65,10 @@ public class RemarksControllerTest extends TestHelper{
         RemarksCreationDTO remarksCreationDTO = new RemarksCreationDTO();
         remarksCreationDTO.setContent("ear ear ear predelat");
 
-        mockMvc.perform(post("/api/system/critiques/"+critique.getId())
+        mockMvc.perform(post("/api/system/critiques/" + critique.getId())
                         .content(toJson(remarksCreationDTO))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .with(pepaAdmin()))
+                        .with(pepaAdmin()))
                 .andExpect(status().isOk());
 
         List<Remarks> allByCritiqueId = remarksService.findAllByCritiqueId(critique.getId());
@@ -95,7 +92,7 @@ public class RemarksControllerTest extends TestHelper{
         RemarksCreationDTO remarksCreationDTO = new RemarksCreationDTO();
         remarksCreationDTO.setContent("ear ear ear predelat");
 
-        mockMvc.perform(post("/api/system/critiques/"+critique.getId())
+        mockMvc.perform(post("/api/system/critiques/" + critique.getId())
                         .content(toJson(remarksCreationDTO))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .with(pepaAdmin()))
@@ -104,7 +101,7 @@ public class RemarksControllerTest extends TestHelper{
         List<Remarks> allByCritiqueId = remarksService.findAllByCritiqueId(critique.getId());
         assertFalse(allByCritiqueId.isEmpty());
 
-        mockMvc.perform(delete("/api/system/remarks/"+allByCritiqueId.get(0).getId())
+        mockMvc.perform(delete("/api/system/remarks/" + allByCritiqueId.get(0).getId())
                         .with(pepaAdmin()))
                 .andExpect(status().isOk());
 

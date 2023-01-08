@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
@@ -43,9 +42,13 @@ public class TestHelper {
         return user("critic").password("critic").roles("CRITIC");
     }
 
-    public RequestPostProcessor pepaUserWithUsername(String username) {return user(username).password("lolo").roles("USER");}
+    public RequestPostProcessor pepaUserWithUsername(String username) {
+        return user(username).password("lolo").roles("USER");
+    }
 
-    public RequestPostProcessor pepaCriticWithUsername(String username) {return user(username).password("lolo").roles("CRITIC");}
+    public RequestPostProcessor pepaCriticWithUsername(String username) {
+        return user(username).password("lolo").roles("CRITIC");
+    }
 
 
     String toJson(Object object) throws Exception {
@@ -61,14 +64,10 @@ public class TestHelper {
     }
 
 
-
     void verifyLocationEquals(String expectedPath, MvcResult result) {
         final String locationHeader = result.getResponse().getHeader(HttpHeaders.LOCATION);
         assertEquals("http://localhost" + expectedPath, locationHeader);
     }
-
-
-
 
 
 }

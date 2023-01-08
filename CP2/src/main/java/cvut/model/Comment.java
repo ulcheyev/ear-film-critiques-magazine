@@ -1,6 +1,6 @@
 package cvut.model;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +17,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @NoArgsConstructor
 @ToString
-public class Comment{
+public class Comment {
 
     @GeneratedValue(strategy = IDENTITY)
     @Id
@@ -49,7 +49,6 @@ public class Comment{
         this.appUser = appUser;
         this.critique = critique;
     }
-
 
 
 }

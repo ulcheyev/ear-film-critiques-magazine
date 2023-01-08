@@ -1,4 +1,5 @@
 package cvut.model;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 

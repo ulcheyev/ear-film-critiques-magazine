@@ -16,7 +16,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class RatingVoteControllerTest extends TestHelper{
+public class RatingVoteControllerTest extends TestHelper {
 
     @Autowired
     private RatingVoteVoteServiceImpl ratingVoteVoteService;
@@ -54,7 +54,7 @@ public class RatingVoteControllerTest extends TestHelper{
         Assertions.assertEquals(ratingVoteVoteService.findQuantityOfVotesByCritiqueId(critique.getId()), 0);
 
         mockMvc
-                .perform(post("/api/critiques/"+critique.getId())
+                .perform(post("/api/critiques/" + critique.getId())
                         .param("stars", "3.0")
                         .with(pepaUserWithUsername(critique.getCritiqueOwner().getUsername())))
                 .andExpect(status().isOk());
@@ -82,7 +82,7 @@ public class RatingVoteControllerTest extends TestHelper{
         Assertions.assertEquals(ratingVoteVoteService.findQuantityOfVotesByCritiqueId(critique.getId()), 0);
 
         mockMvc
-                .perform(post("/api/critiques/"+critique.getId())
+                .perform(post("/api/critiques/" + critique.getId())
                         .param("stars", "3.0")
                         .with(pepaUserWithUsername(critique.getCritiqueOwner().getUsername())))
                 .andExpect(status().isOk());
@@ -90,7 +90,7 @@ public class RatingVoteControllerTest extends TestHelper{
         Assertions.assertEquals(ratingVoteVoteService.findQuantityOfVotesByCritiqueId(critique.getId()), 1);
 
         mockMvc
-                .perform(delete("/api/critiques/"+critique.getId())
+                .perform(delete("/api/critiques/" + critique.getId())
                         .param("unvote", String.valueOf(critique.getId()))
                         .with(pepaUserWithUsername(critique.getCritiqueOwner().getUsername())))
                 .andExpect(status().isOk());

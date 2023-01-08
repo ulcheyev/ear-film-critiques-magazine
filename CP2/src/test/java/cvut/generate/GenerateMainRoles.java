@@ -22,9 +22,9 @@ public class GenerateMainRoles {
     private MainRoleRepository mainRoleRepository;
 
     @Test
-    public void generate(){
+    public void generate() {
         Random random = new Random();
-        for(int i = 0; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
             MainRole mainRole = new MainRole();
             mainRole.setFilmRole(FilmRole.values()[random.nextInt(FilmRole.values().length)]);
             mainRole.setFirstname(Generator.faker.name().firstName());

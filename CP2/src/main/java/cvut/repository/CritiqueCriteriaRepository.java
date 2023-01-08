@@ -28,7 +28,7 @@ public class CritiqueCriteriaRepository {
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
-    public List<Critique> findAllByFilters(CritiqueDTO critiqueDTO){
+    public List<Critique> findAllByFilters(CritiqueDTO critiqueDTO) {
         CriteriaQuery<Critique> critiqueCriteriaQuery = criteriaBuilder.createQuery(Critique.class);
         Root<Critique> critiqueRoot = critiqueCriteriaQuery.from(Critique.class);
         Predicate predicate = getPredicate(critiqueDTO, critiqueRoot);
@@ -41,30 +41,30 @@ public class CritiqueCriteriaRepository {
     private Predicate getPredicate(CritiqueDTO critiqueDTO,
                                    Root<Critique> critiqueRoot) {
         List<Predicate> predicates = new ArrayList<>();
-        if(Objects.nonNull(critiqueDTO.getTitle())){
+        if (Objects.nonNull(critiqueDTO.getTitle())) {
             predicates.add(
                     criteriaBuilder.like(critiqueRoot.get("title"),
-                            "%"+ critiqueDTO.getTitle() +"%")
+                            "%" + critiqueDTO.getTitle() + "%")
             );
         }
-        if(Objects.nonNull(critiqueDTO.getRating())){
+        if (Objects.nonNull(critiqueDTO.getRating())) {
             predicates.add(
                     criteriaBuilder.equal(critiqueRoot.get("rating"),
                             critiqueDTO.getRating())
             );
         }
 
-        if(Objects.nonNull(critiqueDTO.getUsername())){
+        if (Objects.nonNull(critiqueDTO.getUsername())) {
             Join<Critique, AppUser> subqueryCritiqueAppUser = critiqueRoot.join("critiqueOwner");
             predicates.add(
-                    criteriaBuilder.like(subqueryCritiqueAppUser.get("username"), "%"+ critiqueDTO.getUsername()+"%")
+                    criteriaBuilder.like(subqueryCritiqueAppUser.get("username"), "%" + critiqueDTO.getUsername() + "%")
             );
         }
 
-        if(Objects.nonNull(critiqueDTO.getFilm())){
+        if (Objects.nonNull(critiqueDTO.getFilm())) {
             Join<Critique, Film> subqueryCritiqueFilm = critiqueRoot.join("film");
             predicates.add(
-                    criteriaBuilder.like(subqueryCritiqueFilm.get("name"), "%"+ critiqueDTO.getFilm()+"%")
+                    criteriaBuilder.like(subqueryCritiqueFilm.get("name"), "%" + critiqueDTO.getFilm() + "%")
             );
         }
 

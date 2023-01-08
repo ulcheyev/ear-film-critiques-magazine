@@ -38,11 +38,11 @@ public class CritiqueServiceImplTest {
     private AppUserService appUserService;
 
     @Test
-    public void findAllByCritiqueStateTest(){
+    public void findAllByCritiqueStateTest() {
 
         CritiqueState critiqueState = CritiqueState.IN_PROCESSED;
         List<Critique> allByCritiqueState = critiqueServiceImpl.findAllByCritiqueState(critiqueState);
-        for(Critique critique: allByCritiqueState){
+        for (Critique critique : allByCritiqueState) {
             //Assert
             Assertions.assertEquals(critiqueState, critique.getCritiqueState());
         }
@@ -50,14 +50,14 @@ public class CritiqueServiceImplTest {
         CritiqueState critiqueState2 = CritiqueState.CANCELED;
         //Assert
         Assertions.assertThrows(NotFoundException.class,
-                ()-> critiqueServiceImpl.findAllByCritiqueState(critiqueState2)
+                () -> critiqueServiceImpl.findAllByCritiqueState(critiqueState2)
         );
 
     }
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void findAllByFilmTest(){
+    public void findAllByFilmTest() {
         Film film = Generator.generateFilm();
         Critic critic = new Critic("Lola", "Lolovaqde", "lolowefewwefwflo", "flfplfpafd", "mdqwewefweffwefoq@gmail.com");
         criticRepository.save(critic);
@@ -73,25 +73,25 @@ public class CritiqueServiceImplTest {
         critiqueServiceImpl.save(critique1);
         List<Critique> critiques = critiqueServiceImpl.findByFilmName(critique1.getFilm().getName());
 
-        for(Critique critique: critiques){
+        for (Critique critique : critiques) {
             assertThat(critique.getFilm().getName()).contains(film.getName());
         }
     }
 
 
     @Test
-    public void findAllByRatingTest(){
+    public void findAllByRatingTest() {
         double rating = 0;
         List<Critique> critiques = critiqueServiceImpl.findByRating(rating);
 
-        for(Critique critique: critiques){
+        for (Critique critique : critiques) {
             Assertions.assertEquals(rating, critique.getRating());
         }
     }
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void findAllByLastnameAndFirstnameLikeTest(){
+    public void findAllByLastnameAndFirstnameLikeTest() {
         Critic critic = new Critic("Lola", "Lolovaqde", "lolowefewwefwflo", "flfplfpafd", "mdqwewefweffwefoq@gmail.com");
         Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 400);
         List<Critique> critiqueList = new ArrayList<>();
@@ -111,7 +111,7 @@ public class CritiqueServiceImplTest {
 
         List<Critique> critiques1 = critiqueServiceImpl.findByCriticsLastnameAndFirstname(firstname, lastname);
 
-        for(Critique critique: critiques1){
+        for (Critique critique : critiques1) {
             Assertions.assertEquals(firstname, critique.getCritiqueOwner().getFirstname());
             Assertions.assertEquals(lastname, critique.getCritiqueOwner().getLastname());
         }
@@ -119,7 +119,7 @@ public class CritiqueServiceImplTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateCritiqueStateTest(){
+    public void updateCritiqueStateTest() {
         Critique critique = critiqueServiceImpl.findById(163L);
         Assertions.assertEquals(critique.getCritiqueState(), CritiqueState.IN_PROCESSED);
 
@@ -129,7 +129,7 @@ public class CritiqueServiceImplTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateCritiqueTest(){
+    public void updateCritiqueTest() {
         MainRole mainRole = Generator.generateMainRole();
         mainRoleService.save(mainRole);
 
@@ -143,8 +143,8 @@ public class CritiqueServiceImplTest {
         critiqueServiceImpl.save(critique1);
 
         CritiqueCreationDTO critiqueDTO = new CritiqueCreationDTO();
-        critiqueDTO.setText(Generator.generateString("d",342));
-        critiqueDTO.setTitle(Generator.generateString("f",100));
+        critiqueDTO.setText(Generator.generateString("d", 342));
+        critiqueDTO.setTitle(Generator.generateString("f", 100));
 
         critiqueDTO.setFilmId(film.getId());
 
@@ -187,4 +187,4 @@ public class CritiqueServiceImplTest {
         });
     }
 
-    }
+}

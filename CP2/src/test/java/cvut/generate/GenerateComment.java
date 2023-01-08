@@ -20,8 +20,8 @@ public class GenerateComment {
     private CommentRepository commentRepository;
 
     @Test
-    public void generate(){
-        for(int i = 0; i < 100; i++) {
+    public void generate() {
+        for (int i = 0; i < 100; i++) {
             Comment comment = Generator.generateComment();
             commentRepository.save(comment);
         }

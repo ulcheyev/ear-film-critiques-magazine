@@ -8,13 +8,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.*;
 import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -29,7 +33,7 @@ public class AdminRepositoryTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void testNamedQueryFindAdminWithSpecifiedCritiqueQuantity(){
+    void testNamedQueryFindAdminWithSpecifiedCritiqueQuantity() {
         // Set data
 
         Query query = em.createNamedQuery("Admin.findAdminWithSpecifiedCritiqueQuantity");

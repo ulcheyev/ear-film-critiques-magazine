@@ -1,4 +1,5 @@
 package cvut.services;
+
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
 import cvut.model.AppUser;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CommentServiceImpl implements CommentService{
+public class CommentServiceImpl implements CommentService {
 
 
     private final CommentRepository commentRepository;
@@ -39,72 +40,70 @@ public class CommentServiceImpl implements CommentService{
         this.criticRepository = criticRepository;
     }
 
-    public Comment save(@NonNull String text, @NonNull String username, @NonNull Long critiqueId){
+    public Comment save(@NonNull String text, @NonNull String username, @NonNull Long critiqueId) {
 
-        if(text.length() > COMMENT_MAX_LENGTH || text.length() < COMMENT_MIN_LENGTH){
-            throw new ValidationException("Comment length must be max "+COMMENT_MAX_LENGTH + " and min "+ COMMENT_MIN_LENGTH +" symbols");
+        if (text.length() > COMMENT_MAX_LENGTH || text.length() < COMMENT_MIN_LENGTH) {
+            throw new ValidationException("Comment length must be max " + COMMENT_MAX_LENGTH + " and min " + COMMENT_MIN_LENGTH + " symbols");
         }
 
         AppUser appUser = appUserRepository.findAppUserByUsername(username)
-                .orElseThrow(()-> new NotFoundException("User with username "+ username+" does not found"));
+                .orElseThrow(() -> new NotFoundException("User with username " + username + " does not found"));
 
         Critique critique = critiqueRepository.findById(critiqueId)
-                .orElseThrow(()-> new NotFoundException("Critique with id "+ critiqueId+" does not found"));
+                .orElseThrow(() -> new NotFoundException("Critique with id " + critiqueId + " does not found"));
 
         Comment comment = new Comment(text, new Date(), appUser, critique);
 
-        if(critique.getCritiqueState() == CritiqueState.IN_PROCESSED){
+        if (critique.getCritiqueState() == CritiqueState.IN_PROCESSED) {
 
-            if(criticRepository.findByUsername(username).isPresent()){
+            if (criticRepository.findByUsername(username).isPresent()) {
                 commentRepository.save(comment);
-            }
-            else{
+            } else {
                 throw new ValidationException("You do not have permission");
             }
-        }
-        else{
+        } else {
             commentRepository.save(comment);
         }
 
         return comment;
     }
 
-    public List<Comment> findCommentsByCritique_Id(@NonNull Long id){
+    public List<Comment> findCommentsByCritique_Id(@NonNull Long id) {
         List<Comment> allByCritique_id = commentRepository.findAllByCritique_Id(id);
-        if(allByCritique_id.isEmpty()){
-            throw new NotFoundException("Critique with id "+id+ " does not have comments");
+        if (allByCritique_id.isEmpty()) {
+            throw new NotFoundException("Critique with id " + id + " does not have comments");
         }
         return allByCritique_id;
     }
 
-    public List<Comment> findCommentsByCritique_IdOrderDateDesc(@NonNull Long id){
+    public List<Comment> findCommentsByCritique_IdOrderDateDesc(@NonNull Long id) {
         List<Comment> allByCritique_idOrderByDateOfPublicDesc = commentRepository.findAllByCritique_IdOrderByDateOfPublicDesc(id);
-        if(allByCritique_idOrderByDateOfPublicDesc.isEmpty()){
-            throw new NotFoundException("Critique with id "+id+ " does not have comments");
+        if (allByCritique_idOrderByDateOfPublicDesc.isEmpty()) {
+            throw new NotFoundException("Critique with id " + id + " does not have comments");
         }
         return allByCritique_idOrderByDateOfPublicDesc;
     }
 
-    public List<Comment> findCommentsByCritique_IdOrderDateAsc(@NonNull Long id){
+    public List<Comment> findCommentsByCritique_IdOrderDateAsc(@NonNull Long id) {
         List<Comment> allByCritique_idOrderByDateOfPublicAsc = commentRepository.findAllByCritique_IdOrderByDateOfPublicAsc(id);
-        if(allByCritique_idOrderByDateOfPublicAsc.isEmpty()){
-            throw new NotFoundException("Critique with id "+id+ " does not have comments");
+        if (allByCritique_idOrderByDateOfPublicAsc.isEmpty()) {
+            throw new NotFoundException("Critique with id " + id + " does not have comments");
         }
         return allByCritique_idOrderByDateOfPublicAsc;
     }
 
-    public List<Comment> findCommentsByDate(@NonNull Date date){
+    public List<Comment> findCommentsByDate(@NonNull Date date) {
         List<Comment> allByDateOfPublic = commentRepository.findAllByDateOfPublic(date);
-        if(allByDateOfPublic.isEmpty()){
+        if (allByDateOfPublic.isEmpty()) {
             throw new NotFoundException("Critique does not have comments with this date");
         }
         return allByDateOfPublic;
     }
 
-    public Comment deleteComment(@NonNull Long commentId){
+    public Comment deleteComment(@NonNull Long commentId) {
         Optional<Comment> byId = commentRepository.findById(commentId);
-        if(byId.isEmpty()){
-            throw new NotFoundException("Comment with specified id: "+commentId+" does not found");
+        if (byId.isEmpty()) {
+            throw new NotFoundException("Comment with specified id: " + commentId + " does not found");
         }
         commentRepository.deleteById(commentId);
         return byId.get();
@@ -117,23 +116,23 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Transactional
-    public void update(@NonNull Long commentId, @NonNull String text){
+    public void update(@NonNull Long commentId, @NonNull String text) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                ()->new NotFoundException("Comment with specified id: "+commentId+" does not found")
+                () -> new NotFoundException("Comment with specified id: " + commentId + " does not found")
         );
 
-        if(text.length() < COMMENT_MAX_LENGTH
+        if (text.length() < COMMENT_MAX_LENGTH
                 &&
                 text.length() > COMMENT_MIN_LENGTH
                 &&
                 !comment.getText().equals(text)
-        ){
+        ) {
             comment.setText(text);
         }
     }
 
-    public boolean checkOwner(@NonNull Long commentId, @NonNull String username){
+    public boolean checkOwner(@NonNull Long commentId, @NonNull String username) {
         return findById(commentId).getAppUser().getUsername().equals(username);
     }
 
@@ -141,7 +140,6 @@ public class CommentServiceImpl implements CommentService{
     public List<Comment> findAll() {
         return commentRepository.findAll();
     }
-
 
 
 }

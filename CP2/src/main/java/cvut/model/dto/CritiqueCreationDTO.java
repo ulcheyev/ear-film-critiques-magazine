@@ -1,6 +1,5 @@
 package cvut.model.dto;
 
-import cvut.model.CritiqueState;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +13,7 @@ public class CritiqueCreationDTO {
     private String text;
     private Long filmId;
 
-    public boolean fieldsAreNotEmpty(){
+    public boolean fieldsAreNotEmpty() {
         return (title != null &&
                 text != null &&
                 filmId != null);

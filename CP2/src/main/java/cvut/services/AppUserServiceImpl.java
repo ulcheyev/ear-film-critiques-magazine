@@ -1,27 +1,30 @@
 package cvut.services;
+
 import cvut.config.utils.Mapper;
-import cvut.model.Admin;
-import cvut.security.CustomUserDetail;
-import cvut.security.dto.RegistrationRequest;
 import cvut.exception.NotFoundException;
 import cvut.exception.ValidationException;
+import cvut.model.Admin;
 import cvut.model.AppUser;
 import cvut.model.Critic;
 import cvut.repository.AppUserRepository;
+import cvut.security.CustomUserDetail;
+import cvut.security.dto.RegistrationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AppUserServiceImpl implements AppUserService{
+public class AppUserServiceImpl implements AppUserService {
 
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
@@ -30,13 +33,12 @@ public class AppUserServiceImpl implements AppUserService{
 
     public void save(@NonNull RegistrationRequest registrationRequest) {
 
-        if(registrationRequest.getRole() != null &&
-            registrationRequest.getRole().equals(Admin.DISCRIMINATOR_VALUE))
-        {
+        if (registrationRequest.getRole() != null &&
+                registrationRequest.getRole().equals(Admin.DISCRIMINATOR_VALUE)) {
             throw new ValidationException("You do not have permission");
         }
 
-        if(!registrationRequest.fieldsAreNotEmpty()){
+        if (!registrationRequest.fieldsAreNotEmpty()) {
             throw new ValidationException("You have to fill all fields");
         }
         Optional<AppUser> appUserByUsername = appUserRepository
@@ -137,11 +139,11 @@ public class AppUserServiceImpl implements AppUserService{
         }
     }
 
-    public void findUsersWithSpecifiedCommentQuantity(int quantity){
+    public void findUsersWithSpecifiedCommentQuantity(int quantity) {
         List<AppUser> appUsers = appUserRepository.findAll();
         List<AppUser> appUserListWithSpecifiedCommentQuantity = null;
-        for (int i = 0; i < appUsers.size(); i++){
-            if (appUsers.get(i).getCommentList().size() == quantity){
+        for (int i = 0; i < appUsers.size(); i++) {
+            if (appUsers.get(i).getCommentList().size() == quantity) {
                 appUserListWithSpecifiedCommentQuantity.add(appUsers.get(i));
             }
         }
@@ -158,7 +160,7 @@ public class AppUserServiceImpl implements AppUserService{
         return detail;
     }
 
-    public boolean checkUserExisting(String username){
+    public boolean checkUserExisting(String username) {
         return appUserRepository.findAppUserByUsername(username).isPresent();
     }
 

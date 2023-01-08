@@ -1,10 +1,10 @@
 package cvut.repository;
+
 import cvut.model.Critique;
 import cvut.model.CritiqueState;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +17,6 @@ public interface CritiqueRepository extends JpaRepository<Critique, Long> {
     Optional<Double> findSumOfCritiquesRatingByCriticId(Long id);
 
     List<Critique> findCritiquesByCritiqueOwner_Id(Long id);
-
-//    Page<Critique> findAll(Pageable pageable);
 
     List<Critique> findCritiquesByAdmin_Id(Long id);
 

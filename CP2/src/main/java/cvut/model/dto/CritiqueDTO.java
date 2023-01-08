@@ -13,7 +13,7 @@ public class CritiqueDTO {
     private String username;
 
 
-    public boolean requestIsEmpty(){
+    public boolean requestIsEmpty() {
         return rating == null
                 &&
                 title == null

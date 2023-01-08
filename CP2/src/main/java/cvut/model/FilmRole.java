@@ -19,12 +19,11 @@ public enum FilmRole {
 
     public static FilmRole fromDBName(String filmRole) {
         FilmRole[] values = FilmRole.values();
-        for(FilmRole filmR: values){
-            if(filmR
+        for (FilmRole filmR : values) {
+            if (filmR
                     .role
                     .toLowerCase(Locale.ROOT)
-                    .matches(filmRole.toLowerCase(Locale.ROOT)))
-            {
+                    .matches(filmRole.toLowerCase(Locale.ROOT))) {
                 return filmR;
             }
         }

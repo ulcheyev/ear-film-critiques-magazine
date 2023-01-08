@@ -20,14 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ComponentScan(basePackageClasses = Application.class)
 
 
-
 public class AppUserServiceImplTest {
 
     @Autowired
     private AppUserServiceImpl appUserServiceImpl;
 
     @Test
-    public void verifyThatUserDoesNotHaveUniqueUsernameAndEmail(){
+    public void verifyThatUserDoesNotHaveUniqueUsernameAndEmail() {
         AppUser appUserWithValidData1 = Generator.generateUser();
         AppUser appUserWithValidData2 = Generator.generateUser();
         appUserServiceImpl.save(appUserWithValidData1);
@@ -58,7 +57,7 @@ public class AppUserServiceImplTest {
     }
 
     @Test
-    public void deleteUserById(){
+    public void deleteUserById() {
 
         AppUser appUser1 = new AppUser("Kasha", "Molochnaya", "kashechka1", "213132dsaddfx", "kashecka_mleko1@gmail.com");
         AppUser appUser2 = new AppUser("Joji", "Jojik", "jjoji6", "qedkqmdkada", "jjjjoji543@gmail.com");
@@ -82,7 +81,7 @@ public class AppUserServiceImplTest {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
-    public void updateEmailUser(){
+    public void updateEmailUser() {
 
         AppUser user = Generator.generateUser();
         appUserServiceImpl.save(user);
@@ -103,7 +102,7 @@ public class AppUserServiceImplTest {
 
         //verify update
         String username = Generator.generateString();
-        String mail = Generator.generateString()+"@gmail.com";
+        String mail = Generator.generateString() + "@gmail.com";
         appUserServiceImpl.update(appUser1.getId(), username, mail);
 
 

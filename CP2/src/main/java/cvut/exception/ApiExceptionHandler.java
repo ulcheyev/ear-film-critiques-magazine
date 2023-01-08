@@ -5,20 +5,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Set;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {NotFoundException.class})
-    public ResponseEntity<Object> handleNotFoundException(NotFoundException e){
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException e) {
         HttpStatus notFound = HttpStatus.NOT_FOUND;
         NotFoundExceptionPayload foo = new NotFoundExceptionPayload(
                 e.getMessage(),
@@ -29,7 +25,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(value = {BadCredentialException.class})
-    public ResponseEntity<Object> handleBadCredential(BadCredentialException e){
+    public ResponseEntity<Object> handleBadCredential(BadCredentialException e) {
         HttpStatus bad = HttpStatus.BAD_REQUEST;
         BadCredentialExceptionPayload foo = new BadCredentialExceptionPayload(
                 e.getMessage(),
@@ -40,7 +36,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(value = {ValidationException.class})
-    public ResponseEntity<Object> handleValidationException(ValidationException e){
+    public ResponseEntity<Object> handleValidationException(ValidationException e) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         ValidationExceptionPayload foo = new ValidationExceptionPayload(
                 e.getMessage(),
@@ -51,7 +47,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(value = {BadRequestException.class})
-    public ResponseEntity<Object> handleBadRequestException(BadRequestException e){
+    public ResponseEntity<Object> handleBadRequestException(BadRequestException e) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         BadRequestExceptionPayload foo = new BadRequestExceptionPayload(
                 e.getMessage(),

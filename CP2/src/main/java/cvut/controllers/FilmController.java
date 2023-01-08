@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-
 @RestController
 @RequestMapping(path = "api/system/films")
 @Validated
@@ -41,13 +40,13 @@ public class FilmController {
 
     @DeleteMapping(value = "/{filmId}",
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteFilm(@NonNull @PathVariable Long filmId){
+    public void deleteFilm(@NonNull @PathVariable Long filmId) {
         filmService.deleteById(filmId);
     }
 
     @PutMapping(value = "/{filmId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String>  updateFilm(@NonNull @RequestBody FilmCreationDTO filmCreationDTO,
-                                              @PathVariable Long filmId){
+    public ResponseEntity<String> updateFilm(@NonNull @RequestBody FilmCreationDTO filmCreationDTO,
+                                             @PathVariable Long filmId) {
         filmService.update(filmId, filmCreationDTO);
         final HttpHeaders headers = EarUtils
                 .createLocationHeaderFromCurrentUri("/{critiqueId}", filmId);
@@ -56,17 +55,17 @@ public class FilmController {
     }
 
     @GetMapping(value = "/{filmId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Film getFilmById(@NonNull @PathVariable Long filmId){
+    public Film getFilmById(@NonNull @PathVariable Long filmId) {
         return filmService.findById(filmId);
     }
 
     @GetMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<MainRole> getMainRoles(){
+    public List<MainRole> getMainRoles() {
         return mainRoleService.findAll();
     }
 
     @GetMapping(value = "/add/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<MainRole> getMainRoles(@NonNull MainRoleCreationDTO criteria){
+    public List<MainRole> getMainRoles(@NonNull MainRoleCreationDTO criteria) {
         return mainRoleService.findAllByCriteria(criteria);
     }
 
@@ -90,12 +89,6 @@ public class FilmController {
         mainRoleService.update(mainRoleId, mainRoleCreationDTO);
         return ResponseEntity.ok().body("Main role successfully updated");
     }
-
-
-
-
-
-
 
 
 }

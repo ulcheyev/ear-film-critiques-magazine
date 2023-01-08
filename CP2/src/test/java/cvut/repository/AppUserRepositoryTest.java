@@ -36,7 +36,7 @@ public class AppUserRepositoryTest {
 
 
     @Test
-    void addUser(){
+    void addUser() {
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
         Optional<AppUser> byId = appUserRepository.findById(appUser.getId());
@@ -47,10 +47,10 @@ public class AppUserRepositoryTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void findByUsername(){
+    void findByUsername() {
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
-        String  username = appUser.getUsername();
+        String username = appUser.getUsername();
         Optional<AppUser> appUserByUsername = appUserRepository.findAppUserByUsername(username);
         //Assert
         assertTrue(appUserByUsername.isPresent());
@@ -59,7 +59,7 @@ public class AppUserRepositoryTest {
 
 
     @Test
-    void findByFirstnameAndLastnameGeneratedUser(){
+    void findByFirstnameAndLastnameGeneratedUser() {
         AppUser appUser = Generator.generateUser();
         appUserRepository.save(appUser);
         List<AppUser> appUsersByFirstnameAndLastname = appUserRepository
@@ -77,7 +77,7 @@ public class AppUserRepositoryTest {
     }
 
     @Test
-    void testNamedQueryFindUsersWithCSpecifiedCommentQuantity(){
+    void testNamedQueryFindUsersWithCSpecifiedCommentQuantity() {
         // Set data
 
         Query query = em.createNamedQuery("AppUser.findUsersWithSpecifiedCommentQuantity");
@@ -118,7 +118,7 @@ public class AppUserRepositoryTest {
         Date date = new Date();
         AppUser appUser = Generator.generateUser();
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
-        Comment comment = new Comment("hahaha", date, appUser , critique);
+        Comment comment = new Comment("hahaha", date, appUser, critique);
         List<Comment> commentList = new ArrayList<>();
         commentList.add(comment);
         appUser.setCommentList(commentList);

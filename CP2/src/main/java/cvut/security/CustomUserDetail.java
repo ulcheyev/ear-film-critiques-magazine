@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Set;
 
 public class CustomUserDetail implements UserDetails {
 
@@ -49,7 +48,7 @@ public class CustomUserDetail implements UserDetails {
         return user.isAccountNonLocked();
     }
 
-    public void erasePass(){
+    public void erasePass() {
         user.eraseCredentials();
     }
 

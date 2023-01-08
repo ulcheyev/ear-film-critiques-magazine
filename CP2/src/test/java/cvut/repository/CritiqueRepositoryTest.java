@@ -1,4 +1,5 @@
 package cvut.repository;
+
 import cvut.Application;
 import cvut.config.utils.Generator;
 import cvut.model.*;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -46,10 +48,9 @@ public class CritiqueRepositoryTest {
     private MainRoleService mainRoleService;
 
 
-
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void testNamedQueryFindByFilmIdAndRating(){
+    void testNamedQueryFindByFilmIdAndRating() {
         // Set the minimum rating and film ID for the criteria
         Critic critic = new Critic("Lola", "Lolova", "asqweqrqrdasdas", "flfplfpafd", "erqweeqwewerwe@gmail.com");
         Film film = Generator.generateFilm();
@@ -88,7 +89,7 @@ public class CritiqueRepositoryTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void testNamedQueryFindQuantityOfCritiquesByCriticId(){
+    void testNamedQueryFindQuantityOfCritiquesByCriticId() {
         Critic critic = new Critic("Lola", "Lolova", "asdasfafldas", "flfplfpafd", "erwk12erwe@gmail.com");
         Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
         Critique critique2 = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
@@ -131,7 +132,7 @@ public class CritiqueRepositoryTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void testNamedQueryFindSumOfCritiquesRatingByCriticId(){
+    void testNamedQueryFindSumOfCritiquesRatingByCriticId() {
         Critic critic = new Critic("Lola", "Lolova", "lomnnknklolo", "flfplfpafd", "mdhgjqfoq@gmail.com");
         criticRepository.save(critic);
         Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
@@ -168,7 +169,7 @@ public class CritiqueRepositoryTest {
     }
 
     @Test
-    void testNamedQueryFindAllByCritiqueState(){
+    void testNamedQueryFindAllByCritiqueState() {
         List<Critique> critiques = critiqueRepository.findAllByCritiqueState(cvut.model.CritiqueState.SENT_FOR_CORRECTIONS);
         Assertions.assertNotNull(critiques);
         assertFalse(critiques.isEmpty());
@@ -177,7 +178,7 @@ public class CritiqueRepositoryTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void testNamedQueryFindAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike(){
+    void testNamedQueryFindAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike() {
         Critic critic = new Critic("Lola", "Lolova", "lololjlklo", "flfplfpafd", "mjjhkjdqfoq@gmail.com");
         Critique critique1 = Generator.generateCritique(CritiqueState.ACCEPTED, 15);
         Critique critique2 = Generator.generateCritique(CritiqueState.ACCEPTED, 10);
@@ -199,8 +200,8 @@ public class CritiqueRepositoryTest {
         critic.setCritiqueList(critiqueList1);
 
         Query query = em.createNamedQuery("Critique.findAllByCritiqueOwnerLastnameAndCritiqueOwnerFirstnameLike");
-        query.setParameter(1,critic.getFirstname());
-        query.setParameter(2,critic.getLastname());
+        query.setParameter(1, critic.getFirstname());
+        query.setParameter(2, critic.getLastname());
         List<Critique> critiqueList = query.getResultList();
         Assertions.assertNotNull(critiqueList);
         assertFalse(critiqueList.isEmpty());
@@ -208,7 +209,7 @@ public class CritiqueRepositoryTest {
     }
 
     @Test
-    void testNamedQueryFindAllByFilm_NameLike(){
+    void testNamedQueryFindAllByFilm_NameLike() {
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
 
         MainRole mainRole = Generator.generateMainRole();
@@ -228,7 +229,7 @@ public class CritiqueRepositoryTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void testNamedQueryFindAllByRating(){
+    void testNamedQueryFindAllByRating() {
         Query query = em.createNamedQuery("Critique.findAllByRating");
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 400);
         critique.setRating(4.0);
@@ -250,7 +251,7 @@ public class CritiqueRepositoryTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void testNamedQueryFindAllByDateOfAcceptance(){
+    void testNamedQueryFindAllByDateOfAcceptance() {
         Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 300);
         MainRole mainRole = Generator.generateMainRole();
         mainRoleService.save(mainRole);

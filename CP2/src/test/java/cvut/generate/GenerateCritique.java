@@ -20,9 +20,9 @@ public class GenerateCritique {
     private CritiqueRepository critiqueRepository;
 
     @Test
-    public void generate(){
-        for(int i = 0; i < 100; i++) {
-            Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED,400);
+    public void generate() {
+        for (int i = 0; i < 100; i++) {
+            Critique critique = Generator.generateCritique(CritiqueState.ACCEPTED, 400);
             critiqueRepository.save(critique);
         }
     }

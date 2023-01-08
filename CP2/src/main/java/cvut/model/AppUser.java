@@ -1,4 +1,5 @@
 package cvut.model;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,7 +8,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.List;
 
-import static javax.persistence.GenerationType.*;
+import static javax.persistence.GenerationType.AUTO;
 
 @Entity
 @Table(name = "app_user")

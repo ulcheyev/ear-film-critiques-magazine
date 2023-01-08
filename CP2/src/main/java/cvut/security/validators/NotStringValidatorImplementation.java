@@ -15,7 +15,7 @@ public class NotStringValidatorImplementation implements ConstraintValidator<Not
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if(s.matches("^-?\\d+$")){
+        if (s.matches("^-?\\d+$")) {
             return true;
         }
         throw new ValidationException("The value must be digit");

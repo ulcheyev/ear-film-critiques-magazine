@@ -1,4 +1,5 @@
 package cvut.repository;
+
 import cvut.Application;
 import cvut.model.*;
 import org.junit.jupiter.api.Assertions;
@@ -6,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+
 import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,7 +29,7 @@ public class FilmRepositoryTest {
     private EntityManager em;
 
     @Test
-    void testNamedQueryFindMovieNamesForASpecificPeriod(){
+    void testNamedQueryFindMovieNamesForASpecificPeriod() {
         // Set data
 
         Query query = em.createNamedQuery("Film.findMovieNamesForASpecificPeriod");
@@ -51,7 +53,7 @@ public class FilmRepositoryTest {
     }
 
     @Test
-    void testNamedQueryFindMovieNamesCriticizedByAParticularCritic(){
+    void testNamedQueryFindMovieNamesCriticizedByAParticularCritic() {
         Query query = em.createNamedQuery("Film.findMovieNamesCriticizedByAParticularCritic");
 
         Optional<Critique> critique = critiqueRepository.findById(6L);

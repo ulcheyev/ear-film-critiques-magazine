@@ -47,7 +47,7 @@ public class CommentServiceImplTest {
 
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveCommentTest(){
+    public void saveCommentTest() {
 
         String text_200 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris rutrum, lorem nec fringilla " +
                 "convallis, sapien mi maximus dolor, viverra elementum velit sapien et libero. Proin sit amet gravida diam, " +
@@ -105,7 +105,7 @@ public class CommentServiceImplTest {
 
         //verify not found critique
         assertThrows(NotFoundException.class, () -> {
-            commentServiceImpl.save(normal_text,  critic.getUsername(), 200000000000L);
+            commentServiceImpl.save(normal_text, critic.getUsername(), 200000000000L);
         });
 
 
@@ -125,7 +125,7 @@ public class CommentServiceImplTest {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Test
-    public void deleteCommentTest(){
+    public void deleteCommentTest() {
 
         AppUser appUser = Generator.generateUser();
         Critique critique = critiqueServiceImpl.findById(205L);
@@ -149,12 +149,12 @@ public class CommentServiceImplTest {
 
         count2 = commentServiceImpl.findAll().size();
 
-        assertEquals(count1, count2+1);
+        assertEquals(count1, count2 + 1);
 
     }
 
     @Test
-    public void updateCommentTest(){
+    public void updateCommentTest() {
 
         String text_200 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris rutrum, lorem nec fringilla " +
                 "convallis, sapien mi maximus dolor, viverra elementum velit sapien et libero. Proin sit amet gravida diam, " +
@@ -181,7 +181,7 @@ public class CommentServiceImplTest {
 
         //verify update comment, ktery neexistuje v tabulce
         assertThrows(NotFoundException.class, () -> {
-            commentServiceImpl.update( 52L, normal_text);
+            commentServiceImpl.update(52L, normal_text);
         });
 
         //verify update comment

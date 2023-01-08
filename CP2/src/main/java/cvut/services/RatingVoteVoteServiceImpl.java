@@ -8,7 +8,6 @@ import cvut.model.Critic;
 import cvut.model.Critique;
 import cvut.model.RatingVote;
 import cvut.repository.AppUserRepository;
-import cvut.repository.CriticRepository;
 import cvut.repository.CritiqueRepository;
 import cvut.repository.RatingVoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,23 +36,23 @@ public class RatingVoteVoteServiceImpl implements RatingVoteService {
 
     public RatingVote findVoteByVoteOwnerIdAndCritiqueId(@NonNull Long appUserId, @NonNull Long critiqueId) {
         Optional<RatingVote> byVoteOwner_idAndCritique_id = ratingVoteRepository.findByVoteOwner_IdAndCritique_Id(appUserId, critiqueId);
-        if(byVoteOwner_idAndCritique_id.isEmpty()){
-            throw new NotFoundException("Vote with specified user id "+appUserId+" and critique id "+critiqueId+" does not exist");
+        if (byVoteOwner_idAndCritique_id.isEmpty()) {
+            throw new NotFoundException("Vote with specified user id " + appUserId + " and critique id " + critiqueId + " does not exist");
         }
         return byVoteOwner_idAndCritique_id.get();
     }
 
     public RatingVote findById(@NonNull Long id) {
         Optional<RatingVote> byId = ratingVoteRepository.findById(id);
-        if(byId.isEmpty()){
-            throw new NotFoundException("Vote with specified  id "+id+" does not exist");
+        if (byId.isEmpty()) {
+            throw new NotFoundException("Vote with specified  id " + id + " does not exist");
         }
         return byId.get();
     }
 
     public double findSumOfVotesByCritiqueId(@NonNull Long id) {
         Optional<Double> sumOfVotesByCritiqueId = ratingVoteRepository.findSumOfVotesByCritiqueId(id);
-        if(sumOfVotesByCritiqueId.isEmpty()){
+        if (sumOfVotesByCritiqueId.isEmpty()) {
             return 0;
         }
         return sumOfVotesByCritiqueId.get();
@@ -62,8 +61,8 @@ public class RatingVoteVoteServiceImpl implements RatingVoteService {
 
     public List<RatingVote> findByCritiqueId(@NonNull Long id) {
         List<RatingVote> byCritique_id = ratingVoteRepository.findByCritique_Id(id);
-        if(byCritique_id.isEmpty()){
-            throw new NotFoundException("Critique with id "+id+"does not exist in RatingVote table");
+        if (byCritique_id.isEmpty()) {
+            throw new NotFoundException("Critique with id " + id + "does not exist in RatingVote table");
         }
         return byCritique_id;
     }
@@ -72,13 +71,12 @@ public class RatingVoteVoteServiceImpl implements RatingVoteService {
         Optional<Integer> quantityOfVotesByCritiqueId =
                 ratingVoteRepository.findQuantityOfVotesByCritiqueId(id);
 
-        if(quantityOfVotesByCritiqueId.isEmpty()){
+        if (quantityOfVotesByCritiqueId.isEmpty()) {
             return 0;
         }
         return quantityOfVotesByCritiqueId.get();
 
     }
-
 
 
     @Transactional
@@ -91,14 +89,14 @@ public class RatingVoteVoteServiceImpl implements RatingVoteService {
         }
 
         Critique critique = critiqueRepository.findById(critiqueId)
-                .orElseThrow(()->new NotFoundException("Critique with id "+critiqueId+"does not found"));
+                .orElseThrow(() -> new NotFoundException("Critique with id " + critiqueId + "does not found"));
         AppUser appUser = appUserRepository.findAppUserByUsername(username)
-                .orElseThrow(()->new NotFoundException("AppUser with username "+username+" does not found"));
+                .orElseThrow(() -> new NotFoundException("AppUser with username " + username + " does not found"));
 
         RatingVote ratingVote;
-        try{
+        try {
             ratingVote = findVoteByVoteOwnerIdAndCritiqueId(appUser.getId(), critiqueId);
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             ratingVote = new RatingVote(critique, stars, new Date(), appUser);
         }
         ratingVoteRepository.save(ratingVote);
@@ -109,7 +107,7 @@ public class RatingVoteVoteServiceImpl implements RatingVoteService {
     @Transactional
     public void deleteAndUpdate(@NonNull String username, @NonNull Long critiqueId) {
         AppUser appUser = appUserRepository.findAppUserByUsername(username)
-                .orElseThrow(()->new NotFoundException("AppUser with username "+username+" does not found"));
+                .orElseThrow(() -> new NotFoundException("AppUser with username " + username + " does not found"));
         RatingVote ratingVote = findVoteByVoteOwnerIdAndCritiqueId(appUser.getId(), critiqueId);
         ratingVoteRepository.deleteById(ratingVote.getId());
         updateCritiqueAndCriticEntities(ratingVote.getCritique());
@@ -121,7 +119,7 @@ public class RatingVoteVoteServiceImpl implements RatingVoteService {
         //Update critique
         int critiqueCount = findQuantityOfVotesByCritiqueId(critique.getId());
         double critiqueRatingSum = findSumOfVotesByCritiqueId(critique.getId());
-        if(critiqueCount == 0){
+        if (critiqueCount == 0) {
             critiqueCount = 1;
         }
         double critique_c = critiqueRatingSum / critiqueCount;
@@ -136,8 +134,6 @@ public class RatingVoteVoteServiceImpl implements RatingVoteService {
         critic.setCriticRating(resultToCritic);
 
     }
-
-
 
 
 }

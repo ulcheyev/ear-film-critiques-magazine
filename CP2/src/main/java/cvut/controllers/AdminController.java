@@ -15,8 +15,5 @@ import org.springframework.web.bind.annotation.RestController;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 public class AdminController {
 
-    private final CritiqueService critiqueService;
-
-
 
 }
