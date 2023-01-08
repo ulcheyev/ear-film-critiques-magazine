@@ -22,12 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CommentControllerTest extends TestHelper {
 
     @Autowired
-    private CommentController controller;
-
-    @Autowired
-    private CommentServiceImpl commentService;
-
-    @Autowired
     private AppUserService appUserService;
 
     @Autowired

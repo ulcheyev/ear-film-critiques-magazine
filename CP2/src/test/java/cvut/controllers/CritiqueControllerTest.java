@@ -82,32 +82,5 @@ public class CritiqueControllerTest extends TestHelper {
 
     }
 
-//    @Test
-//    @Transactional(propagation = Propagation.REQUIRES_NEW)
-//    public void searchByFilter() throws Exception {
-//
-//        Critique critique = Generator.generateCritique(1500);
-//        critique.setTitle(Generator.generateString("Lol", 10));
-//        appUserService.save(critique.getCritiqueOwner());
-//        filmRepository.save(critique.getFilm());
-//        critiqueService.save(critique);
-//
-//        CritiqueDTO dto = new CritiqueDTO();
-//        dto.setTitle(critique.getTitle());
-//        dto.setFilm(critique.getFilm().getName());
-//        dto.setUsername(critique.getCritiqueOwner().getUsername());
-//        dto.setRating(0.0D);
-//
-//
-//        final MvcResult mvcResult = mockMvc.perform(
-//                        get("/api/critiques/search/")
-//                                .requestAttr("title", dto.getTitle())
-//                                .with(pepaCritic()))
-//                .andExpect(status().isOk()).andReturn();
-//
-//
-//        final List<Critique> result = readValue(mvcResult,new TypeReference<List<Critique>>() {});
-//        Assertions.assertTrue(result.contains(critique));
-//    }
 
 }
